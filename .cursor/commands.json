@@ -1,0 +1,165 @@
+{
+  "commands": [
+    {
+      "name": "Create New React Component",
+      "description": "Generates a new React + TypeScript component with tests, documentation, and README updates.",
+
+      "request": {
+        "type": "object",
+        "properties": {
+          "componentName": {
+            "type": "string",
+            "description": "Name of the new React component"
+          }
+        },
+        "required": ["componentName"]
+      },
+
+      "response": {
+        "type": "object",
+        "properties": {
+          "status": { "type": "string" },
+          "filesCreated": {
+            "type": "array",
+            "items": { "type": "string" }
+          }
+        }
+      },
+      "prompt": "You are a senior frontend engineer working on a large-scale React + TypeScript + Jest project..."
+    },
+    {
+      "name": "Create New Feature or Function",
+      "description": "Creates a new typed TS function with JSDoc, Jest tests, documentation, and README update.",
+      "request": {
+        "type": "object",
+        "properties": {
+          "featureName": {
+            "type": "string",
+            "description": "Name of the new function or feature to generate"
+          }
+        },
+        "required": ["featureName"]
+      },
+      "response": {
+        "type": "object",
+        "properties": {
+          "status": { "type": "string" },
+          "filesCreated": {
+            "type": "array",
+            "items": { "type": "string" }
+          }
+        }
+      },
+      "prompt": "You are a senior TypeScript developer. Create a new function or feature named {{featureName}}..."
+    },
+    {
+      "name": "Create New Page (React Route)",
+      "description": "Generates a full Next.js page with tests and documentation.",
+      "request": {
+        "type": "object",
+        "properties": {
+          "pageName": {
+            "type": "string",
+            "description": "Route name for the new page"
+          }
+        },
+        "required": ["pageName"]
+      },
+      "response": {
+        "type": "object",
+        "properties": {
+          "status": { "type": "string" },
+          "filesCreated": {
+            "type": "array",
+            "items": { "type": "string" }
+          }
+        }
+      },
+      "prompt": "You are a senior React + Next.js engineer. Create a new page named {{pageName}}..."
+    },
+    {
+      "name": "Auto Update Documentation",
+      "description": "Scans the entire project and automatically regenerates documentation.",
+
+      "request": { "type": "null" },
+      "response": {
+        "type": "object",
+        "properties": {
+          "status": { "type": "string" },
+          "updatedDocs": {
+            "type": "array",
+            "items": { "type": "string" }
+          }
+        }
+      },
+      "prompt": "Scan the entire src directory of this React project and automatically update docs..."
+    },
+    {
+      "name": "Add Comments & Tests for Existing Code",
+      "description": "Analyzes selected code, adds JSDoc, generates Jest tests, and updates docs.",
+      "request": {
+        "type": "object",
+        "properties": {
+          "sourceCode": {
+            "type": "string",
+            "description": "The source code block selected by the user"
+          }
+        },
+        "required": ["sourceCode"]
+      },
+      "response": {
+        "type": "object",
+        "properties": {
+          "status": { "type": "string" },
+          "updatedFiles": {
+            "type": "array",
+            "items": { "type": "string" }
+          }
+        }
+      },
+      "prompt": "Analyze the selected code and automatically insert JSDoc comments..."
+    },
+    {
+      "name": "Create Responsive UI Component",
+      "description": "Generates a new responsive and mobile-friendly React + TypeScript UI component with Tailwind CSS, tests, and documentation.",
+      "request": {
+        "type": "object",
+        "properties": {
+          "componentName": {
+            "type": "string",
+            "description": "Name of the new responsive UI component"
+          },
+          "componentType": {
+            "type": "string",
+            "description": "Type of component (e.g., 'button', 'card', 'modal', 'form', 'navigation', 'layout')",
+            "enum": [
+              "button",
+              "card",
+              "modal",
+              "form",
+              "navigation",
+              "layout",
+              "other"
+            ]
+          },
+          "description": {
+            "type": "string",
+            "description": "Brief description of what the component does"
+          }
+        },
+        "required": ["componentName", "componentType"]
+      },
+      "response": {
+        "type": "object",
+        "properties": {
+          "status": { "type": "string" },
+          "filesCreated": {
+            "type": "array",
+            "items": { "type": "string" }
+          }
+        }
+      },
+      "prompt": "You are a senior frontend engineer specializing in responsive design and mobile-first development. Create a new responsive and mobile-friendly React + TypeScript UI component named {{componentName}} of type {{componentType}}.{{#if description}} Description: {{description}}{{/if}}\n\nRequirements:\n1. Use Tailwind CSS with mobile-first responsive design (sm:, md:, lg:, xl: breakpoints)\n2. Component must be fully responsive and work seamlessly on mobile (320px+), tablet (768px+), and desktop (1024px+)\n3. Implement touch-friendly interactions (minimum 44x44px touch targets)\n4. Use flexible layouts (flexbox/grid) that adapt to screen sizes\n5. Ensure proper spacing and typography scaling across breakpoints\n6. Include proper accessibility (ARIA labels, keyboard navigation, focus states)\n7. Add hover and active states for desktop, touch states for mobile\n8. Use semantic HTML elements\n9. Include TypeScript types and interfaces\n10. Add JSDoc documentation\n11. Create comprehensive Jest/Vitest tests\n12. Follow the project's existing component structure in src/components/ui/\n13. Use shadcn/ui patterns if applicable\n14. Ensure the component is reusable and composable\n15. Add responsive utilities for hiding/showing elements at different breakpoints\n16. Consider landscape/portrait orientation changes\n17. Optimize for performance (lazy loading, memoization where appropriate)\n18. Include dark mode support if applicable\n\nGenerate:\n- Component file: src/components/ui/{{componentName}}.tsx\n- Test file: src/components/ui/{{componentName}}.test.tsx\n- Export in appropriate index file if needed\n\nMake sure the component follows mobile-first principles and provides an excellent user experience across all device sizes."
+    }
+  ]
+}
