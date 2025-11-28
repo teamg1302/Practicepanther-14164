@@ -1,0 +1,265 @@
+{
+  "signin": {
+    "title": "Sign In",
+    "subtitle": "Access the Practice Management System using your email and passcode.",
+    "emailLabel": "Email Address",
+    "emailPlaceholder": "example@email.com",
+    "passwordLabel": "Password",
+    "passwordPlaceholder": "Enter password",
+    "rememberMe": "Remember me",
+    "forgotPassword": "Forgot Password?",
+    "signInButton": "Sign In",
+    "signingIn": "Signing In...",
+    "validation": {
+      "emailRequired": "Email is required.",
+      "emailInvalid": "Enter a valid email address.",
+      "passwordRequired": "Password is required."
+    },
+    "messages": {
+      "loginSuccess": "Login Successful",
+      "loginSuccessMessage": "Please verify your OTP to continue.",
+      "loginFailed": "Login Failed",
+      "loginFailedMessage": "Login failed. Please try again."
+    }
+  },
+  "verifyToken": {
+    "title": "Verify OTP",
+    "subtitle": "Please enter the 6-digit OTP sent to your email to complete the authentication process.",
+    "otpLabel": "Enter 6-Digit OTP",
+    "verifyButton": "Verify OTP",
+    "verifying": "Verifying...",
+    "returnToLogin": "Return to",
+    "login": "login",
+    "messages": {
+      "loginRequired": "Login Required",
+      "loginRequiredMessage": "Please login first to verify OTP.",
+      "incompleteOTP": "Incomplete OTP",
+      "incompleteOTPMessage": "Please enter all 6 digits.",
+      "otpVerified": "OTP Verified",
+      "otpVerifiedMessage": "Your OTP has been verified successfully.",
+      "verificationFailed": "Verification Failed",
+      "verificationFailedMessage": "OTP verification failed. Please try again."
+    }
+  },
+  "forgotPassword": {
+    "title": "Forgot password?",
+    "subtitle": "If you forgot your password, well, then we'll email you instructions to reset your password.",
+    "emailLabel": "Email",
+    "emailPlaceholder": "example@email.com",
+    "sendResetLink": "Send Reset Link",
+    "sending": "Sending...",
+    "returnToLogin": "Return to",
+    "login": "login",
+    "validation": {
+      "emailRequired": "Email is required.",
+      "emailInvalid": "Enter a valid email address."
+    },
+    "messages": {
+      "emailSent": "Email Sent",
+      "emailSentMessage": "Password reset instructions have been sent to your email.",
+      "requestFailed": "Request Failed",
+      "requestFailedMessage": "Failed to send reset email. Please try again."
+    }
+  },
+  "resetPassword": {
+    "title": "Reset password?",
+    "subtitle": "Enter New Password & Confirm Password to get inside",
+    "newPasswordLabel": "New Password",
+    "newPasswordPlaceholder": "Enter new password",
+    "confirmPasswordLabel": "Confirm Password",
+    "confirmPasswordPlaceholder": "Confirm new password",
+    "changePasswordButton": "Change Password",
+    "resetting": "Resetting...",
+    "returnToLogin": "Return to",
+    "login": "login",
+    "validation": {
+      "newPasswordRequired": "New password is required.",
+      "confirmPasswordRequired": "Confirm password is required.",
+      "passwordsMustMatch": "Passwords must match."
+    },
+    "messages": {
+      "invalidRequest": "Invalid Request",
+      "invalidRequestMessage": "Reset token is missing. Please request a new password reset.",
+      "resetSuccessful": "Password Reset Successful",
+      "resetSuccessfulMessage": "Your password has been reset successfully. Please login with your new password.",
+      "resetFailed": "Reset Failed",
+      "resetFailedMessage": "Failed to reset password. Please try again."
+    }
+  },
+  "dashboard": {
+    "totalPurchaseDue": "Total Purchase Due",
+    "totalSalesDue": "Total Sales Due",
+    "totalSaleAmount": "Total Sale Amount",
+    "totalExpenseAmount": "Total Expense Amount",
+    "customers": "Customers",
+    "suppliers": "Suppliers",
+    "purchaseInvoice": "Purchase Invoice",
+    "salesInvoice": "Sales Invoice",
+    "purchaseAndSales": "Purchase & Sales",
+    "sales": "Sales",
+    "purchase": "Purchase",
+    "recentProducts": "Recent Products",
+    "viewAll": "View All",
+    "expiredProducts": "Expired Products",
+    "product": "Product",
+    "sku": "SKU",
+    "manufacturedDate": "Manufactured Date",
+    "expiredDate": "Expired Date",
+    "action": "Action",
+    "messages": {
+      "areYouSure": "Are you sure?",
+      "cantRevert": "You won't be able to revert this!",
+      "yesDelete": "Yes, delete it!",
+      "cancel": "Cancel",
+      "deleted": "Deleted!",
+      "fileDeleted": "Your file has been deleted.",
+      "ok": "OK"
+    },
+    "months": {
+      "jan": "Jan",
+      "feb": "Feb",
+      "mar": "Mar",
+      "apr": "Apr",
+      "may": "May",
+      "jun": "Jun",
+      "jul": "Jul",
+      "aug": "Aug",
+      "sep": "Sep"
+    }
+  },
+  "changeImage": "Change",
+  "personalSettings": {
+    "title": "Personal Settings",
+    "profilePhoto": "Profile Photo",
+    "imageUploadHelp": "For better preview recommended size is 450px x 450px. Max size 5MB.",
+    "firstName": "First Name",
+    "middleName": "Middle Name",
+    "lastName": "Last Name",
+    "jobTitle": "Job Title",
+    "mobile": "Mobile",
+    "email": "Email",
+    "emailHelpText": "The email address to sign in. This email can not be used for two accounts.",
+    "timezone": "Timezone",
+    "selectTimezone": "Select your timezone",
+    "contactInformation": "Contact Information",
+    "home": "Home",
+    "office": "Office",
+    "timeEntries": "Time Entries",
+    "hourlyRate": "Hourly Rate (TRY)",
+    "roundTimeEntries": "Round time entries?",
+    "roundTimeEntryType": "Round Time Entry Type",
+    "selectRoundingType": "Select rounding type",
+    "toTheNearest": "to the nearest",
+    "fractionOfTheHour": "Fraction of the hour",
+    "notificationEmails": "Notification Emails",
+    "dailyAgendaEmail": "Receive daily agenda email?",
+    "roundOptions": {
+      "up": "Up",
+      "down": "Down"
+    },
+    "validation": {
+      "firstNameRequired": "First name is required.",
+      "lastNameRequired": "Last name is required.",
+      "emailRequired": "Email is required.",
+      "emailInvalid": "Enter a valid email address.",
+      "hourlyRateRequired": "Hourly rate is required.",
+      "hourlyRateNumber": "Hourly rate must be a number.",
+      "hourlyRatePositive": "Hourly rate must be a positive number."
+    },
+    "messages": {
+      "settingsSaved": "Settings Saved",
+      "settingsSavedMessage": "Your general settings have been saved successfully.",
+      "saveFailed": "Save Failed",
+      "saveFailedMessage": "Failed to save settings. Please try again.",
+      "loadFailed": "Load Failed",
+      "loadFailedMessage": "Failed to load user details. Please try again."
+    }
+  },
+  "firmLogoInfo": {
+    "title": "FIRM INFORMATION",
+    "firmLogo": "Firm Logo",
+    "remove": "Remove",
+    "imageUploadHelp": "For better preview recommended size is 450px x 450px. Max size 5MB.",
+    "accountOwner": "Account Owner",
+    "selectAccountOwner": "Select account owner",
+    "legalBusinessName": "Legal Business Name",
+    "country": "Country",
+    "selectCountry": "Select country",
+    "specifyCountry": "Please specify your country",
+    "address1": "Address 1",
+    "address2": "Address 2",
+    "city": "City",
+    "zipPostalCode": "ZIP / POSTAL CODE",
+    "phoneNumber": "Phone Number",
+    "firmEmailAddress": "Firm Email Address",
+    "website": "Website",
+    "taxId": "Tax ID / GST / LEDES ID",
+    "businessAndOwnerInfo": "Business and Business Owner Info",
+    "businessInfoHelp": "Please provide accurate information about the business and firm owner. This information will not appear on your invoice letterhead.",
+    "primaryPracticeArea": "Primary Practice Area",
+    "selectPrimaryPracticeArea": "Select primary practice area",
+    "numberOfAttorneys": "Number of Attorneys",
+    "selectNumberOfAttorneys": "Select the number of attorneys",
+    "businessStructure": "Business Structure",
+    "selectBusinessStructure": "Select your business structure",
+    "formationDate": "Formation Date",
+    "selectFormationDate": "Select formation date",
+    "primaryOwnerEmail": "Primary Owner Email",
+    "ownerFirstName": "First Name",
+    "ownerLastName": "Last Name",
+    "ownerPhoneNumber": "Phone Number",
+    "barNumber": "Bar Number",
+    "saveChanges": "Save Changes",
+    "saving": "Saving...",
+    "cancel": "Cancel",
+    "validation": {
+      "firmEmailRequired": "Firm email address is required.",
+      "firmEmailInvalid": "Enter a valid email address.",
+      "websiteInvalid": "Enter a valid website URL.",
+      "primaryPracticeAreaRequired": "Primary practice area is required.",
+      "countrySpecifyRequired": "Please specify your country.",
+      "primaryOwnerEmailRequired": "Primary owner email is required.",
+      "primaryOwnerEmailInvalid": "Enter a valid email address.",
+      "ownerFirstNameRequired": "First name is required.",
+      "ownerLastNameRequired": "Last name is required.",
+      "ownerPhoneNumberRequired": "Phone number is required."
+    },
+    "messages": {
+      "firmInfoSaved": "Firm Information Saved",
+      "firmInfoSavedMessage": "Your firm information has been saved successfully.",
+      "saveFailed": "Save Failed",
+      "saveFailedMessage": "Failed to save firm information. Please try again.",
+      "loadFailed": "Load Failed",
+      "loadFailedMessage": "Failed to load firm details. Please try again."
+    }
+  },
+  "formButton": {
+    "submit": "Save Changes",
+    "submitting": "Saving...",
+    "cancel": "Cancel",
+    "cancelling": "Cancelling...",
+    "reset": "Reset",
+    "resetting": "Resetting...",
+    "update": "Update",
+    "updating": "Updating...",
+    "ariaLabel": {
+      "save": "Save changes",
+      "saving": "Saving settings"
+    }
+  },
+  "formElements": {
+    "select": {
+      "placeholder": "Select...",
+      "required": "is required."
+    },
+    "validation": {
+      "required": "is required."
+    }
+  },
+  "common": {
+    "required": "required",
+    "example": "example",
+    "enter": "Enter",
+    "select": "Select"
+  }
+}

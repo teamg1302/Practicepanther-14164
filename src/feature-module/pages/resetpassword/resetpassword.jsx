@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { useTranslation } from "react-i18next";
 import * as yup from "yup";
 import { Lock } from "react-feather";
 import ImageWithBasePath from "../../../core/img/imagewithbasebath";
@@ -10,26 +11,26 @@ import { all_routes } from "../../../Router/all_routes";
 import { resetPassword } from "../../../core/services/authService";
 import Swal from "sweetalert2";
 
-const resetPasswordSchema = yup.object({
-  newPassword: yup
-    .string()
-    .trim()
-    // .min(6, "Password must be at least 6 characters.")
-    .required("New password is required."),
-  confirmPassword: yup
-    .string()
-    .trim()
-    .required("Confirm password is required.")
-    .oneOf([yup.ref("newPassword")], "Passwords must match."),
-});
-
 const Resetpassword = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { token } = useParams();
   const route = all_routes;
   const [isNewPasswordVisible, setIsNewPasswordVisible] = useState(false);
   const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] =
     useState(false);
+  
+  const resetPasswordSchema = yup.object({
+    newPassword: yup
+      .string()
+      .trim()
+      .required(t("resetPassword.validation.newPasswordRequired")),
+    confirmPassword: yup
+      .string()
+      .trim()
+      .required(t("resetPassword.validation.confirmPasswordRequired"))
+      .oneOf([yup.ref("newPassword")], t("resetPassword.validation.passwordsMustMatch")),
+  });
 
   const {
     register,
@@ -56,8 +57,8 @@ const Resetpassword = () => {
     if (!token) {
       Swal.fire({
         icon: "error",
-        title: "Invalid Request",
-        text: "Reset token is missing. Please request a new password reset.",
+        title: t("resetPassword.messages.invalidRequest"),
+        text: t("resetPassword.messages.invalidRequestMessage"),
         showConfirmButton: true,
       });
       navigate(route.forgotPassword);
@@ -72,8 +73,8 @@ const Resetpassword = () => {
 
       Swal.fire({
         icon: "success",
-        title: "Password Reset Successful",
-        text: "Your password has been reset successfully. Please login with your new password.",
+        title: t("resetPassword.messages.resetSuccessful"),
+        text: t("resetPassword.messages.resetSuccessfulMessage"),
         showConfirmButton: true,
         timer: 3000,
       });
@@ -86,10 +87,10 @@ const Resetpassword = () => {
       const errorMessage =
         error?.message ||
         error?.error ||
-        "Failed to reset password. Please try again.";
+        t("resetPassword.messages.resetFailedMessage");
       Swal.fire({
         icon: "error",
-        title: "Reset Failed",
+        title: t("resetPassword.messages.resetFailed"),
         text: errorMessage,
         showConfirmButton: true,
       });
@@ -110,14 +111,12 @@ const Resetpassword = () => {
                   <ImageWithBasePath src="assets/img/logo-white.png" alt />
                 </Link>
                 <div className="login-userheading">
-                  <h3>Reset password?</h3>
-                  <h4>
-                    Enter New Password &amp; Confirm Password to get inside
-                  </h4>
+                  <h3>{t("resetPassword.title")}</h3>
+                  <h4>{t("resetPassword.subtitle")}</h4>
                 </div>
 
                 <div className="form-login mb-3">
-                  <label className="form-label">New Password</label>
+                  <label className="form-label">{t("resetPassword.newPasswordLabel")}</label>
                   <div className="pass-group" style={{ position: "relative" }}>
                     <Lock
                       style={{
@@ -136,7 +135,7 @@ const Resetpassword = () => {
                       className={`pass-input form-control ${
                         errors.newPassword ? "is-invalid" : ""
                       }`}
-                      placeholder="Enter new password"
+                      placeholder={t("resetPassword.newPasswordPlaceholder")}
                       {...register("newPassword")}
                       style={{ paddingLeft: "40px" }}
                     />
@@ -157,7 +156,7 @@ const Resetpassword = () => {
                   )}
                 </div>
                 <div className="form-login mb-3">
-                  <label className="form-label">Confirm Password</label>
+                  <label className="form-label">{t("resetPassword.confirmPasswordLabel")}</label>
                   <div className="pass-group" style={{ position: "relative" }}>
                     <Lock
                       style={{
@@ -176,7 +175,7 @@ const Resetpassword = () => {
                       className={`pass-input form-control ${
                         errors.confirmPassword ? "is-invalid" : ""
                       }`}
-                      placeholder="Confirm new password"
+                      placeholder={t("resetPassword.confirmPasswordPlaceholder")}
                       {...register("confirmPassword")}
                       style={{ paddingLeft: "40px" }}
                     />
@@ -202,15 +201,15 @@ const Resetpassword = () => {
                     className="btn btn-login w-100"
                     disabled={isSubmitting}
                   >
-                    {isSubmitting ? "Resetting..." : "Change Password"}
+                    {isSubmitting ? t("resetPassword.resetting") : t("resetPassword.changePasswordButton")}
                   </button>
                 </div>
                 <div className="signinform text-center">
                   <h4>
-                    Return to{" "}
+                    {t("resetPassword.returnToLogin")}{" "}
                     <Link to={route.signin} className="hover-a">
                       {" "}
-                      login{" "}
+                      {t("resetPassword.login")}{" "}
                     </Link>
                   </h4>
                 </div>

@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
+import { useTranslation } from "react-i18next";
 import ImageWithBasePath from "../../../core/img/imagewithbasebath";
 import { Link } from "react-router-dom";
 import { all_routes } from "../../../Router/all_routes";
@@ -9,6 +10,7 @@ import { setAuthData } from "../../../core/redux/action";
 import Swal from "sweetalert2";
 
 const Verifytoken = () => {
+  const { t } = useTranslation();
   const { type } = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -23,8 +25,8 @@ const Verifytoken = () => {
     if (!loginEmail) {
       Swal.fire({
         icon: "warning",
-        title: "Login Required",
-        text: "Please login first to verify OTP.",
+        title: t("verifyToken.messages.loginRequired"),
+        text: t("verifyToken.messages.loginRequiredMessage"),
         showConfirmButton: true,
       });
       navigate(route.signin);
@@ -88,8 +90,8 @@ const Verifytoken = () => {
     if (!loginEmail) {
       Swal.fire({
         icon: "warning",
-        title: "Login Required",
-        text: "Please login first to verify OTP.",
+        title: t("verifyToken.messages.loginRequired"),
+        text: t("verifyToken.messages.loginRequiredMessage"),
         showConfirmButton: true,
       });
       navigate(route.signin);
@@ -102,8 +104,8 @@ const Verifytoken = () => {
     if (otpValue.length !== 6) {
       Swal.fire({
         icon: "warning",
-        title: "Incomplete OTP",
-        text: "Please enter all 6 digits.",
+        title: t("verifyToken.messages.incompleteOTP"),
+        text: t("verifyToken.messages.incompleteOTPMessage"),
         showConfirmButton: true,
       });
       return;
@@ -123,8 +125,8 @@ const Verifytoken = () => {
         // Show success message
         Swal.fire({
           icon: "success",
-          title: "OTP Verified",
-          text: "Your OTP has been verified successfully.",
+          title: t("verifyToken.messages.otpVerified"),
+          text: t("verifyToken.messages.otpVerifiedMessage"),
           showConfirmButton: true,
           timer: 2000,
         });
@@ -151,24 +153,24 @@ const Verifytoken = () => {
         // Show success message
         Swal.fire({
           icon: "success",
-          title: "OTP Verified",
-          text: "Your OTP has been verified successfully.",
+          title: t("verifyToken.messages.otpVerified"),
+          text: t("verifyToken.messages.otpVerifiedMessage"),
           showConfirmButton: true,
           timer: 2000,
         });
 
         // Navigate to dashboard
-        navigate(route.dashboard);
+        navigate(route.headers[0].path);
       }
     } catch (error) {
       // Show error message
       const errorMessage =
         error?.message ||
         error?.error ||
-        "OTP verification failed. Please try again.";
+        t("verifyToken.messages.verificationFailedMessage");
       Swal.fire({
         icon: "error",
-        title: "Verification Failed",
+        title: t("verifyToken.messages.verificationFailed"),
         text: errorMessage,
         showConfirmButton: true,
       });
@@ -199,15 +201,12 @@ const Verifytoken = () => {
                   <ImageWithBasePath src="assets/img/logo-white.png" alt />
                 </Link>
                 <div className="login-userheading">
-                  <h3>Verify OTP</h3>
-                  <h4>
-                    Please enter the 6-digit OTP sent to your email to complete
-                    the authentication process.
-                  </h4>
+                  <h3>{t("verifyToken.title")}</h3>
+                  <h4>{t("verifyToken.subtitle")}</h4>
                 </div>
                 <div className="form-login mb-4">
                   <label className="form-label text-center d-block mb-3">
-                    Enter 6-Digit OTP
+                    {t("verifyToken.otpLabel")}
                   </label>
                   <div className="wallet-add">
                     <div className="otp-box">
@@ -260,15 +259,17 @@ const Verifytoken = () => {
                     className="btn btn-login w-100"
                     disabled={isSubmitting}
                   >
-                    {isSubmitting ? "Verifying..." : "Verify OTP"}
+                    {isSubmitting
+                      ? t("verifyToken.verifying")
+                      : t("verifyToken.verifyButton")}
                   </button>
                 </div>
                 <div className="signinform text-center">
                   <h4>
-                    Return to
+                    {t("verifyToken.returnToLogin")}
                     <Link to={route.signin} className="hover-a">
                       {" "}
-                      login{" "}
+                      {t("verifyToken.login")}{" "}
                     </Link>
                   </h4>
                 </div>

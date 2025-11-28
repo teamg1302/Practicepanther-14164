@@ -19,6 +19,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { useFormContext, Controller } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 import ReactSelect from "react-select";
 
 /**
@@ -101,7 +102,7 @@ const FormSelect = ({
   name,
   label,
   options = [],
-  placeholder = "Select...",
+  placeholder,
   required = false,
   className = "",
   registerOptions = {},
@@ -115,6 +116,7 @@ const FormSelect = ({
   helpText,
   selectProps = {},
 }) => {
+  const { t } = useTranslation();
   const {
     control,
     formState: { errors },
@@ -125,6 +127,7 @@ const FormSelect = ({
   const hasError = !!error;
   const errorMessage = error?.message;
   const selectAriaLabel = ariaLabel || label;
+  const defaultPlaceholder = placeholder || t("formElements.select.placeholder");
 
   /**
    * Custom styles for react-select to match Bootstrap form styling.
@@ -184,7 +187,7 @@ const FormSelect = ({
             id={selectId}
             instanceId={selectId}
             options={options}
-            placeholder={placeholder}
+            placeholder={defaultPlaceholder}
             isDisabled={disabled}
             isMulti={isMulti}
             isSearchable={isSearchable}

@@ -7,6 +7,7 @@ import {
 } from "feather-icons-react/build/IconComponents";
 import Chart from "react-apexcharts";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import ImageWithBasePath from "../../core/img/imagewithbasebath";
 import { ArrowRight } from "react-feather";
 import { all_routes } from "../../Router/all_routes";
@@ -14,15 +15,16 @@ import withReactContent from "sweetalert2-react-content";
 import Swal from "sweetalert2";
 
 const Dashboard = () => {
+  const { t } = useTranslation();
   const route = all_routes;
   const [chartOptions] = useState({
     series: [
       {
-        name: "Sales",
+        name: t("dashboard.sales"),
         data: [130, 210, 300, 290, 150, 50, 210, 280, 105],
       },
       {
-        name: "Purchase",
+        name: t("dashboard.purchase"),
         data: [-150, -90, -50, -180, -50, -70, -100, -90, -105],
       },
     ],
@@ -65,15 +67,15 @@ const Dashboard = () => {
     },
     xaxis: {
       categories: [
-        "Jan",
-        "Feb",
-        "Mar",
-        "Apr",
-        "May",
-        "Jun",
-        "Jul",
-        "Aug",
-        "Sep",
+        t("dashboard.months.jan"),
+        t("dashboard.months.feb"),
+        t("dashboard.months.mar"),
+        t("dashboard.months.apr"),
+        t("dashboard.months.may"),
+        t("dashboard.months.jun"),
+        t("dashboard.months.jul"),
+        t("dashboard.months.aug"),
+        t("dashboard.months.sep"),
       ],
     },
     legend: { show: false },
@@ -84,20 +86,20 @@ const Dashboard = () => {
   const MySwal = withReactContent(Swal);
   const showConfirmationAlert = () => {
     MySwal.fire({
-      title: "Are you sure?",
-      text: "You won't be able to revert this!",
+      title: t("dashboard.messages.areYouSure"),
+      text: t("dashboard.messages.cantRevert"),
       showCancelButton: true,
       confirmButtonColor: "#00ff00",
-      confirmButtonText: "Yes, delete it!",
+      confirmButtonText: t("dashboard.messages.yesDelete"),
       cancelButtonColor: "#ff0000",
-      cancelButtonText: "Cancel",
+      cancelButtonText: t("dashboard.messages.cancel"),
     }).then((result) => {
       if (result.isConfirmed) {
         MySwal.fire({
-          title: "Deleted!",
-          text: "Your file has been deleted.",
+          title: t("dashboard.messages.deleted"),
+          text: t("dashboard.messages.fileDeleted"),
           className: "btn btn-success",
-          confirmButtonText: "OK",
+          confirmButtonText: t("dashboard.messages.ok"),
           customClass: {
             confirmButton: "btn btn-success",
           },
@@ -126,7 +128,7 @@ const Dashboard = () => {
                   <h5>
                     <CountUp start={0} end={307144} duration={3} prefix="$" />
                   </h5>
-                  <h6>Total Purchase Due</h6>
+                  <h6>{t("dashboard.totalPurchaseDue")}</h6>
                 </div>
               </div>
             </div>
@@ -149,7 +151,7 @@ const Dashboard = () => {
                       duration={3} // Duration in seconds
                     />
                   </h5>
-                  <h6>Total Sales Due</h6>
+                  <h6>{t("dashboard.totalSalesDue")}</h6>
                 </div>
               </div>
             </div>
@@ -173,7 +175,7 @@ const Dashboard = () => {
                       decimals={1}
                     />
                   </h5>
-                  <h6>Total Sale Amount</h6>
+                  <h6>{t("dashboard.totalSaleAmount")}</h6>
                 </div>
               </div>
             </div>
@@ -196,7 +198,7 @@ const Dashboard = () => {
                       duration={3} // Duration in seconds
                     />
                   </h5>
-                  <h6>Total Expense Amount</h6>
+                  <h6>{t("dashboard.totalExpenseAmount")}</h6>
                 </div>
               </div>
             </div>
@@ -204,7 +206,7 @@ const Dashboard = () => {
               <div className="dash-count">
                 <div className="dash-counts">
                   <h4>100</h4>
-                  <h5>Customers</h5>
+                  <h5>{t("dashboard.customers")}</h5>
                 </div>
                 <div className="dash-imgs">
                   <User />
@@ -215,7 +217,7 @@ const Dashboard = () => {
               <div className="dash-count das1">
                 <div className="dash-counts">
                   <h4>110</h4>
-                  <h5>Suppliers</h5>
+                  <h5>{t("dashboard.suppliers")}</h5>
                 </div>
                 <div className="dash-imgs">
                   <UserCheck />
@@ -226,7 +228,7 @@ const Dashboard = () => {
               <div className="dash-count das2">
                 <div className="dash-counts">
                   <h4>150</h4>
-                  <h5>Purchase Invoice</h5>
+                  <h5>{t("dashboard.purchaseInvoice")}</h5>
                 </div>
                 <div className="dash-imgs">
                   <ImageWithBasePath
@@ -241,7 +243,7 @@ const Dashboard = () => {
               <div className="dash-count das3">
                 <div className="dash-counts">
                   <h4>170</h4>
-                  <h5>Sales Invoice</h5>
+                  <h5>{t("dashboard.salesInvoice")}</h5>
                 </div>
                 <div className="dash-imgs">
                   <File />
@@ -255,14 +257,14 @@ const Dashboard = () => {
             <div className="col-xl-7 col-sm-12 col-12 d-flex">
               <div className="card flex-fill">
                 <div className="card-header d-flex justify-content-between align-items-center">
-                  <h5 className="card-title mb-0">Purchase &amp; Sales</h5>
+                  <h5 className="card-title mb-0">{t("dashboard.purchaseAndSales")}</h5>
                   <div className="graph-sets">
                     <ul className="mb-0">
                       <li>
-                        <span>Sales</span>
+                        <span>{t("dashboard.sales")}</span>
                       </li>
                       <li>
-                        <span>Purchase</span>
+                        <span>{t("dashboard.purchase")}</span>
                       </li>
                     </ul>
                     <div className="dropdown dropdown-wraper">
@@ -312,10 +314,10 @@ const Dashboard = () => {
             <div className="col-xl-5 col-sm-12 col-12 d-flex">
               <div className="card flex-fill default-cover mb-4">
                 <div className="card-header d-flex justify-content-between align-items-center">
-                  <h4 className="card-title mb-0">Recent Products</h4>
+                  <h4 className="card-title mb-0">{t("dashboard.recentProducts")}</h4>
                   <div className="view-all-link">
                     <Link to="#" className="view-all d-flex align-items-center">
-                      View All
+                      {t("dashboard.viewAll")}
                       <span className="ps-2 d-flex align-items-center">
                         <ArrowRight className="feather-16" />
                       </span>
@@ -328,7 +330,7 @@ const Dashboard = () => {
                       <thead>
                         <tr>
                           <th>#</th>
-                          <th>Products</th>
+                          <th>{t("dashboard.recentProducts")}</th>
                           <th>Price</th>
                         </tr>
                       </thead>
@@ -410,7 +412,7 @@ const Dashboard = () => {
           </div>
           <div className="card">
             <div className="card-header">
-              <h4 className="card-title">Expired Products</h4>
+              <h4 className="card-title">{t("dashboard.expiredProducts")}</h4>
             </div>
             <div className="card-body">
               <div className="table-responsive dataview">
@@ -423,11 +425,11 @@ const Dashboard = () => {
                           <span className="checkmarks" />
                         </label>
                       </th>
-                      <th>Product</th>
-                      <th>SKU</th>
-                      <th>Manufactured Date</th>
-                      <th>Expired Date</th>
-                      <th className="no-sort">Action</th>
+                      <th>{t("dashboard.product")}</th>
+                      <th>{t("dashboard.sku")}</th>
+                      <th>{t("dashboard.manufacturedDate")}</th>
+                      <th>{t("dashboard.expiredDate")}</th>
+                      <th className="no-sort">{t("dashboard.action")}</th>
                     </tr>
                   </thead>
                   <tbody>

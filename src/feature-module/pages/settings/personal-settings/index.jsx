@@ -11,56 +11,27 @@
  * @component
  */
 
-import { PlusCircle } from "feather-icons-react/build/IconComponents";
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import { useFormContext, useWatch } from "react-hook-form";
+import { useTranslation } from "react-i18next";
+import { useSelector } from "react-redux";
+import PropTypes from "prop-types";
 import * as yup from "yup";
 import Swal from "sweetalert2";
 import { FormProvider } from "@/feature-module/components/rhf";
 import Input from "@/feature-module/components/form-elements/input";
 import Switch from "@/feature-module/components/form-elements/switch";
 import Select from "@/feature-module/components/form-elements/select";
-
-const personalSettingsSchema = yup.object({
-  firstName: yup.string().trim().required("First name is required."),
-  lastName: yup.string().trim().required("Last name is required."),
-  middleName: yup.string().trim().optional(),
-  jobTitle: yup.string().trim().optional(),
-  mobile: yup.string().trim().optional(),
-  email: yup
-    .string()
-    .trim()
-    .email("Enter a valid email address.")
-    .required("Email is required."),
-  timezone: yup.string().trim().optional(),
-  home: yup.string().trim().optional(),
-  office: yup.string().trim().optional(),
-  hourlyRate: yup
-    .number()
-    .typeError("Hourly rate must be a number.")
-    .positive("Hourly rate must be a positive number.")
-    .required("Hourly rate is required."),
-  roundTimeEntries: yup.boolean().optional(),
-  roundTimeEntryType: yup
-    .string()
-    .trim()
-    .when("roundTimeEntries", {
-      is: true,
-      then: (schema) => schema.optional(),
-      otherwise: (schema) => schema.optional(),
-    }),
-  dailyAgendaEmail: yup.boolean().optional(),
-});
+import { PhotoUpload } from "@/feature-module/components/form-elements/file-upload";
+import { FormButton } from "@/feature-module/components/buttons";
+import { getUserDetails, updateUserDetails } from "@/core/services/userService";
+import { all_routes } from "@/Router/all_routes";
 
 /**
  * Timezone options for the select dropdown.
  * @type {Array<{value: string, label: string}>}
  */
-
-const roundTimeEntryTypeOptions = [
-  { label: "Up", value: "up" },
-  { label: "Down", value: "down" },
-];
 
 const timezoneOptions = [
   { label: "(UTC−12:00) International Date Line West", value: "UTC−12:00" },
@@ -104,6 +75,53 @@ const timezoneOptions = [
 ];
 
 const PersonalSettings = () => {
+  const { t } = useTranslation();
+  const navigate = useNavigate();
+  const route = all_routes;
+  const user = useSelector((state) => state.auth?.user);
+  const [isLoading, setIsLoading] = React.useState(false);
+
+  const personalSettingsSchema = React.useMemo(
+    () =>
+      yup.object({
+        firstName: yup
+          .string()
+          .trim()
+          .required(t("personalSettings.validation.firstNameRequired")),
+        lastName: yup
+          .string()
+          .trim()
+          .required(t("personalSettings.validation.lastNameRequired")),
+        middleName: yup.string().trim().optional(),
+        jobTitle: yup.string().trim().optional(),
+        mobile: yup.string().trim().optional(),
+        email: yup
+          .string()
+          .trim()
+          .email(t("personalSettings.validation.emailInvalid"))
+          .required(t("personalSettings.validation.emailRequired")),
+        timezone: yup.string().trim().optional(),
+        home: yup.string().trim().optional(),
+        office: yup.string().trim().optional(),
+        hourlyRate: yup
+          .number()
+          .typeError(t("personalSettings.validation.hourlyRateNumber"))
+          .positive(t("personalSettings.validation.hourlyRatePositive"))
+          .required(t("personalSettings.validation.hourlyRateRequired")),
+        roundTimeEntries: yup.boolean().optional(),
+        roundTimeEntryType: yup
+          .string()
+          .trim()
+          .when("roundTimeEntries", {
+            is: true,
+            then: (schema) => schema.optional(),
+            otherwise: (schema) => schema.optional(),
+          }),
+        dailyAgendaEmail: yup.boolean().optional(),
+      }),
+    [t]
+  );
+
   /**
    * Handles form submission with validation and error handling.
    *
@@ -112,31 +130,53 @@ const PersonalSettings = () => {
    */
   const onSubmit = async (formData) => {
     try {
-      // Form data already includes switch states from React Hook Form
-      const submitData = {
-        ...formData,
-      };
+      // Create FormData object for file upload
+      const formDataToSubmit = new FormData();
 
-      // Here you can add your API call
-      // await updateGeneralSettings(submitData);
+      // Append all form fields to FormData
+      Object.keys(formData).forEach((key) => {
+        const value = formData[key];
+
+        // Handle file uploads
+        if (key === "profilePhoto" && value && value[0] instanceof File) {
+          formDataToSubmit.append(key, value[0]);
+        }
+        // Handle other fields - skip empty values
+        else if (value !== null && value !== undefined && value !== "") {
+          // Convert boolean to string for FormData
+          if (typeof value === "boolean") {
+            formDataToSubmit.append(key, value.toString());
+          }
+          // Handle arrays and objects (convert to JSON string if needed)
+          else if (typeof value === "object" && !(value instanceof File)) {
+            formDataToSubmit.append(key, JSON.stringify(value));
+          }
+          // Handle primitive values
+          else {
+            formDataToSubmit.append(key, value);
+          }
+        }
+      });
+
+      await updateUserDetails(user?.id, formDataToSubmit);
 
       Swal.fire({
         icon: "success",
-        title: "Settings Saved",
-        text: "Your general settings have been saved successfully.",
+        title: t("personalSettings.messages.settingsSaved"),
+        text: t("personalSettings.messages.settingsSavedMessage"),
         showConfirmButton: true,
         timer: 2000,
       });
 
-      console.log("Form Data:", submitData);
+      navigate(route.settings[0].path);
     } catch (error) {
       const errorMessage =
         error?.message ||
         error?.error ||
-        "Failed to save settings. Please try again.";
+        t("personalSettings.messages.saveFailedMessage");
       Swal.fire({
         icon: "error",
-        title: "Save Failed",
+        title: t("personalSettings.messages.saveFailed"),
         text: errorMessage,
         showConfirmButton: true,
       });
@@ -161,142 +201,257 @@ const PersonalSettings = () => {
           roundTimeEntries: false,
           roundTimeEntryType: "",
           dailyAgendaEmail: false,
+          profilePhoto: null,
         }}
         onSubmit={onSubmit}
       >
-        <div className="setting-title">
-          <h4>Personal Settings </h4>
-        </div>
-        {/* <div className="card-title-head">
-                                <h6>
-                                    <span>
-                                        
-                                        <User className="feather-chevron-up"/>
-                                    </span>
-                                    Employee Information
-                                </h6>
-                            </div> */}
-        <div className="profile-pic-upload">
-          <div className="profile-pic">
-            <span>
-              <PlusCircle className="plus-down-add" />
-              Profile Photo
-            </span>
-          </div>
-          <div className="new-employee-field">
-            <div className="mb-0">
-              <div className="image-upload mb-0">
-                <input type="file" />
-                <div className="image-uploads">
-                  <h4>Change Image</h4>
-                </div>
-              </div>
-              <span>
-                For better preview recommended size is 450px x 450px. Max size
-                5MB.
-              </span>
-            </div>
-          </div>
-        </div>
-        <div className="row">
-          <div className="col-md-4">
-            <Input name="firstName" label="First Name" type="text" required />
-          </div>
-          <div className="col-md-4">
-            <Input name="middleName" label="Middle Name" type="text" />
-          </div>
-          <div className="col-md-4">
-            <Input name="lastName" label="Last Name" type="text" required />
-          </div>
-          <div className="col-md-12">
-            <Input name="jobTitle" label="Job Title" type="text" />
-          </div>
-          <div className="col-md-12">
-            <Input name="mobile" label="Mobile" type="text" />
-          </div>
-          <div className="col-md-12">
-            <Input
-              name="email"
-              label="Email"
-              type="email"
-              required
-              helpText="The email address to sign in. This email can not be used for two accounts."
-            />
-          </div>
-          <div className="col-md-12">
-            <Select
-              name="timezone"
-              label="Timezone"
-              options={timezoneOptions}
-              placeholder="Select your timezone"
-            />
-          </div>
-        </div>
-        <div className="card-title-head">
-          <h6>
-            <span>
-              <i data-feather="map-pin" className="feather-chevron-up" />
-            </span>
-            Contact Information
-          </h6>
-        </div>
-        <div className="row">
-          <div className="col-md-12">
-            <Input name="home" label="Home" type="text" />
-          </div>
-          <div className="col-md-12">
-            <Input name="office" label="Office" type="text" />
-          </div>
-        </div>
-
-        <div className="card-title-head">
-          <h6>
-            <span>
-              <i data-feather="map-pin" className="feather-chevron-up" />
-            </span>
-            Time Entries
-          </h6>
-        </div>
-        <div className="row">
-          <div className="col-md-12">
-            <Input
-              name="hourlyRate"
-              label="Hourly Rate (TRY)"
-              type="number"
-              required
-            />
-          </div>
-          <div className="col-md-4">
-            <Switch
-              name="roundTimeEntries"
-              label="Round time entries?"
-              defaultValue={false}
-            />
-          </div>
-
-          <RoundTimeEntryTypeSelect />
-        </div>
-
-        <div className="card-title-head">
-          <h6>
-            <span>
-              <i data-feather="map-pin" className="feather-chevron-up" />
-            </span>
-            Notification Emails
-          </h6>
-        </div>
-        <div className="row">
-          <div className="col-md-12">
-            <Switch
-              name="dailyAgendaEmail"
-              label="Receive daily agenda email?"
-              defaultValue={false}
-            />
-          </div>
-        </div>
-        <FormSubmitButtons />
+        <PersonalSettingsContent
+          userId={user?.id}
+          isLoading={isLoading}
+          setIsLoading={setIsLoading}
+        />
       </FormProvider>
     </div>
+  );
+};
+
+/**
+ * Personal Settings Content component.
+ * Handles fetching user details and populating the form.
+ *
+ * @param {Object} props
+ * @param {string|number} props.userId - User ID to fetch details for
+ * @param {boolean} props.isLoading - Loading state
+ * @param {Function} props.setIsLoading - Function to set loading state
+ * @returns {JSX.Element} Form content
+ */
+
+const PersonalSettingsContent = ({ userId, isLoading, setIsLoading }) => {
+  const { t } = useTranslation();
+  const { reset } = useFormContext();
+
+  const roundTimeEntryTypeOptionsTranslated = React.useMemo(
+    () => [
+      { label: t("personalSettings.roundOptions.up"), value: "up" },
+      { label: t("personalSettings.roundOptions.down"), value: "down" },
+    ],
+    [t]
+  );
+
+  React.useEffect(() => {
+    const fetchUserDetails = async () => {
+      if (!userId) return;
+
+      setIsLoading(true);
+      try {
+        const userData = await getUserDetails(userId);
+
+        console.log("userData", userData);
+
+        // Map API response to form fields - ensure proper type conversion
+        const formData = {
+          firstName: userData?.firstName || userData?.first_name || "",
+          middleName: userData?.middleName || userData?.middle_name || "",
+          lastName: userData?.lastName || userData?.last_name || "",
+          jobTitle: userData?.jobTitle || userData?.job_title || "",
+          mobile: userData?.mobile || userData?.phone || "",
+          email: userData?.email || "",
+          timezone: userData?.timezone || "",
+          home: userData?.home || userData?.homeAddress || "",
+          office: userData?.office || userData?.officeAddress || "",
+          hourlyRate: userData?.hourlyRate || userData?.hourly_rate || "",
+          roundTimeEntries: Boolean(
+            userData?.roundTimeEntries !== undefined
+              ? userData?.roundTimeEntries
+              : userData?.round_time_entries !== undefined
+              ? userData?.round_time_entries
+              : false
+          ),
+          roundTimeEntryType:
+            userData?.roundTimeEntryType ||
+            userData?.round_time_entry_type ||
+            "",
+          dailyAgendaEmail: Boolean(
+            userData?.dailyAgendaEmail !== undefined
+              ? userData?.dailyAgendaEmail
+              : userData?.daily_agenda_email !== undefined
+              ? userData?.daily_agenda_email
+              : false
+          ),
+        };
+
+        // console.log("formData", formData);
+
+        // Reset form with fetched data - this will populate all form fields
+        reset(formData, {
+          keepDefaultValues: false,
+        });
+      } catch (error) {
+        const errorMessage =
+          error?.message || error?.error || "Failed to load user details.";
+        Swal.fire({
+          icon: "error",
+          title: t("personalSettings.messages.loadFailed"),
+          text: errorMessage,
+          showConfirmButton: true,
+        });
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchUserDetails();
+  }, [userId, reset, setIsLoading, t]);
+
+  if (isLoading) {
+    return (
+      <div
+        className="d-flex justify-content-center align-items-center"
+        style={{ minHeight: "400px" }}
+      >
+        <div className="spinner-border" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <>
+      <div className="setting-title">
+        <h4>{t("personalSettings.title")}</h4>
+      </div>
+      <PhotoUpload
+        name="profilePhoto"
+        label={t("personalSettings.profilePhoto")}
+        changeText={t("changeImage")}
+        helpText={t("personalSettings.imageUploadHelp")}
+        accept="image/*"
+      />
+      <div className="row">
+        <div className="col-md-4">
+          <Input
+            name="firstName"
+            label={t("personalSettings.firstName")}
+            type="text"
+            required
+          />
+        </div>
+        <div className="col-md-4">
+          <Input
+            name="middleName"
+            label={t("personalSettings.middleName")}
+            type="text"
+          />
+        </div>
+        <div className="col-md-4">
+          <Input
+            name="lastName"
+            label={t("personalSettings.lastName")}
+            type="text"
+            required
+          />
+        </div>
+        <div className="col-md-12">
+          <Input
+            name="jobTitle"
+            label={t("personalSettings.jobTitle")}
+            type="text"
+          />
+        </div>
+        <div className="col-md-12">
+          <Input
+            name="mobile"
+            label={t("personalSettings.mobile")}
+            type="text"
+          />
+        </div>
+        <div className="col-md-12">
+          <Input
+            name="email"
+            label={t("personalSettings.email")}
+            type="email"
+            required
+            helpText={t("personalSettings.emailHelpText")}
+          />
+        </div>
+        <div className="col-md-12">
+          <Select
+            name="timezone"
+            label={t("personalSettings.timezone")}
+            options={timezoneOptions}
+            placeholder={t("personalSettings.selectTimezone")}
+          />
+        </div>
+      </div>
+      <div className="card-title-head">
+        <h6>
+          <span>
+            <i data-feather="map-pin" className="feather-chevron-up" />
+          </span>
+          {t("personalSettings.contactInformation")}
+        </h6>
+      </div>
+      <div className="row">
+        <div className="col-md-12">
+          <Input name="home" label={t("personalSettings.home")} type="text" />
+        </div>
+        <div className="col-md-12">
+          <Input
+            name="office"
+            label={t("personalSettings.office")}
+            type="text"
+          />
+        </div>
+      </div>
+
+      <div className="card-title-head">
+        <h6>
+          <span>
+            <i data-feather="map-pin" className="feather-chevron-up" />
+          </span>
+          {t("personalSettings.timeEntries")}
+        </h6>
+      </div>
+      <div className="row">
+        <div className="col-md-12">
+          <Input
+            name="hourlyRate"
+            label={t("personalSettings.hourlyRate")}
+            type="number"
+            required
+          />
+        </div>
+        <div className="col-md-4">
+          <Switch
+            name="roundTimeEntries"
+            label={t("personalSettings.roundTimeEntries")}
+          />
+        </div>
+
+        <RoundTimeEntryTypeSelect
+          options={roundTimeEntryTypeOptionsTranslated}
+        />
+      </div>
+
+      <div className="card-title-head">
+        <h6>
+          <span>
+            <i data-feather="map-pin" className="feather-chevron-up" />
+          </span>
+          {t("personalSettings.notificationEmails")}
+        </h6>
+      </div>
+      <div className="row">
+        <div className="col-md-12">
+          <Switch
+            name="dailyAgendaEmail"
+            label={t("personalSettings.dailyAgendaEmail")}
+          />
+        </div>
+      </div>
+      <FormSubmitButtons />
+    </>
   );
 };
 
@@ -304,9 +459,12 @@ const PersonalSettings = () => {
  * Round Time Entry Type Select component.
  * Conditionally renders based on roundTimeEntries switch value.
  *
+ * @param {Object} props
+ * @param {Array} props.options - List of select options.
  * @returns {JSX.Element|null} Select component or null
  */
-const RoundTimeEntryTypeSelect = () => {
+const RoundTimeEntryTypeSelect = ({ options }) => {
+  const { t } = useTranslation();
   const { setValue } = useFormContext();
   const roundTimeEntries = useWatch({ name: "roundTimeEntries" });
 
@@ -328,23 +486,31 @@ const RoundTimeEntryTypeSelect = () => {
       <div className="col-md-4">
         <Select
           name="roundTimeEntryType"
-          label="Round Time Entry Type"
-          options={roundTimeEntryTypeOptions}
-          placeholder="Select rounding type"
-          helpText="to the nearest"
+          label={t("personalSettings.roundTimeEntryType")}
+          options={options}
+          placeholder={t("personalSettings.selectRoundingType")}
+          helpText={t("personalSettings.toTheNearest")}
         />
       </div>
       <div className="col-md-4">
         <Input
           name="fractionOfTheHour"
-          label="Fraction of the hour"
+          label={t("personalSettings.fractionOfTheHour")}
           type="number"
-          helpText="fraction of the hour.
-"
+          helpText={t("personalSettings.fractionOfTheHour")}
         />
       </div>
     </>
   );
+};
+
+RoundTimeEntryTypeSelect.propTypes = {
+  options: PropTypes.arrayOf(
+    PropTypes.shape({
+      label: PropTypes.string.isRequired,
+      value: PropTypes.string.isRequired,
+    })
+  ).isRequired,
 };
 
 /**
@@ -359,20 +525,17 @@ const FormSubmitButtons = () => {
   } = useFormContext();
 
   return (
-    <div className="text-end settings-bottom-btn">
-      <button type="button" className="btn btn-cancel me-2">
-        Cancel
-      </button>
-      <button
-        type="submit"
-        className="btn btn-submit"
-        disabled={isSubmitting}
-        aria-label={isSubmitting ? "Saving settings" : "Save changes"}
-      >
-        {isSubmitting ? "Saving..." : "Save Changes"}
-      </button>
+    <div className="settings-bottom-btn d-flex flex-row gap-2 align-items-center justify-content-end">
+      <FormButton type="submit" isSubmitting={isSubmitting} />
+      <FormButton type="cancel" isSubmitting={isSubmitting} />
     </div>
   );
+};
+
+PersonalSettingsContent.propTypes = {
+  userId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  isLoading: PropTypes.bool.isRequired,
+  setIsLoading: PropTypes.func.isRequired,
 };
 
 export default PersonalSettings;

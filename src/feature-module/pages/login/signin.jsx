@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { useDispatch } from "react-redux";
+import { useTranslation } from "react-i18next";
 import { User, Lock } from "react-feather";
 import ImageWithBasePath from "@/core/img/imagewithbasebath";
 import { Link } from "react-router-dom";
@@ -12,26 +13,24 @@ import { login } from "@/core/services/authService";
 import { setLoginEmail } from "@/core/redux/action";
 import Swal from "sweetalert2";
 
-const signInSchema = yup.object({
-  email: yup
-    .string()
-    .trim()
-    .email("Enter a valid email address.")
-    // .min(5, "Email must be at least 5 characters.")
-    // .max(255, "Email cannot exceed 255 characters.")
-    .required("Email is required."),
-  password: yup
-    .string()
-    // .min(6, "Password must be at least 6 characters.")
-    // .max(64, "Password cannot exceed 64 characters.")
-    .required("Password is required."),
-  rememberMe: yup.boolean().optional(),
-});
-
 const Signin = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [isPasswordVisible, setPasswordVisible] = useState(false);
+  
+  const signInSchema = yup.object({
+    email: yup
+      .string()
+      .trim()
+      .email(t("signin.validation.emailInvalid"))
+      .required(t("signin.validation.emailRequired")),
+    password: yup
+      .string()
+      .required(t("signin.validation.passwordRequired")),
+    rememberMe: yup.boolean().optional(),
+  });
+  
   const {
     register,
     handleSubmit,
@@ -61,8 +60,8 @@ const Signin = () => {
       // Show success message
       Swal.fire({
         icon: "success",
-        title: "Login Successful",
-        text: "Please verify your OTP to continue.",
+        title: t("signin.messages.loginSuccess"),
+        text: t("signin.messages.loginSuccessMessage"),
         showConfirmButton: true,
         timer: 2000,
       });
@@ -72,10 +71,10 @@ const Signin = () => {
     } catch (error) {
       // Show error message
       const errorMessage =
-        error?.message || error?.error || "Login failed. Please try again.";
+        error?.message || error?.error || t("signin.messages.loginFailedMessage");
       Swal.fire({
         icon: "error",
-        title: "Login Failed",
+        title: t("signin.messages.loginFailed"),
         text: errorMessage,
         showConfirmButton: true,
       });
@@ -96,14 +95,11 @@ const Signin = () => {
                   <ImageWithBasePath src="assets/img/logo-white.png" alt />
                 </Link>
                 <div className="login-userheading">
-                  <h3>Sign In</h3>
-                  <h4>
-                    Access the Practice Management System using your email and
-                    passcode.
-                  </h4>
+                  <h3>{t("signin.title")}</h3>
+                  <h4>{t("signin.subtitle")}</h4>
                 </div>
                 <div className="form-login mb-3">
-                  <label className="form-label">Email Address</label>
+                  <label className="form-label">{t("signin.emailLabel")}</label>
                   <div className="form-addons" style={{ position: "relative" }}>
                     <User
                       style={{
@@ -122,7 +118,7 @@ const Signin = () => {
                       className={`form-control ${
                         errors.email ? "is-invalid" : ""
                       }`}
-                      placeholder="example@email.com"
+                      placeholder={t("signin.emailPlaceholder")}
                       {...register("email")}
                       style={{ paddingLeft: "40px" }}
                     />
@@ -140,7 +136,7 @@ const Signin = () => {
                   )}
                 </div>
                 <div className="form-login mb-3">
-                  <label className="form-label">Password</label>
+                  <label className="form-label">{t("signin.passwordLabel")}</label>
                   <div className="pass-group" style={{ position: "relative" }}>
                     <Lock
                       style={{
@@ -159,7 +155,7 @@ const Signin = () => {
                       className={`pass-input form-control ${
                         errors.password ? "is-invalid" : ""
                       }`}
-                      placeholder="Enter password"
+                      placeholder={t("signin.passwordPlaceholder")}
                       {...register("password")}
                       style={{ paddingLeft: "40px" }}
                     />
@@ -192,12 +188,12 @@ const Signin = () => {
                             {...register("rememberMe")}
                           />
                           <span className="checkmarks" />
-                          Remember me
+                          {t("signin.rememberMe")}
                         </label>
                       </div>
                       <div className="text-end">
                         <Link className="forgot-link" to={route.forgotPassword}>
-                          Forgot Password?
+                          {t("signin.forgotPassword")}
                         </Link>
                       </div>
                     </div>
@@ -209,7 +205,7 @@ const Signin = () => {
                     className="btn btn-login"
                     disabled={isSubmitting}
                   >
-                    {isSubmitting ? "Signing In..." : "Sign In"}
+                    {isSubmitting ? t("signin.signingIn") : t("signin.signInButton")}
                   </button>
                 </div>
                 {/* <div className="signinform">

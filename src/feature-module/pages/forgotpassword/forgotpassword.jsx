@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useDispatch } from "react-redux";
+import { useTranslation } from "react-i18next";
 import * as yup from "yup";
 import { Mail } from "react-feather";
 import { Link } from "react-router-dom";
@@ -13,18 +14,20 @@ import { all_routes } from "../../../Router/all_routes";
 import { forgotPassword } from "../../../core/services/authService";
 import { setLoginEmail } from "@/core/redux/action";
 
-const forgotPasswordSchema = yup.object({
-  email: yup
-    .string()
-    .trim()
-    .email("Enter a valid email address.")
-    .required("Email is required."),
-});
-
 const Forgotpassword = () => {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const route = all_routes;
+  
+  const forgotPasswordSchema = yup.object({
+    email: yup
+      .string()
+      .trim()
+      .email(t("forgotPassword.validation.emailInvalid"))
+      .required(t("forgotPassword.validation.emailRequired")),
+  });
+  
   const {
     register,
     handleSubmit,
@@ -46,8 +49,8 @@ const Forgotpassword = () => {
 
       Swal.fire({
         icon: "success",
-        title: "Email Sent",
-        text: "Password reset instructions have been sent to your email.",
+        title: t("forgotPassword.messages.emailSent"),
+        text: t("forgotPassword.messages.emailSentMessage"),
         showConfirmButton: true,
         timer: 3000,
       });
@@ -58,10 +61,10 @@ const Forgotpassword = () => {
       const errorMessage =
         error?.message ||
         error?.error ||
-        "Failed to send reset email. Please try again.";
+        t("forgotPassword.messages.requestFailedMessage");
       Swal.fire({
         icon: "error",
-        title: "Request Failed",
+        title: t("forgotPassword.messages.requestFailed"),
         text: errorMessage,
         showConfirmButton: true,
       });
@@ -82,14 +85,11 @@ const Forgotpassword = () => {
                   <ImageWithBasePath src="assets/img/logo-white.png" alt />
                 </Link>
                 <div className="login-userheading">
-                  <h3>Forgot password?</h3>
-                  <h4>
-                    If you forgot your password, well, then we&apos;ll email you
-                    instructions to reset your password.
-                  </h4>
+                  <h3>{t("forgotPassword.title")}</h3>
+                  <h4>{t("forgotPassword.subtitle")}</h4>
                 </div>
                 <div className="form-login mb-3">
-                  <label className="form-label">Email</label>
+                  <label className="form-label">{t("forgotPassword.emailLabel")}</label>
                   <div className="form-addons" style={{ position: "relative" }}>
                     <Mail
                       style={{
@@ -108,7 +108,7 @@ const Forgotpassword = () => {
                       className={`form-control ${
                         errors.email ? "is-invalid" : ""
                       }`}
-                      placeholder="example@email.com"
+                      placeholder={t("forgotPassword.emailPlaceholder")}
                       {...register("email")}
                       style={{ paddingLeft: "40px" }}
                     />
@@ -129,15 +129,15 @@ const Forgotpassword = () => {
                     className="btn btn-login w-100"
                     disabled={isSubmitting}
                   >
-                    {isSubmitting ? "Sending..." : "Send Reset Link"}
+                    {isSubmitting ? t("forgotPassword.sending") : t("forgotPassword.sendResetLink")}
                   </button>
                 </div>
                 <div className="signinform text-center">
                   <h4>
-                    Return to
+                    {t("forgotPassword.returnToLogin")}
                     <Link to={route.signin} className="hover-a">
                       {" "}
-                      login{" "}
+                      {t("forgotPassword.login")}{" "}
                     </Link>
                   </h4>
                 </div>

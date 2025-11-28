@@ -12,6 +12,7 @@ import "@/style/css/line-awesome.min.css";
 import "@/style/scss/main.scss";
 import "@/style/icons/fontawesome/css/fontawesome.min.css";
 import "@/style/icons/fontawesome/css/all.min.css";
+import "@/core/i18n/config";
 import store, { persistor } from "@/core/redux/store.jsx";
 import AllRoutes from "@/Router/router.jsx";
 
