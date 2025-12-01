@@ -1,3 +1,6 @@
+@use "../utils/variables" as *;
+@use "../utils/mixins" as *;
+
 .error-box {
     display: -webkit-box;
     display: -ms-flexbox;

@@ -1,3 +1,6 @@
+@use "../utils/variables" as *;
+@use "../utils/mixins" as *;
+
 .icons-list {
     padding: 0;
     display: -webkit-box;

@@ -1,3 +1,6 @@
+@use "../utils/variables" as *;
+@use "../utils/mixins" as *;
+
 .employee-grid-profile {
     text-align: center;
     background: $white;

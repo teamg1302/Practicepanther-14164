@@ -1,3 +1,6 @@
+@use "../utils/variables" as *;
+@use "../utils/mixins" as *;
+
 .tooltip {
   @mixin tooltip-color($color) {
     .tooltip-inner {

@@ -1,22 +1,17 @@
 import {
   User,
-  Archive,
   Server,
   Lock,
   Tool,
   UserPlus,
-  Users,
-  FileText,
-  Tag,
-  MessageCircle,
   Trash2,
-  Mail,
   Home,
   Info,
 } from "react-feather";
-import { Settings, CreditCard } from "feather-icons-react/build/IconComponents";
+import { Settings } from "feather-icons-react/build/IconComponents";
 
 export const all_routes = {
+  base_path: "/",
   signin: "/signin",
   forgotPassword: "/forgot-password",
   resetpassword: "/reset-password/:token",
@@ -158,7 +153,7 @@ export const all_routes = {
     //   ],
     // },
     {
-      id: 3,
+      id: 2,
       name: "user-settings-group",
       path: "/settings/users",
       icon: Server,
@@ -183,10 +178,10 @@ export const all_routes = {
         // },
         {
           id: 3,
-          name: "roles-settings",
-          path: "/settings/user-roles",
+          name: "roles-permissions-settings",
+          path: "/settings/roles-permissions",
           icon: Lock,
-          text: "Roles",
+          text: "Roles & Permissions",
           permission: "read",
         },
       ],

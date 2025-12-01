@@ -130,7 +130,7 @@ const SettingsLayout = () => {
                   isMobileOpen={isMobileSidebarOpen}
                   onClose={() => setIsMobileSidebarOpen(false)}
                 />
-                <main className="settings-content-main">
+                <main className="settings-content-main w-100">
                   <Outlet />
                 </main>
               </div>

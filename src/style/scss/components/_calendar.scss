@@ -1,3 +1,6 @@
+@use "../utils/variables" as *;
+@use "../utils/mixins" as *;
+
 .calendar-events {
     border: 1px solid transparent;
     cursor: move;

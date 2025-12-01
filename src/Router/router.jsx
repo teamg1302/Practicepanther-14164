@@ -1,5 +1,5 @@
 import React from "react";
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, Navigate } from "react-router-dom";
 import Header from "@/InitialPage/Sidebar/Header";
 import Sidebar from "@/InitialPage/Sidebar/Sidebar";
 import { pagesRoute, publicRoutes, settingsRoutes } from "@/Router/router.link";
@@ -26,6 +26,10 @@ const HeaderLayout = () => {
 
 const Authpages = () => {
   const data = useSelector((state) => state.toggle_header);
+  const token = useSelector((state) => state.auth?.token);
+  if (token) {
+    return <Navigate to="/" replace />;
+  }
   return (
     <div className={data ? "header-collapse" : ""}>
       <Outlet />

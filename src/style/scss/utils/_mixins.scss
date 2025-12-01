@@ -1,3 +1,5 @@
+@use "sass:map";
+
 $breakpoints: (
   xs: 320px,
   sm: 568px,
@@ -17,21 +19,18 @@ $breakpoints: (
 // Respond Above
 
 @mixin respond-above($breakpoint) {
-
   // If the breakpoint exists in the map.
-  @if map-has-key($breakpoints, $breakpoint) {
-
+  @if map.has-key($breakpoints, $breakpoint) {
     // Get the breakpoint value.
-    $breakpoint-value: map-get($breakpoints, $breakpoint);
+    $breakpoint-value: map.get($breakpoints, $breakpoint);
 
     // Write the media query.
     @media (min-width: $breakpoint-value) {
       @content;
     }
 
-  // If the breakpoint doesn't exist in the map.
+    // If the breakpoint doesn't exist in the map.
   } @else {
-
     // Log a warning.
     @warn 'Invalid breakpoint: #{$breakpoint}.';
   }
@@ -40,21 +39,18 @@ $breakpoints: (
 // Respond Above
 
 @mixin respond-below($breakpoint) {
-
   // If the breakpoint exists in the map.
-  @if map-has-key($breakpoints, $breakpoint) {
-
+  @if map.has-key($breakpoints, $breakpoint) {
     // Get the breakpoint value.
-    $breakpoint-value: map-get($breakpoints, $breakpoint);
+    $breakpoint-value: map.get($breakpoints, $breakpoint);
 
     // Write the media query.
     @media (max-width: $breakpoint-value) {
       @content;
     }
 
-  // If the breakpoint doesn't exist in the map.
+    // If the breakpoint doesn't exist in the map.
   } @else {
-
     // Log a warning.
     @warn 'Invalid breakpoint: #{$breakpoint}.';
   }
@@ -70,19 +66,17 @@ $breakpoints: (
 
 @mixin position-alignment($position) {
   position: absolute;
-  @if $position == 'vertical' {
+  @if $position == "vertical" {
     top: 50%;
     -webkit-transform: translateY(-50%);
     -ms-transform: translateY(-50%);
     transform: translateY(-50%);
-  }
-  @else if $position == 'horizontal' {
+  } @else if $position == "horizontal" {
     left: 50%;
     -webkit-transform: translateX(-50%);
     -ms-transform: translateX(-50%);
     transform: translate(-50%);
-  }
-  @else if $position == 'both' {
+  } @else if $position == "both" {
     top: 50%;
     left: 50%;
     -webkit-transform: translate(-50%, -50%);
@@ -97,7 +91,13 @@ $breakpoints: (
   transition: $property;
 }
 
-@mixin position($position-value,$top-value,$right-value,$bottom-value,$left-value){
+@mixin position(
+  $position-value,
+  $top-value,
+  $right-value,
+  $bottom-value,
+  $left-value
+) {
   position: $position-value;
   top: $top-value;
   right: $right-value;
@@ -106,26 +106,30 @@ $breakpoints: (
 }
 
 @mixin margin-padding($margin, $padding) {
-   margin: $margin;
-   padding:$padding;
+  margin: $margin;
+  padding: $padding;
 }
 
 @mixin placeholder-color($color) {
-  &::-webkit-input-placeholder { /* WebKit browsers */
-      color: $color;
-      opacity: 1;
+  &::-webkit-input-placeholder {
+    /* WebKit browsers */
+    color: $color;
+    opacity: 1;
   }
-  &:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
-      color: $color;
-      opacity: 1;
+  &:-moz-placeholder {
+    /* Mozilla Firefox 4 to 18 */
+    color: $color;
+    opacity: 1;
   }
-  &::-moz-placeholder { /* Mozilla Firefox 19+ */
-      color: $color;
-      opacity: 1;
+  &::-moz-placeholder {
+    /* Mozilla Firefox 19+ */
+    color: $color;
+    opacity: 1;
   }
-  &:-ms-input-placeholder { /* Internet Explorer 10+ */
-      color: $color;
-      opacity: 1;
+  &:-ms-input-placeholder {
+    /* Internet Explorer 10+ */
+    color: $color;
+    opacity: 1;
   }
 }
 
@@ -139,13 +143,21 @@ $breakpoints: (
   -ms-transform-origin: $property;
 }
 
-@mixin box-shadow($inset:inset,$horizontaloffset:10px,$verticaloffset:10px,$blur:10px,$spread:10px,$color: #000000) {
-  -webkit-box-shadow: $inset $horizontaloffset $verticaloffset $blur $spread $color;
+@mixin box-shadow(
+  $inset: inset,
+  $horizontaloffset: 10px,
+  $verticaloffset: 10px,
+  $blur: 10px,
+  $spread: 10px,
+  $color: #000000
+) {
+  -webkit-box-shadow: $inset $horizontaloffset $verticaloffset $blur $spread
+    $color;
   -moz-box-shadow: $inset $horizontaloffset $verticaloffset $blur $spread $color;
   box-shadow: $inset $horizontaloffset $verticaloffset $blur $spread $color;
 }
 
-%animation-effect {   
+%animation-effect {
   -webkit-transition: all 0.5s;
   -moz-transition: all 0.5s;
   -o-transition: all 0.5s;

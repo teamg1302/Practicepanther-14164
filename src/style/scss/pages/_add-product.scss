@@ -1,3 +1,6 @@
+@use "../utils/variables" as *;
+@use "../utils/mixins" as *;
+
 .page-wrapper{
     .page-header{
         .back-btn{

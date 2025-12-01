@@ -1,3 +1,6 @@
+@use "../utils/variables" as *;
+@use "../utils/mixins" as *;
+
 $__basecolor: #2c3038;
 
 .css-1u9des2-indicatorSeparator {

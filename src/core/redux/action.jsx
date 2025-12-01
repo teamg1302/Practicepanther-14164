@@ -121,3 +121,27 @@ export const setLoginEmail = (payload) => ({
 export const clearAuth = () => ({
   type: "CLEAR_AUTH",
 });
+
+/**
+ * Action creator to set timezones list.
+ * @param {Array} payload - Array of timezone objects with label and value
+ * @returns {Object} Redux action object with type "SET_TIMEZONES" and payload
+ * @example
+ * dispatch(setTimezones([{ label: "UTC+00:00", value: "UTC+00:00" }]));
+ */
+export const setTimezones = (payload) => ({
+  type: "SET_TIMEZONES",
+  payload,
+});
+
+/**
+ * Action creator to set timezones loading state.
+ * @param {boolean} payload - Loading state (true/false)
+ * @returns {Object} Redux action object with type "SET_TIMEZONES_LOADING" and payload
+ * @example
+ * dispatch(setTimezonesLoading(true));
+ */
+export const setTimezonesLoading = (payload) => ({
+  type: "SET_TIMEZONES_LOADING",
+  payload,
+});

@@ -1,3 +1,6 @@
+@use "../utils/variables" as *;
+@use "../utils/mixins" as *;
+
 .chat-user-actives {
     .call-meet-blk {
         display: -webkit-box;

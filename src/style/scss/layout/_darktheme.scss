@@ -1,3 +1,6 @@
+@use "../utils/variables" as *;
+@use "../utils/mixins" as *;
+
 [data-layout-mode=dark_mode] {
     .searchinputs input {
         border-color: $black-bg;

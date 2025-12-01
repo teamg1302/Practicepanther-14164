@@ -1,3 +1,6 @@
+@use "../utils/variables" as *;
+@use "../utils/mixins" as *;
+
 .file-manager {
     color:  $text-color;
     .search-dropdown {

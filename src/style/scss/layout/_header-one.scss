@@ -1,3 +1,6 @@
+@use "../utils/variables" as *;
+@use "../utils/mixins" as *;
+
 .page-wrapper-one {
     margin-left: 0px;
     padding-top: 130px;

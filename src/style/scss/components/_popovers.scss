@@ -1,3 +1,6 @@
+@use "../utils/variables" as *;
+@use "../utils/mixins" as *;
+
 .custom-popover {
   --bs-popover-max-width: 12.5rem;
   --bs-popover-border-color: #{$primary};

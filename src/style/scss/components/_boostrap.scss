@@ -1,6 +1,8 @@
+@use "../utils/variables" as *;
+
 .bootstrap-datetimepicker-widget table td.active,
 .bootstrap-datetimepicker-widget table td.active:hover {
-	background-color: $warning;
+    background-color: $warning;
 	text-shadow: unset;
 }
 .bootstrap-datetimepicker-widget table td.today:before {

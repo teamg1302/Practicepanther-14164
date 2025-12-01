@@ -8,6 +8,7 @@ const ProtectedRoute = ({ children }) => {
   const token = useSelector((state) => state.auth?.token);
 
   // If no token, redirect to signin
+
   if (!token) {
     return <Navigate to={all_routes.signin} replace />;
   }

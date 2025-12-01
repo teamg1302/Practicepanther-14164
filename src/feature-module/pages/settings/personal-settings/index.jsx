@@ -15,7 +15,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useFormContext, useWatch } from "react-hook-form";
 import { useTranslation } from "react-i18next";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import PropTypes from "prop-types";
 import * as yup from "yup";
 import Swal from "sweetalert2";
@@ -26,53 +26,8 @@ import Select from "@/feature-module/components/form-elements/select";
 import { PhotoUpload } from "@/feature-module/components/form-elements/file-upload";
 import { FormButton } from "@/feature-module/components/buttons";
 import { getUserDetails, updateUserDetails } from "@/core/services/userService";
+import { fetchTimezones, fetchJobTitles } from "@/core/redux/mastersReducer";
 import { all_routes } from "@/Router/all_routes";
-
-/**
- * Timezone options for the select dropdown.
- * @type {Array<{value: string, label: string}>}
- */
-
-const timezoneOptions = [
-  { label: "(UTC−12:00) International Date Line West", value: "UTC−12:00" },
-  { label: "(UTC−11:00) Coordinated Universal Time−11", value: "UTC−11:00" },
-  { label: "(UTC−10:00) Hawaii", value: "UTC−10:00" },
-  { label: "(UTC−09:00) Alaska", value: "UTC−09:00" },
-  { label: "(UTC−08:00) Pacific Time (US & Canada)", value: "UTC-08:00" },
-  { label: "(UTC−07:00) Arizona", value: "UTC−07:00" },
-  { label: "(UTC−07:00) Mountain Time (US & Canada)", value: "UTC−07:00-MT" },
-  { label: "(UTC−06:00) Central Time (US & Canada)", value: "UTC−06:00" },
-  { label: "(UTC−05:00) Eastern Time (US & Canada)", value: "UTC−05:00" },
-  { label: "(UTC−04:00) Atlantic Time (Canada)", value: "UTC−04:00" },
-  { label: "(UTC−03:00) Brasilia", value: "UTC−03:00" },
-  { label: "(UTC−02:00) Mid-Atlantic", value: "UTC−02:00" },
-  { label: "(UTC−01:00) Azores", value: "UTC−01:00" },
-  { label: "(UTC+00:00) London, Dublin, Lisbon", value: "UTC+00:00" },
-  { label: "(UTC+01:00) Amsterdam, Berlin, Rome, Paris", value: "UTC+01:00" },
-  { label: "(UTC+02:00) Athens, Jerusalem, Cairo", value: "UTC+02:00" },
-  { label: "(UTC+03:00) Moscow, Nairobi, Baghdad", value: "UTC+03:00" },
-  { label: "(UTC+03:30) Tehran", value: "UTC+03:30" },
-  { label: "(UTC+04:00) Abu Dhabi, Baku, Tbilisi", value: "UTC+04:00" },
-  { label: "(UTC+04:30) Kabul", value: "UTC+04:30" },
-  { label: "(UTC+05:00) Karachi, Tashkent", value: "UTC+05:00" },
-  {
-    label: "(UTC+05:30) Chennai, Kolkata, Mumbai, New Delhi",
-    value: "UTC+05:30",
-  },
-  { label: "(UTC+05:30) Sri Jayawardenepura", value: "UTC+05:30-SJ" },
-  { label: "(UTC+05:45) Kathmandu", value: "UTC+05:45" },
-  { label: "(UTC+06:00) Dhaka", value: "UTC+06:00" },
-  { label: "(UTC+06:00) Omsk", value: "UTC+06:00-OMSK" },
-  { label: "(UTC+06:30) Yangon (Rangoon)", value: "UTC+06:30" },
-  { label: "(UTC+07:00) Bangkok, Hanoi, Jakarta", value: "UTC+07:00" },
-  { label: "(UTC+08:00) Beijing, Singapore, Hong Kong", value: "UTC+08:00" },
-  { label: "(UTC+09:00) Tokyo, Seoul, Osaka", value: "UTC+09:00" },
-  { label: "(UTC+09:30) Adelaide", value: "UTC+09:30" },
-  { label: "(UTC+10:00) Brisbane", value: "UTC+10:00" },
-  { label: "(UTC+11:00) Solomon Islands, New Caledonia", value: "UTC+11:00" },
-  { label: "(UTC+12:00) Fiji, Marshall Islands", value: "UTC+12:00" },
-  { label: "(UTC+13:00) Samoa, Tonga", value: "UTC+13:00" },
-];
 
 const PersonalSettings = () => {
   const { t } = useTranslation();
@@ -80,34 +35,36 @@ const PersonalSettings = () => {
   const route = all_routes;
   const user = useSelector((state) => state.auth?.user);
   const [isLoading, setIsLoading] = React.useState(false);
+  const formRef = React.useRef(null);
 
   const personalSettingsSchema = React.useMemo(
     () =>
       yup.object({
-        firstName: yup
+        profileImage: yup.string().trim().optional(),
+        name: yup
           .string()
           .trim()
           .required(t("personalSettings.validation.firstNameRequired")),
-        lastName: yup
-          .string()
-          .trim()
-          .required(t("personalSettings.validation.lastNameRequired")),
-        middleName: yup.string().trim().optional(),
-        jobTitle: yup.string().trim().optional(),
+        // lastName: yup
+        //   .string()
+        //   .trim()
+        //   .required(t("personalSettings.validation.lastNameRequired")),
+        // middleName: yup.string().trim().optional(),
+        jobTitleId: yup.string().trim().optional(),
         mobile: yup.string().trim().optional(),
         email: yup
           .string()
           .trim()
           .email(t("personalSettings.validation.emailInvalid"))
           .required(t("personalSettings.validation.emailRequired")),
-        timezone: yup.string().trim().optional(),
+        timezoneId: yup.string().trim().optional(),
         home: yup.string().trim().optional(),
         office: yup.string().trim().optional(),
-        hourlyRate: yup
-          .number()
-          .typeError(t("personalSettings.validation.hourlyRateNumber"))
-          .positive(t("personalSettings.validation.hourlyRatePositive"))
-          .required(t("personalSettings.validation.hourlyRateRequired")),
+        hourlyRate: yup.string().trim().optional(),
+        //  .typeError(t("personalSettings.validation.hourlyRateNumber"))
+        // .positive(t("personalSettings.validation.hourlyRatePositive"))
+
+        //.required(t("personalSettings.validation.hourlyRateRequired")),
         roundTimeEntries: yup.boolean().optional(),
         roundTimeEntryType: yup
           .string()
@@ -133,29 +90,47 @@ const PersonalSettings = () => {
       // Create FormData object for file upload
       const formDataToSubmit = new FormData();
 
+      // Get the actual File object from form state using getValues
+      // React Hook Form might serialize File objects in formData parameter
+      const getValues = formRef.current?.getValues;
+
       // Append all form fields to FormData
       Object.keys(formData).forEach((key) => {
-        const value = formData[key];
+        let value = formData[key];
 
-        // Handle file uploads
-        if (key === "profilePhoto" && value && value[0] instanceof File) {
-          formDataToSubmit.append(key, value[0]);
-        }
-        // Handle other fields - skip empty values
-        else if (value !== null && value !== undefined && value !== "") {
-          // Convert boolean to string for FormData
-          if (typeof value === "boolean") {
-            formDataToSubmit.append(key, value.toString());
-          }
-          // Handle arrays and objects (convert to JSON string if needed)
-          else if (typeof value === "object" && !(value instanceof File)) {
-            formDataToSubmit.append(key, JSON.stringify(value));
-          }
-          // Handle primitive values
-          else {
-            formDataToSubmit.append(key, value);
+        // For profileImage, try to get the actual File object from form state
+        if (key === "profileImage" && getValues) {
+          const fileValue = getValues("profileImage");
+          if (fileValue instanceof File) {
+            value = fileValue;
           }
         }
+
+        // Skip null, undefined, or empty string values
+        if (value === null || value === undefined || value === "") {
+          return;
+        }
+
+        // Handle file uploads - single File object (append as binary)
+        if (value instanceof File) {
+          formDataToSubmit.append(key, value);
+          return;
+        }
+
+        // Convert boolean to string for FormData
+        if (typeof value === "boolean") {
+          formDataToSubmit.append(key, value.toString());
+          return;
+        }
+
+        // Handle arrays and objects (convert to JSON string if needed)
+        if (typeof value === "object" && !(value instanceof File)) {
+          formDataToSubmit.append(key, JSON.stringify(value));
+          return;
+        }
+
+        // Handle primitive values (strings, numbers, etc.)
+        formDataToSubmit.append(key, value);
       });
 
       await updateUserDetails(user?.id, formDataToSubmit);
@@ -188,24 +163,25 @@ const PersonalSettings = () => {
       <FormProvider
         schema={personalSettingsSchema}
         defaultValues={{
-          firstName: "",
-          middleName: "",
-          lastName: "",
-          jobTitle: "",
+          name: "",
+          // middleName: "",
+          // lastName: "",
+          jobTitleId: "",
           mobile: "",
           email: "",
-          timezone: "",
+          timezoneId: "",
           home: "",
           office: "",
           hourlyRate: "",
           roundTimeEntries: false,
           roundTimeEntryType: "",
           dailyAgendaEmail: false,
-          profilePhoto: null,
+          profileImage: null,
         }}
         onSubmit={onSubmit}
       >
         <PersonalSettingsContent
+          ref={formRef}
           userId={user?.id}
           isLoading={isLoading}
           setIsLoading={setIsLoading}
@@ -226,118 +202,153 @@ const PersonalSettings = () => {
  * @returns {JSX.Element} Form content
  */
 
-const PersonalSettingsContent = ({ userId, isLoading, setIsLoading }) => {
-  const { t } = useTranslation();
-  const { reset } = useFormContext();
+const PersonalSettingsContent = React.forwardRef(
+  ({ userId, isLoading, setIsLoading }, ref) => {
+    const { t } = useTranslation();
+    const { reset, watch, getValues } = useFormContext();
+    const dispatch = useDispatch();
 
-  const roundTimeEntryTypeOptionsTranslated = React.useMemo(
-    () => [
-      { label: t("personalSettings.roundOptions.up"), value: "up" },
-      { label: t("personalSettings.roundOptions.down"), value: "down" },
-    ],
-    [t]
-  );
+    // Expose getValues to parent component via ref
+    React.useImperativeHandle(ref, () => ({
+      getValues,
+    }));
 
-  React.useEffect(() => {
-    const fetchUserDetails = async () => {
-      if (!userId) return;
-
-      setIsLoading(true);
-      try {
-        const userData = await getUserDetails(userId);
-
-        console.log("userData", userData);
-
-        // Map API response to form fields - ensure proper type conversion
-        const formData = {
-          firstName: userData?.firstName || userData?.first_name || "",
-          middleName: userData?.middleName || userData?.middle_name || "",
-          lastName: userData?.lastName || userData?.last_name || "",
-          jobTitle: userData?.jobTitle || userData?.job_title || "",
-          mobile: userData?.mobile || userData?.phone || "",
-          email: userData?.email || "",
-          timezone: userData?.timezone || "",
-          home: userData?.home || userData?.homeAddress || "",
-          office: userData?.office || userData?.officeAddress || "",
-          hourlyRate: userData?.hourlyRate || userData?.hourly_rate || "",
-          roundTimeEntries: Boolean(
-            userData?.roundTimeEntries !== undefined
-              ? userData?.roundTimeEntries
-              : userData?.round_time_entries !== undefined
-              ? userData?.round_time_entries
-              : false
-          ),
-          roundTimeEntryType:
-            userData?.roundTimeEntryType ||
-            userData?.round_time_entry_type ||
-            "",
-          dailyAgendaEmail: Boolean(
-            userData?.dailyAgendaEmail !== undefined
-              ? userData?.dailyAgendaEmail
-              : userData?.daily_agenda_email !== undefined
-              ? userData?.daily_agenda_email
-              : false
-          ),
-        };
-
-        // console.log("formData", formData);
-
-        // Reset form with fetched data - this will populate all form fields
-        reset(formData, {
-          keepDefaultValues: false,
-        });
-      } catch (error) {
-        const errorMessage =
-          error?.message || error?.error || "Failed to load user details.";
-        Swal.fire({
-          icon: "error",
-          title: t("personalSettings.messages.loadFailed"),
-          text: errorMessage,
-          showConfirmButton: true,
-        });
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchUserDetails();
-  }, [userId, reset, setIsLoading, t]);
-
-  if (isLoading) {
-    return (
-      <div
-        className="d-flex justify-content-center align-items-center"
-        style={{ minHeight: "400px" }}
-      >
-        <div className="spinner-border" role="status">
-          <span className="visually-hidden">Loading...</span>
-        </div>
-      </div>
+    // Get timezones from Redux store
+    const timezones = useSelector((state) => state.masters?.timezones || []);
+    const timezonesLoading = useSelector(
+      (state) => state.masters?.timezonesLoading || false
     );
-  }
 
-  return (
-    <>
-      <div className="setting-title">
-        <h4>{t("personalSettings.title")}</h4>
-      </div>
-      <PhotoUpload
-        name="profilePhoto"
-        label={t("personalSettings.profilePhoto")}
-        changeText={t("changeImage")}
-        helpText={t("personalSettings.imageUploadHelp")}
-        accept="image/*"
-      />
-      <div className="row">
-        <div className="col-md-4">
-          <Input
-            name="firstName"
-            label={t("personalSettings.firstName")}
-            type="text"
-            required
-          />
+    // Get profileImage from form values for preview
+    const profileImage = watch("profileImage");
+
+    const roundTimeEntryTypeOptionsTranslated = React.useMemo(
+      () => [
+        { label: t("personalSettings.roundOptions.up"), value: "up" },
+        { label: t("personalSettings.roundOptions.down"), value: "down" },
+      ],
+      [t]
+    );
+
+    // Fetch timezones from API when store state is empty
+    React.useEffect(() => {
+      // Only fetch if timezones array is empty and not currently loading
+      if (timezones.length === 0 && !timezonesLoading) {
+        dispatch(fetchTimezones());
+      }
+    }, [dispatch, timezones.length, timezonesLoading]);
+
+    const jobTitles = useSelector((state) => state.masters?.jobTitles || []);
+    const jobTitlesLoading = useSelector(
+      (state) => state.masters?.jobTitlesLoading || false
+    );
+
+    React.useEffect(() => {
+      if (jobTitles.length === 0 && !jobTitlesLoading) {
+        dispatch(fetchJobTitles());
+      }
+    }, [dispatch, jobTitles.length, jobTitlesLoading]);
+
+    React.useEffect(() => {
+      const fetchUserDetails = async () => {
+        if (!userId) return;
+
+        setIsLoading(true);
+        try {
+          const userData = await getUserDetails(userId);
+
+          // Map API response to form fields - ensure proper type conversion
+          const formData = {
+            profileImage: userData?.profileImage,
+            name: userData?.name,
+            // middleName: userData?.middleName || userData?.middle_name || "",
+            // lastName: userData?.lastName || userData?.last_name || "",
+            jobTitleId: userData?.jobTitleId?._id || "",
+            mobile: userData?.mobile || userData?.phone || "",
+            email: userData?.email || "",
+            timezoneId: userData?.timezoneId?._id || "",
+            home: userData?.home || userData?.homeAddress || "",
+            office: userData?.office || userData?.officeAddress || "",
+            hourlyRate: userData?.hourlyRate || userData?.hourly_rate || "",
+            roundTimeEntries: Boolean(
+              userData?.roundTimeEntries !== undefined
+                ? userData?.roundTimeEntries
+                : userData?.round_time_entries !== undefined
+                ? userData?.round_time_entries
+                : false
+            ),
+            roundTimeEntryType:
+              userData?.roundTimeEntryType ||
+              userData?.round_time_entry_type ||
+              "",
+            dailyAgendaEmail: Boolean(
+              userData?.dailyAgendaEmail !== undefined
+                ? userData?.dailyAgendaEmail
+                : userData?.daily_agenda_email !== undefined
+                ? userData?.daily_agenda_email
+                : false
+            ),
+          };
+
+          // console.log("formData", formData);
+
+          // Reset form with fetched data - this will populate all form fields
+          reset(formData, {
+            keepDefaultValues: false,
+          });
+        } catch (error) {
+          const errorMessage =
+            error?.message || error?.error || "Failed to load user details.";
+          Swal.fire({
+            icon: "error",
+            title: t("personalSettings.messages.loadFailed"),
+            text: errorMessage,
+            showConfirmButton: true,
+          });
+        } finally {
+          setIsLoading(false);
+        }
+      };
+
+      fetchUserDetails();
+    }, [userId, reset, setIsLoading, t]);
+
+    if (isLoading) {
+      return (
+        <div
+          className="d-flex justify-content-center align-items-center"
+          style={{ minHeight: "400px" }}
+        >
+          <div className="spinner-border" role="status">
+            <span className="visually-hidden">Loading...</span>
+          </div>
         </div>
-        <div className="col-md-4">
+      );
+    }
+
+    return (
+      <>
+        <div className="setting-title">
+          <h4>{t("personalSettings.title")}</h4>
+        </div>
+        <PhotoUpload
+          name="profileImage"
+          label={t("personalSettings.profilePhoto")}
+          changeText={t("changeImage")}
+          helpText={t("personalSettings.imageUploadHelp")}
+          accept="image/*"
+          previewImageUrl={profileImage}
+        />
+        <div className="row">
+          <div className="col-md-12">
+            <Input
+              name="name"
+              label={t("personalSettings.name")}
+              type="text"
+              required
+            />
+          </div>
+          {/* <div className="col-md-4">
           <Input
             name="middleName"
             label={t("personalSettings.middleName")}
@@ -351,109 +362,113 @@ const PersonalSettingsContent = ({ userId, isLoading, setIsLoading }) => {
             type="text"
             required
           />
+        </div> */}
+          <div className="col-md-12">
+            <Select
+              name="jobTitleId"
+              label={t("personalSettings.jobTitle")}
+              options={jobTitles}
+              placeholder={
+                t("personalSettings.selectJobTitle") || "Select Job Title"
+              }
+            />
+          </div>
+          <div className="col-md-12">
+            <Input
+              name="mobile"
+              label={t("personalSettings.mobile")}
+              type="text"
+            />
+          </div>
+          <div className="col-md-12">
+            <Input
+              name="email"
+              label={t("personalSettings.email")}
+              type="email"
+              required
+              helpText={t("personalSettings.emailHelpText")}
+            />
+          </div>
+          <div className="col-md-12">
+            <Select
+              name="timezoneId"
+              label={t("personalSettings.timezone")}
+              options={timezones}
+              placeholder={t("personalSettings.selectTimezone")}
+              disabled={timezonesLoading}
+            />
+          </div>
         </div>
-        <div className="col-md-12">
-          <Input
-            name="jobTitle"
-            label={t("personalSettings.jobTitle")}
-            type="text"
-          />
+        <div className="card-title-head">
+          <h6>
+            <span>
+              <i data-feather="map-pin" className="feather-chevron-up" />
+            </span>
+            {t("personalSettings.contactInformation")}
+          </h6>
         </div>
-        <div className="col-md-12">
-          <Input
-            name="mobile"
-            label={t("personalSettings.mobile")}
-            type="text"
-          />
-        </div>
-        <div className="col-md-12">
-          <Input
-            name="email"
-            label={t("personalSettings.email")}
-            type="email"
-            required
-            helpText={t("personalSettings.emailHelpText")}
-          />
-        </div>
-        <div className="col-md-12">
-          <Select
-            name="timezone"
-            label={t("personalSettings.timezone")}
-            options={timezoneOptions}
-            placeholder={t("personalSettings.selectTimezone")}
-          />
-        </div>
-      </div>
-      <div className="card-title-head">
-        <h6>
-          <span>
-            <i data-feather="map-pin" className="feather-chevron-up" />
-          </span>
-          {t("personalSettings.contactInformation")}
-        </h6>
-      </div>
-      <div className="row">
-        <div className="col-md-12">
-          <Input name="home" label={t("personalSettings.home")} type="text" />
-        </div>
-        <div className="col-md-12">
-          <Input
-            name="office"
-            label={t("personalSettings.office")}
-            type="text"
-          />
-        </div>
-      </div>
-
-      <div className="card-title-head">
-        <h6>
-          <span>
-            <i data-feather="map-pin" className="feather-chevron-up" />
-          </span>
-          {t("personalSettings.timeEntries")}
-        </h6>
-      </div>
-      <div className="row">
-        <div className="col-md-12">
-          <Input
-            name="hourlyRate"
-            label={t("personalSettings.hourlyRate")}
-            type="number"
-            required
-          />
-        </div>
-        <div className="col-md-4">
-          <Switch
-            name="roundTimeEntries"
-            label={t("personalSettings.roundTimeEntries")}
-          />
+        <div className="row">
+          <div className="col-md-12">
+            <Input name="home" label={t("personalSettings.home")} type="text" />
+          </div>
+          <div className="col-md-12">
+            <Input
+              name="office"
+              label={t("personalSettings.office")}
+              type="text"
+            />
+          </div>
         </div>
 
-        <RoundTimeEntryTypeSelect
-          options={roundTimeEntryTypeOptionsTranslated}
-        />
-      </div>
+        <div className="card-title-head">
+          <h6>
+            <span>
+              <i data-feather="map-pin" className="feather-chevron-up" />
+            </span>
+            {t("personalSettings.timeEntries")}
+          </h6>
+        </div>
+        <div className="row">
+          <div className="col-md-12">
+            <Input
+              name="hourlyRate"
+              label={t("personalSettings.hourlyRate")}
+              type="number"
+            />
+          </div>
+          <div className="col-md-4">
+            <Switch
+              name="roundTimeEntries"
+              label={t("personalSettings.roundTimeEntries")}
+            />
+          </div>
 
-      <div className="card-title-head">
-        <h6>
-          <span>
-            <i data-feather="map-pin" className="feather-chevron-up" />
-          </span>
-          {t("personalSettings.notificationEmails")}
-        </h6>
-      </div>
-      <div className="row">
-        <div className="col-md-12">
-          <Switch
-            name="dailyAgendaEmail"
-            label={t("personalSettings.dailyAgendaEmail")}
+          <RoundTimeEntryTypeSelect
+            options={roundTimeEntryTypeOptionsTranslated}
           />
         </div>
-      </div>
-      <FormSubmitButtons />
-    </>
-  );
-};
+
+        <div className="card-title-head">
+          <h6>
+            <span>
+              <i data-feather="map-pin" className="feather-chevron-up" />
+            </span>
+            {t("personalSettings.notificationEmails")}
+          </h6>
+        </div>
+        <div className="row">
+          <div className="col-md-12">
+            <Switch
+              name="dailyAgendaEmail"
+              label={t("personalSettings.dailyAgendaEmail")}
+            />
+          </div>
+        </div>
+        <FormSubmitButtons />
+      </>
+    );
+  }
+);
 
 /**
  * Round Time Entry Type Select component.
@@ -531,6 +546,8 @@ const FormSubmitButtons = () => {
     </div>
   );
 };
+
+PersonalSettingsContent.displayName = "PersonalSettingsContent";
 
 PersonalSettingsContent.propTypes = {
   userId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),

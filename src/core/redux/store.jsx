@@ -1,4 +1,4 @@
-import { configureStore } from '@reduxjs/toolkit';
+import { configureStore } from "@reduxjs/toolkit";
 import {
   persistStore,
   persistReducer,
@@ -8,18 +8,18 @@ import {
   PERSIST,
   PURGE,
   REGISTER,
-} from 'redux-persist';
-import storage from 'redux-persist/lib/storage';
-import rootReducer from './reducer';
+} from "redux-persist";
+import storage from "redux-persist/lib/storage";
+import rootReducer from "./reducer";
 
-// Persist configuration - only persist auth state
+// Persist configuration - persist auth and masters state
 const persistConfig = {
-  key: 'root',
+  key: "root",
   storage,
-  whitelist: ['auth'], // Only persist auth state
+  whitelist: ["auth", "masters"], // Persist auth and masters state
 };
 
-// Create persisted reducer
+// Create persisted reducer - rootReducer already handles both auth and masters
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
 // Configure store with persisted reducer

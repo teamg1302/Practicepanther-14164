@@ -1,3 +1,5 @@
+@use "../utils/variables" as *;
+
 .page-link {
     color: $text-color;
     background-color: $white;

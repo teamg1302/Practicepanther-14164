@@ -51,21 +51,31 @@ const PhotoUpload = ({
   registerOptions = {},
   previewImageUrl,
 }) => {
-  const { register, watch, setValue } = useFormContext();
+  const { watch, setValue } = useFormContext();
   const fileValue = watch(name);
   const [previewUrl, setPreviewUrl] = React.useState(previewImageUrl || null);
 
+  // Handle file change - set single file (not FileList)
+  const handleFileChange = (e) => {
+    const file = e.target.files?.[0] || null;
+    if (file instanceof File) {
+      setValue(name, file, { shouldValidate: true });
+    } else {
+      setValue(name, null);
+    }
+  };
+
   // Create preview URL when file is selected
   React.useEffect(() => {
-    if (fileValue && fileValue[0] && fileValue[0] instanceof File) {
-      const objectUrl = URL.createObjectURL(fileValue[0]);
+    if (fileValue && fileValue instanceof File) {
+      const objectUrl = URL.createObjectURL(fileValue);
       setPreviewUrl(objectUrl);
 
       // Cleanup function to revoke the object URL
       return () => {
         URL.revokeObjectURL(objectUrl);
       };
-    } else if (!fileValue || !fileValue[0]) {
+    } else if (!fileValue) {
       // Reset to previewImageUrl if no file is selected
       setPreviewUrl(previewImageUrl || null);
     }
@@ -77,7 +87,7 @@ const PhotoUpload = ({
     setPreviewUrl(previewImageUrl || null);
   };
 
-  const hasPreview = previewUrl || (fileValue && fileValue[0]);
+  const hasPreview = previewUrl || (fileValue && fileValue instanceof File);
 
   return (
     <div
@@ -110,7 +120,8 @@ const PhotoUpload = ({
             <input
               type="file"
               accept={accept}
-              {...register(name, registerOptions)}
+              onChange={handleFileChange}
+              {...registerOptions}
             />
             <div className="image-uploads">
               <h4>
@@ -131,13 +142,11 @@ const PhotoUpload = ({
             </button>
           )}
 
-          {/* {showFileName && fileValue && fileValue[0] && (
+          {showFileName && fileValue && fileValue instanceof File && (
             <div className="mt-2">
-              <small className="text-muted">
-                Selected: {fileValue[0].name}
-              </small>
+              <small className="text-muted">Selected: {fileValue.name}</small>
             </div>
-          )} */}
+          )}
         </div>
         <span className="text-muted small">{helpText}</span>
       </div>

@@ -1,3 +1,6 @@
+@use "../utils/variables" as *;
+@use "../utils/mixins" as *;
+
 .btn-icon {
     display: -webkit-box;
     display: -ms-flexbox;

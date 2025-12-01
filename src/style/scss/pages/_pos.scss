@@ -1,3 +1,6 @@
+@use "../utils/variables" as *;
+@use "../utils/mixins" as *;
+
 .main-wrappers{
     background-color: $body-bg;
     &.pos-page{

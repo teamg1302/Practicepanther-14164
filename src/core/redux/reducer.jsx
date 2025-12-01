@@ -9,6 +9,7 @@
  */
 
 import initialState from "./initial.value";
+import mastersReducer from "./mastersReducer";
 
 /**
  * Root reducer function that handles all Redux actions.
@@ -95,8 +96,19 @@ const rootReducer = (state = initialState, action) => {
           loginEmail: null,
         },
       };
-    default:
+    default: {
+      // Delegate all actions to mastersReducer (handles its own actions via slice)
+      // This allows the slice to handle both sync and async actions
+      const newMastersState = mastersReducer(state.masters, action);
+      // Only update if masters state changed (slice handles its own actions)
+      if (newMastersState !== state.masters) {
+        return {
+          ...state,
+          masters: newMastersState,
+        };
+      }
       return state;
+    }
   }
 };
 

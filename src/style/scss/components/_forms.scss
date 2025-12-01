@@ -1,3 +1,6 @@
+@use "../utils/variables" as *;
+@use "../utils/mixins" as *;
+
 .form-control {
   border-color: $input-border;
   color: $text-color;

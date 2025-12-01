@@ -1,3 +1,6 @@
+@use "../utils/variables" as *;
+@use "../utils/mixins" as *;
+
 .account-page .customizer-links,.error-page .customizer-links{ 
   display: none;
 }

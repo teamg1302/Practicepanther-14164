@@ -1,3 +1,6 @@
+@use "../utils/variables" as *;
+@use "../utils/mixins" as *;
+
 .nav-item {
     margin-inline-end: 0.5rem;
     &:last-child {

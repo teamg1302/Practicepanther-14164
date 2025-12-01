@@ -1,3 +1,5 @@
+@use "../utils/variables" as *;
+
 .bg-primary {
     background-color: $primary !important;
 }

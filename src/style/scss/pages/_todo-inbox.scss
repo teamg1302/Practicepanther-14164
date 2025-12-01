@@ -1,3 +1,6 @@
+@use "../utils/variables" as *;
+@use "../utils/mixins" as *;
+
 .todo-inbox-check {
     margin-right: 15px;
     .checkboxs {

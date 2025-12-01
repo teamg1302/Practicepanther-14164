@@ -1,3 +1,6 @@
+@use "../utils/variables" as *;
+@use "../utils/mixins" as *;
+
 .modal-barcode {
     ul {
         display: -webkit-box;

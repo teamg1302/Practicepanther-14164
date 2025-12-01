@@ -1,3 +1,6 @@
+@use "../utils/variables" as *;
+@use "../utils/mixins" as *;
+
 [data-layout-style=box] {
     &[data-direction=rtl] {
         body {

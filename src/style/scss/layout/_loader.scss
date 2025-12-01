@@ -1,3 +1,6 @@
+@use "../utils/variables" as *;
+@use "../utils/mixins" as *;
+
 div#global-loader {
     display: -webkit-box;
     display: -ms-flexbox;

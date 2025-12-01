@@ -1,3 +1,5 @@
+@use "../utils/variables" as *;
+
 .accordion-button {
     background-color: $white;
     color: $text-color;

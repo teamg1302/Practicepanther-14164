@@ -1,6 +1,6 @@
 // Base Font
 $font-size-base: 14px;
-$font-size-sm: $font-size-base * .875;
+$font-size-sm: $font-size-base * 0.875;
 $font-size-lg: $font-size-base * 1.25;
 $font-weight-lighter: lighter;
 $font-weight-light: 300;
@@ -11,32 +11,32 @@ $font-weight-bold: 700;
 $font-weight-bolder: bolder;
 
 // Font Family
-$font-family-primary: 'Nunito', sans-serif;
+$font-family-primary: "Nunito", sans-serif;
 $font-family-secondary: "Poppins", sans-serif;
 $font-awesome: "Fontawesome";
-	
+
 // Theme Colors Variables
-$primary: #FF9F43;
-$primary-hover: darken($primary, 10%);
-$secondary: #092C4C;
-$secondary-hover: darken($secondary, 10%);
-$success: #28C76F;
-$success-hover: darken($success, 10%);
+$primary: #ff9f43;
+$primary-hover: color-mix(in srgb, $primary, black 10%);
+$secondary: #092c4c;
+$secondary-hover: color-mix(in srgb, $secondary, black 10%);
+$success: #28c76f;
+$success-hover: color-mix(in srgb, $success, black 10%);
 $info: #17a2b8;
-$info-hover: darken($info, 10%);
-$warning: #FF9900;
-$warning-hover: darken($warning, 10%);
-$danger: #FF0000;
-$danger-hover: darken($danger, 10%);
+$info-hover: color-mix(in srgb, $info, black 10%);
+$warning: #ff9900;
+$warning-hover: color-mix(in srgb, $warning, black 10%);
+$danger: #ff0000;
+$danger-hover: color-mix(in srgb, $danger, black 10%);
 $dark: #29344a;
 $light: #f8f9fa;
 $white: #ffffff;
 $black: #000000;
-$purple: #7367F0;
+$purple: #7367f0;
 $pink: #ff63a5;
 $blue: #3577f1;
 $teal: #02a8b5;
-$violet: #423B93;
+$violet: #423b93;
 $cyan: #299cdb;
 $green: #1dd871;
 $orange: #ffa500;
@@ -44,81 +44,81 @@ $indigo: #4d5ddb;
 $yellow: #ffff00;
 
 // Primary
-$primary-100: #FFF5EC;
-$primary-200: #FFECD9;
-$primary-300: #FFE2C7;
-$primary-400: #FFD9B4;
-$primary-500: #FFCFA1;
-$primary-600: #FFC58E;
-$primary-700: #FFBC7B;
-$primary-800: #FFB269;
-$primary-900: #FFA956;
+$primary-100: #fff5ec;
+$primary-200: #ffecd9;
+$primary-300: #ffe2c7;
+$primary-400: #ffd9b4;
+$primary-500: #ffcfa1;
+$primary-600: #ffc58e;
+$primary-700: #ffbc7b;
+$primary-800: #ffb269;
+$primary-900: #ffa956;
 
 // Secondary
-$secondary-100: #E6EAED;
-$secondary-200: #CED5DB;
-$secondary-300: #B5C0C9;
-$secondary-400: #9DABB7;
-$secondary-500: #8496A6;
-$secondary-600: #6B8094;
-$secondary-700: #536B82;
-$secondary-800: #3A5670;
-$secondary-900: #22415E;
+$secondary-100: #e6eaed;
+$secondary-200: #ced5db;
+$secondary-300: #b5c0c9;
+$secondary-400: #9dabb7;
+$secondary-500: #8496a6;
+$secondary-600: #6b8094;
+$secondary-700: #536b82;
+$secondary-800: #3a5670;
+$secondary-900: #22415e;
 
 // Success
-$success-100: #EAF9F1;
-$success-200: #D4F4E2;
-$success-300: #BFEED4;
-$success-400: #A9E9C5;
-$success-500: #94E3B7;
-$success-600: #7EDDA9;
-$success-700: #69D89A;
-$success-800: #53D28C;
-$success-900: #3ECD7D;
+$success-100: #eaf9f1;
+$success-200: #d4f4e2;
+$success-300: #bfeed4;
+$success-400: #a9e9c5;
+$success-500: #94e3b7;
+$success-600: #7edda9;
+$success-700: #69d89a;
+$success-800: #53d28c;
+$success-900: #3ecd7d;
 
 // Warning
-$warning-100: #FFF5E6;
-$warning-200: #FFEBCC;
-$warning-300: #FFE0B3;
-$warning-400: #FFD699;
-$warning-500: #FFCC80;
-$warning-600: #FFC266;
-$warning-700: #FFB84D;
-$warning-800: #FFAD33;
-$warning-900: #FFA31A;
+$warning-100: #fff5e6;
+$warning-200: #ffebcc;
+$warning-300: #ffe0b3;
+$warning-400: #ffd699;
+$warning-500: #ffcc80;
+$warning-600: #ffc266;
+$warning-700: #ffb84d;
+$warning-800: #ffad33;
+$warning-900: #ffa31a;
 
 // Danger
-$danger-100: #FFE6E6;
-$danger-200: #FFCCCC;
-$danger-300: #FFB3B3;
-$danger-400: #FF9999;
-$danger-500: #FF8080;
-$danger-600: #FF6666;
-$danger-700: #FF4D4D;
-$danger-800: #FF3333;
-$danger-900: #FF1A1A;
+$danger-100: #ffe6e6;
+$danger-200: #ffcccc;
+$danger-300: #ffb3b3;
+$danger-400: #ff9999;
+$danger-500: #ff8080;
+$danger-600: #ff6666;
+$danger-700: #ff4d4d;
+$danger-800: #ff3333;
+$danger-900: #ff1a1a;
 
 // Purple
-$purple-100: #F8F8FA;
-$purple-200: #E3E1FC;
-$purple-300: #D5D1FB;
-$purple-400: #C7C2F9;
-$purple-500: #B9B3F8;
-$purple-600: #ABA4F6;
-$purple-700: #9D95F5;
-$purple-800: #8F85F3;
-$purple-900: #8176F2;
+$purple-100: #f8f8fa;
+$purple-200: #e3e1fc;
+$purple-300: #d5d1fb;
+$purple-400: #c7c2f9;
+$purple-500: #b9b3f8;
+$purple-600: #aba4f6;
+$purple-700: #9d95f5;
+$purple-800: #8f85f3;
+$purple-900: #8176f2;
 
 // White
-$white-1: rgba(0,0,0,0.1);
-$white-2: rgba(0,0,0,0.2);
-$white-3: rgba(0,0,0,0.3);
-$white-4: rgba(0,0,0,0.4);
-$white-5: rgba(0,0,0,0.5);
-$white-6: rgba(0,0,0,0.6);
-$white-7: rgba(0,0,0,0.7);
-$white-8: rgba(0,0,0,0.8);
-$white-9: rgba(0,0,0,0.9);
+$white-1: rgba(0, 0, 0, 0.1);
+$white-2: rgba(0, 0, 0, 0.2);
+$white-3: rgba(0, 0, 0, 0.3);
+$white-4: rgba(0, 0, 0, 0.4);
+$white-5: rgba(0, 0, 0, 0.5);
+$white-6: rgba(0, 0, 0, 0.6);
+$white-7: rgba(0, 0, 0, 0.7);
+$white-8: rgba(0, 0, 0, 0.8);
+$white-9: rgba(0, 0, 0, 0.9);
 
 // Gray
 $gray-100: #f3f6f9;
@@ -126,100 +126,100 @@ $gray-200: #eff2f7;
 $gray-300: #e8ebed;
 $gray-400: #dbe0e6;
 $gray-500: #adb5bd;
-$gray-600: #67748E;
+$gray-600: #67748e;
 $gray-700: #495057;
 $gray-800: #343a40;
 $gray-900: #212529;
 
 $colors: (
-  "blue":       $blue,
-  "indigo":     $indigo,
-  "purple":     $purple,
-  "pink":       $pink,
-  "orange":     $orange,
-  "yellow":     $yellow,
-  "green":      $green,
-  "teal":       $teal,
-  "cyan":       $cyan,
-  "white":      $white,
-  "gray":       $gray-600,
-  "gray-dark":  $gray-800
+  "blue": $blue,
+  "indigo": $indigo,
+  "purple": $purple,
+  "pink": $pink,
+  "orange": $orange,
+  "yellow": $yellow,
+  "green": $green,
+  "teal": $teal,
+  "cyan": $cyan,
+  "white": $white,
+  "gray": $gray-600,
+  "gray-dark": $gray-800,
 );
 
 $theme-colors: (
-    "primary": $primary,
-    "secondary": $secondary,
-    "success": $success,
-    "info": $info,
-    "warning": $warning,
-    "danger": $danger,
-    "dark": $dark,
-    "light": $light,
-    "black": $black,
-    "purple": $purple,
-    "yellow": $yellow,
-    "teal": $teal
+  "primary": $primary,
+  "secondary": $secondary,
+  "success": $success,
+  "info": $info,
+  "warning": $warning,
+  "danger": $danger,
+  "dark": $dark,
+  "light": $light,
+  "black": $black,
+  "purple": $purple,
+  "yellow": $yellow,
+  "teal": $teal,
 );
 
-$text-color: #5B6670;
-$title-color: #1B2850;
-$sub-title: #B8BCC9;
-$body-bg: #FAFBFE;
+$text-color: #5b6670;
+$title-color: #1b2850;
+$sub-title: #b8bcc9;
+$body-bg: #fafbfe;
 $wrapper-bg: #f1f5f6;
 $text-muted: #9595b5;
 $default-background: #f7f8f9;
 $black-bg: #141432;
 $card-dark-bg: #1d1d42;
 $navy: #353570;
-$theme-title: #97A2D2;
+$theme-title: #97a2d2;
 $input-bg: #2c2c50;
 $form-control-bg: #ffffff;
 
 // Social Icons Colors
-$facebook: #3B5998;
-$twitter: #00ACEE;
-$google: #DD4B39;
-$telegram: #0088CC;
-$linkedin: #0E76A8;
-$youtube: #C4302B;
-$instagram: #3F729B;
-$reddit: #C6C6C6;
+$facebook: #3b5998;
+$twitter: #00acee;
+$google: #dd4b39;
+$telegram: #0088cc;
+$linkedin: #0e76a8;
+$youtube: #c4302b;
+$instagram: #3f729b;
+$reddit: #c6c6c6;
 $pinterest: #cc2127;
-$vk: #2B587A;
-$rss: #EE802F;
-$skype: #00AFF0;
+$vk: #2b587a;
+$rss: #ee802f;
+$skype: #00aff0;
 $xing: #126567;
-$tumblr: #34526F;
-$email: #6567A5;
-$delicious: #205CC0;
-$stumbleupon: #F74425;
+$tumblr: #34526f;
+$email: #6567a5;
+$delicious: #205cc0;
+$stumbleupon: #f74425;
 $digg: #191919;
-$blogger: #FC4F08;
-$flickr: #FF0084;
-$vimeo: #86C9EF;
-$yahoo: #720E9E;
-$gplus: #DD4B39;
+$blogger: #fc4f08;
+$flickr: #ff0084;
+$vimeo: #86c9ef;
+$yahoo: #720e9e;
+$gplus: #dd4b39;
 $appstore: #000;
 
 // Gradient Variables
 $primary-gradient: linear-gradient(to right, $primary 0%, #8e77fa 100%);
 $secondary-gradient: linear-gradient(to right, $secondary 0%, #28b7f9 100%);
-$success-gradient: linear-gradient(to right,$success 0%, #5cf9e2 100%);
+$success-gradient: linear-gradient(to right, $success 0%, #5cf9e2 100%);
 $warning-gradient: linear-gradient(to right, $warning 0%, #fbc434 100%);
-$danger-gradient: linear-gradient(to right,$danger 0%, #fd4a68  100%);
-$info-gradient: linear-gradient(to right, $info 0%, #00f2fe  100%);
-$pink-gradient: linear-gradient(to right, $pink 0%, #FFA795 100%);
-$teal-gradient: linear-gradient(to right, $teal 0%, #0695DD 100%);
-$orange-gradient: linear-gradient(to right,$orange 0%,#FBB034 100%);
+$danger-gradient: linear-gradient(to right, $danger 0%, #fd4a68 100%);
+$info-gradient: linear-gradient(to right, $info 0%, #00f2fe 100%);
+$pink-gradient: linear-gradient(to right, $pink 0%, #ffa795 100%);
+$teal-gradient: linear-gradient(to right, $teal 0%, #0695dd 100%);
+$orange-gradient: linear-gradient(to right, $orange 0%, #fbb034 100%);
 $purple-gradient: linear-gradient(to right, $purple 0%, #9b25b7 100%);
-$light-gradient: linear-gradient(to right, $light 0%, #D1D6DE 100%);
-$dark-gradient: linear-gradient(to right, $dark 0%, #54505D 100%);
+$light-gradient: linear-gradient(to right, $light 0%, #d1d6de 100%);
+$dark-gradient: linear-gradient(to right, $dark 0%, #54505d 100%);
 
 // Style Anchor Elements
 $link-color: $primary;
 $link-decoration: none;
 $link-shade-percentage: 20%;
-$link-hover-color: darken($link-color, 10%);
+$link-hover-color: color-mix(in srgb, $link-color, black 10%);
 $link-hover-decoration: null;
 $spacer: 1rem;
 

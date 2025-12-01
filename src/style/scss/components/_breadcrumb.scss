@@ -1,3 +1,5 @@
+@use "../utils/variables" as *;
+
 .page-header-breadcrumb {
   .breadcrumb-item+.breadcrumb-item::before {
     content: var(--bs-breadcrumb-divider, "\ea65");
