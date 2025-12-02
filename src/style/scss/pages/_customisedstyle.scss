@@ -45,7 +45,6 @@ $__basecolor: #2c3038;
   height: 43px;
 }
 
-
 .ant-table-wrapper .ant-table-column-title {
   z-index: 0 !important;
 }
@@ -173,7 +172,6 @@ $__basecolor: #2c3038;
   background: #eff2f7;
 }
 
-
 :where(.css-dev-only-do-not-override-1b0bdye).ant-pagination
   .ant-pagination-item-active {
   font-weight: 600;
@@ -271,7 +269,6 @@ ul.tabs.owl-carousel.pos-category {
   position: relative;
 }
 
-
 :where(.css-dev-only-do-not-override-1b0bdye).ant-picker-dropdown {
   z-index: 2000 !important;
 }
@@ -358,6 +355,13 @@ ul.tabs.owl-carousel.pos-category {
   position: relative;
   padding: 2px 16px;
   overflow-wrap: break-word;
+}
+
+.ant-table-thead > tr > th {
+  padding: 8px 16px !important;
+}
+.ant-table-tbody > tr > td {
+  padding: 0px 16px !important;
 }
 
 :where(.css-dev-only-do-not-override-1b0bdye).ant-checkbox-checked
@@ -819,7 +823,18 @@ div.rc-slider-handle-dragging.rc-slider-handle-dragging.rc-slider-handle-draggin
 .feather-dashboard {
   color: #fff;
 }
-:where(.css-mzwlov).ant-table-wrapper .ant-table-thead >tr>th:not(:last-child):not(.ant-table-selection-column):not(.ant-table-row-expand-icon-cell):not([colspan])::before, :where(.css-mzwlov).ant-table-wrapper .ant-table-thead >tr>td:not(:last-child):not(.ant-table-selection-column):not(.ant-table-row-expand-icon-cell):not([colspan])::before {
+:where(.css-mzwlov).ant-table-wrapper
+  .ant-table-thead
+  > tr
+  > th:not(:last-child):not(.ant-table-selection-column):not(
+    .ant-table-row-expand-icon-cell
+  ):not([colspan])::before,
+:where(.css-mzwlov).ant-table-wrapper
+  .ant-table-thead
+  > tr
+  > td:not(:last-child):not(.ant-table-selection-column):not(
+    .ant-table-row-expand-icon-cell
+  ):not([colspan])::before {
   position: absolute;
   top: 50%;
   inset-inline-end: 0;
@@ -831,8 +846,7 @@ div.rc-slider-handle-dragging.rc-slider-handle-dragging.rc-slider-handle-draggin
   content: "";
 }
 .edit-delete-action a:hover i.feather-edit,
-.edit-delete-action a:hover i.feather-trash-2
- {
+.edit-delete-action a:hover i.feather-trash-2 {
   color: #ffffff !important;
 }
 #collapse-header.active {
@@ -841,4 +855,3 @@ div.rc-slider-handle-dragging.rc-slider-handle-dragging.rc-slider-handle-draggin
 .modal .content {
   padding: 0 !important;
 }
-

@@ -129,6 +129,7 @@
   },
   "changeImage": "Change",
   "personalSettings": {
+    "addUserTitle": "Add New User",
     "title": "Personal Settings",
     "profilePhoto": "Profile Photo",
     "imageUploadHelp": "For better preview recommended size is 450px x 450px. Max size 5MB.",
@@ -178,6 +179,8 @@
     }
   },
   "firmLogoInfo": {
+    "name": "Name",
+    "namePlaceholder": "Enter name",
     "title": "FIRM INFORMATION",
     "firmLogo": "Firm Logo",
     "remove": "Remove",
@@ -186,6 +189,8 @@
     "selectAccountOwner": "Select account owner",
     "legalBusinessName": "Legal Business Name",
     "country": "Country",
+    "state": "State",
+    "selectState": "Select state",
     "selectCountry": "Select country",
     "specifyCountry": "Please specify your country",
     "address1": "Address 1",
@@ -236,6 +241,7 @@
     }
   },
   "formButton": {
+    "addNew": "Add New",
     "submit": "Save Changes",
     "submitting": "Saving...",
     "cancel": "Cancel",
@@ -250,6 +256,10 @@
     }
   },
   "formElements": {
+    "password": "Password",
+    "passwordPlaceholder": "Enter password",
+    "passwordHelpText": "Password must be at least 6 characters.",
+    "passwordEditHelpText": "Leave blank to keep current password.",
     "select": {
       "placeholder": "Select...",
       "required": "is required."

@@ -142,11 +142,11 @@ const PhotoUpload = ({
             </button>
           )}
 
-          {showFileName && fileValue && fileValue instanceof File && (
+          {/* {showFileName && fileValue && fileValue instanceof File && (
             <div className="mt-2">
               <small className="text-muted">Selected: {fileValue.name}</small>
             </div>
-          )}
+          )} */}
         </div>
         <span className="text-muted small">{helpText}</span>
       </div>

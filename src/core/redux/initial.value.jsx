@@ -17,6 +17,15 @@
  * @property {Array} masters.jobTitles - Array of job title options
  * @property {boolean} masters.jobTitlesLoading - Loading state for job titles
  * @property {string|null} masters.jobTitlesError - Error message for job titles fetch
+ * @property {Array} masters.countries - Array of country options
+ * @property {boolean} masters.countriesLoading - Loading state for countries
+ * @property {string|null} masters.countriesError - Error message for countries fetch
+ * @property {Array} masters.currencies - Array of currency options
+ * @property {boolean} masters.currenciesLoading - Loading state for currencies
+ * @property {string|null} masters.currenciesError - Error message for currencies fetch
+ * @property {Array} masters.states - Array of state options
+ * @property {boolean} masters.statesLoading - Loading state for states
+ * @property {string|null} masters.statesError - Error message for states fetch
  */
 const initialState = {
   toggle_header: false,
@@ -35,6 +44,15 @@ const initialState = {
     jobTitles: [],
     jobTitlesLoading: false,
     jobTitlesError: null,
+    countries: [],
+    countriesLoading: false,
+    countriesError: null,
+    currencies: [],
+    currenciesLoading: false,
+    currenciesError: null,
+    states: [],
+    statesLoading: false,
+    statesError: null,
   },
 };
 

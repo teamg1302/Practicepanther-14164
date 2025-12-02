@@ -13,8 +13,7 @@
  */
 
 import React from "react";
-import { useNavigate } from "react-router-dom";
-import { useFormContext, useWatch } from "react-hook-form";
+import { useFormContext } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import PropTypes from "prop-types";
@@ -27,20 +26,14 @@ import DatePicker from "@/feature-module/components/form-elements/datepicker";
 import { PhotoUpload } from "@/feature-module/components/form-elements/file-upload";
 import { FormButton } from "@/feature-module/components/buttons";
 import { getFirmDetails, updateFirmDetails } from "@/core/services/firmService";
-import { all_routes } from "@/Router/all_routes";
-
-/**
- * Country options for the select dropdown.
- * @type {Array<{value: string, label: string}>}
- */
-const countryOptions = [
-  { value: "US", label: "United States" },
-  { value: "CA", label: "Canada" },
-  { value: "UK", label: "United Kingdom" },
-  { value: "AU", label: "Australia" },
-  { value: "IN", label: "India" },
-  { value: "Other", label: "Other" },
-];
+import { convertToFormData } from "@/core/utilities/formDataConverter";
+import {
+  fetchCountries,
+  fetchCurrencies,
+  fetchStatesByCountry,
+  clearStates,
+} from "@/core/redux/mastersReducer";
+import { useDispatch } from "react-redux";
 
 /**
  * Account Owner options.
@@ -99,10 +92,9 @@ const businessStructureOptions = [
 
 const FirmLogoInfo = () => {
   const { t } = useTranslation();
-  const navigate = useNavigate();
-  const route = all_routes;
   const user = useSelector((state) => state.auth?.user);
   const [isLoading, setIsLoading] = React.useState(false);
+  const formRef = React.useRef(null);
 
   /**
    * Validation schema for firm information form.
@@ -110,60 +102,42 @@ const FirmLogoInfo = () => {
   const firmInfoSchema = React.useMemo(
     () =>
       yup.object({
+        file: yup.string().trim().optional(),
         accountOwner: yup.string().trim().optional(),
-        legalBusinessName: yup.string().trim().optional(),
-        country: yup.string().trim().optional(),
-        countrySpecify: yup
-          .string()
-          .trim()
-          .when("country", {
-            is: "Other",
-            then: (schema) =>
-              schema.required(
-                t("firmLogoInfo.validation.countrySpecifyRequired")
-              ),
-            otherwise: (schema) => schema.optional(),
-          }),
+        name: yup.string().trim().optional(),
+        countryId: yup.string().trim().optional(),
+        stateId: yup.string().trim().optional(),
+        currencyId: yup.string().trim().optional(),
         address1: yup.string().trim().optional(),
         address2: yup.string().trim().optional(),
         city: yup.string().trim().optional(),
-        zipPostalCode: yup.string().trim().optional(),
-        phoneNumber: yup.string().trim().optional(),
-        firmEmailAddress: yup
+        zipCode: yup.string().trim().optional(),
+        phone: yup.string().trim().optional(),
+        email: yup
           .string()
           .trim()
-          .email(t("firmLogoInfo.validation.firmEmailInvalid"))
-          .required(t("firmLogoInfo.validation.firmEmailRequired")),
+          .email(t("firmLogoInfo.validation.emailInvalid"))
+          .required(t("firmLogoInfo.validation.emailRequired")),
         website: yup
           .string()
           .trim()
           .url(t("firmLogoInfo.validation.websiteInvalid"))
           .optional(),
         taxId: yup.string().trim().optional(),
-        primaryPracticeArea: yup
-          .string()
-          .trim()
-          .required(t("firmLogoInfo.validation.primaryPracticeAreaRequired")),
+        primaryPracticeArea: yup.string().trim().optional(),
+        //  .required(t("firmLogoInfo.validation.primaryPracticeAreaRequired")),
         numberOfAttorneys: yup.string().trim().optional(),
         businessStructure: yup.string().trim().optional(),
         formationDate: yup.date().nullable().optional(),
-        primaryOwnerEmail: yup
-          .string()
-          .trim()
-          .email(t("firmLogoInfo.validation.primaryOwnerEmailInvalid"))
-          .required(t("firmLogoInfo.validation.primaryOwnerEmailRequired")),
-        ownerFirstName: yup
-          .string()
-          .trim()
-          .required(t("firmLogoInfo.validation.ownerFirstNameRequired")),
-        ownerLastName: yup
-          .string()
-          .trim()
-          .required(t("firmLogoInfo.validation.ownerLastNameRequired")),
-        ownerPhoneNumber: yup
-          .string()
-          .trim()
-          .required(t("firmLogoInfo.validation.ownerPhoneNumberRequired")),
+        primaryOwnerEmail: yup.string().trim().optional(),
+        //  .email(t("firmLogoInfo.validation.primaryOwnerEmailInvalid"))
+        //  .required(t("firmLogoInfo.validation.primaryOwnerEmailRequired")),
+        ownerFirstName: yup.string().trim().optional(),
+        //  .required(t("firmLogoInfo.validation.ownerFirstNameRequired")),
+        ownerLastName: yup.string().trim().optional(),
+        //   .required(t("firmLogoInfo.validation.ownerLastNameRequired")),
+        ownerPhoneNumber: yup.string().trim().optional(),
+        // .required(t("firmLogoInfo.validation.ownerPhoneNumberRequired")),
         barNumber: yup.string().trim().optional(),
       }),
     [t]
@@ -177,49 +151,17 @@ const FirmLogoInfo = () => {
    */
   const onSubmit = async (formData) => {
     try {
-      // Create FormData object for file upload
-      const formDataToSubmit = new FormData();
-
       // Get userFirmId from user object (could be firmId, userFirmId, or id)
-      const userFirmId = user?.firmId || user?.userFirmId || user?.id;
+      const userFirmId = user?.firmId?._id;
 
-      // Append all form fields to FormData
-      Object.keys(formData).forEach((key) => {
-        const value = formData[key];
-
-        // Handle file uploads
-        if (key === "firmLogo" && value && value[0] instanceof File) {
-          formDataToSubmit.append(key, value[0]);
-        }
-        // Handle date fields
-        else if (key === "formationDate" && value) {
-          if (value instanceof Date) {
-            formDataToSubmit.append(key, value.toISOString());
-          } else if (typeof value === "string") {
-            formDataToSubmit.append(key, value);
-          }
-        }
-        // Handle other fields - skip empty values
-        else if (value !== null && value !== undefined && value !== "") {
-          // Convert boolean to string for FormData
-          if (typeof value === "boolean") {
-            formDataToSubmit.append(key, value.toString());
-          }
-          // Handle arrays and objects (convert to JSON string if needed)
-          else if (
-            typeof value === "object" &&
-            !(value instanceof File) &&
-            !(value instanceof Date)
-          ) {
-            formDataToSubmit.append(key, JSON.stringify(value));
-          }
-          // Handle primitive values
-          else {
-            formDataToSubmit.append(key, value);
-          }
-        }
+      // Convert form data to FormData using utility function
+      const getValues = formRef.current?.getValues;
+      const formDataToSubmit = convertToFormData(formData, {
+        getValues,
+        fileFields: ["file"],
       });
 
+      console.log("formDataToSubmit", formDataToSubmit);
       await updateFirmDetails(userFirmId, formDataToSubmit);
 
       Swal.fire({
@@ -230,7 +172,7 @@ const FirmLogoInfo = () => {
         timer: 2000,
       });
 
-      navigate(route.settings[0].path);
+      //  navigate(route.settings[0].children[3].path);
     } catch (error) {
       const errorMessage =
         error?.message ||
@@ -250,16 +192,18 @@ const FirmLogoInfo = () => {
       <FormProvider
         schema={firmInfoSchema}
         defaultValues={{
+          file: null,
           accountOwner: "",
-          legalBusinessName: "",
-          country: "",
-          countrySpecify: "",
+          name: "",
+          countryId: "",
+          stateId: "",
+          currencyId: "",
           address1: "",
           address2: "",
           city: "",
-          zipPostalCode: "",
-          phoneNumber: "",
-          firmEmailAddress: "",
+          zipCode: "",
+          phone: "",
+          email: "",
           website: "",
           taxId: "",
           primaryPracticeArea: "",
@@ -271,12 +215,12 @@ const FirmLogoInfo = () => {
           ownerLastName: "",
           ownerPhoneNumber: "",
           barNumber: "",
-          firmLogo: null,
         }}
         onSubmit={onSubmit}
       >
         <FirmLogoInfoContent
-          userFirmId={user?.firmId || user?.userFirmId || user?.id}
+          ref={formRef}
+          userFirmId={user?.firmId?._id}
           isLoading={isLoading}
           setIsLoading={setIsLoading}
         />
@@ -295,318 +239,337 @@ const FirmLogoInfo = () => {
  * @param {Function} props.setIsLoading - Function to set loading state
  * @returns {JSX.Element} Form content
  */
-const FirmLogoInfoContent = ({ userFirmId, isLoading, setIsLoading }) => {
-  const { t } = useTranslation();
-  const { reset, watch } = useFormContext();
-  const firmLogoValue = watch("firmLogo");
+const FirmLogoInfoContent = React.forwardRef(
+  ({ userFirmId, isLoading, setIsLoading }, ref) => {
+    const { t } = useTranslation();
+    const { reset, watch, getValues, setValue } = useFormContext();
+    const dispatch = useDispatch();
+    const logoValue = watch("file");
+    const countryId = watch("countryId");
 
-  React.useEffect(() => {
-    const fetchFirmDetails = async () => {
-      if (!userFirmId) return;
+    // Get countries, currencies, and states from Redux store
+    const countries = useSelector((state) => state.masters?.countries || []);
+    const countriesLoading = useSelector(
+      (state) => state.masters?.countriesLoading || false
+    );
+    const currencies = useSelector((state) => state.masters?.currencies || []);
+    const currenciesLoading = useSelector(
+      (state) => state.masters?.currenciesLoading || false
+    );
+    const states = useSelector((state) => state.masters?.states || []);
+    const statesLoading = useSelector(
+      (state) => state.masters?.statesLoading || false
+    );
 
-      setIsLoading(true);
-      try {
-        const firmData = await getFirmDetails(userFirmId);
+    // Expose getValues to parent component via ref
+    React.useImperativeHandle(ref, () => ({
+      getValues,
+    }));
 
-        console.log("firmData", firmData);
-
-        // Map API response to form fields - ensure proper type conversion
-        // Handle nested response structure if present (e.g., response.data.data.firm)
-        const firm = firmData?.data?.firm || firmData?.firm || firmData;
-
-        const formData = {
-          accountOwner: firm?.accountOwner || "",
-          legalBusinessName:
-            firm?.legalBusinessName || firm?.legal_business_name || "",
-          country: firm?.country || "",
-          countrySpecify: firm?.countrySpecify || firm?.country_specify || "",
-          address1: firm?.address1 || firm?.address_1 || "",
-          address2: firm?.address2 || firm?.address_2 || "",
-          city: firm?.city || "",
-          zipPostalCode: firm?.zipPostalCode || firm?.zip_postal_code || "",
-          phoneNumber: firm?.phoneNumber || firm?.phone_number || "",
-          firmEmailAddress:
-            firm?.firmEmailAddress || firm?.firm_email_address || "",
-          website: firm?.website || "",
-          taxId: firm?.taxId || firm?.tax_id || "",
-          primaryPracticeArea:
-            firm?.primaryPracticeArea || firm?.primary_practice_area || "",
-          numberOfAttorneys:
-            firm?.numberOfAttorneys || firm?.number_of_attorneys || "",
-          businessStructure:
-            firm?.businessStructure || firm?.business_structure || "",
-          formationDate: firm?.formationDate
-            ? new Date(firm.formationDate)
-            : firm?.formation_date
-            ? new Date(firm.formation_date)
-            : null,
-          primaryOwnerEmail:
-            firm?.primaryOwnerEmail || firm?.primary_owner_email || "",
-          ownerFirstName: firm?.ownerFirstName || firm?.owner_first_name || "",
-          ownerLastName: firm?.ownerLastName || firm?.owner_last_name || "",
-          ownerPhoneNumber:
-            firm?.ownerPhoneNumber || firm?.owner_phone_number || "",
-          barNumber: firm?.barNumber || firm?.bar_number || "",
-          firmLogo: firm?.firmLogo || firm?.firm_logo || null,
-        };
-
-        // Reset form with fetched data - this will populate all form fields
-        reset(formData, {
-          keepDefaultValues: false,
-        });
-      } catch (error) {
-        const errorMessage =
-          error?.message || error?.error || "Failed to load firm details.";
-        Swal.fire({
-          icon: "error",
-          title: t("firmLogoInfo.messages.loadFailed"),
-          text: errorMessage,
-          showConfirmButton: true,
-        });
-      } finally {
-        setIsLoading(false);
+    // Fetch countries and currencies from API when store state is empty
+    React.useEffect(() => {
+      if (countries.length === 0 && !countriesLoading) {
+        dispatch(fetchCountries());
       }
-    };
+    }, [dispatch, countries.length, countriesLoading]);
 
-    fetchFirmDetails();
-  }, [userFirmId, reset, setIsLoading, t]);
+    React.useEffect(() => {
+      if (currencies.length === 0 && !currenciesLoading) {
+        dispatch(fetchCurrencies());
+      }
+    }, [dispatch, currencies.length, currenciesLoading]);
 
-  if (isLoading) {
-    return (
-      <div
-        className="d-flex justify-content-center align-items-center"
-        style={{ minHeight: "400px" }}
-      >
-        <div className="spinner-border" role="status">
-          <span className="visually-hidden">Loading...</span>
+    // Fetch states when countryId changes and clear stateId when country changes
+    React.useEffect(() => {
+      // Clear stateId when country changes
+      setValue("stateId", "");
+
+      if (countryId) {
+        dispatch(fetchStatesByCountry({ countryId }));
+      } else {
+        // Clear states when no country is selected
+        dispatch(clearStates());
+      }
+    }, [dispatch, countryId, setValue]);
+
+    React.useEffect(() => {
+      const fetchFirmDetails = async () => {
+        if (!userFirmId) return;
+
+        setIsLoading(true);
+        try {
+          const firmData = await getFirmDetails(userFirmId);
+
+          // Map API response to form fields - ensure proper type conversion
+          // Handle nested response structure if present (e.g., response.data.data.firm)
+          const firm = firmData?.data?.firm || firmData?.firm || firmData;
+
+          const formData = {
+            accountOwner: firm?.accountOwner || "",
+            name: firm?.name || "",
+            countryId: firm?.countryId?._id || "",
+            stateId: firm?.stateId?._id || "",
+            currencyId: firm?.currencyId?._id || "",
+            address1: firm?.address1 || "",
+            address2: firm?.address2 || "",
+            city: firm?.city || "",
+            zipCode: firm?.zipCode || "",
+            phone: firm?.phone || firm?.phone_number || "",
+            email: firm?.email || "",
+            website: firm?.website || "",
+            taxId: firm?.taxId || "",
+            primaryPracticeArea: firm?.primaryPracticeArea || "",
+            numberOfAttorneys: firm?.numberOfAttorneys || "",
+            businessStructure: firm?.businessStructure || "",
+            formationDate: firm?.formationDate
+              ? new Date(firm.formationDate)
+              : null,
+            primaryOwnerEmail: firm?.primaryOwnerEmail || "",
+            ownerFirstName: firm?.ownerFirstName || "",
+            ownerLastName: firm?.ownerLastName || "",
+            ownerPhoneNumber: firm?.ownerPhoneNumber || "",
+            barNumber: firm?.barNumber || "",
+            file: firm?.logo || null,
+          };
+
+          // Reset form with fetched data - this will populate all form fields
+          reset(formData, {
+            keepDefaultValues: false,
+          });
+        } catch (error) {
+          const errorMessage =
+            error?.message || error?.error || "Failed to load firm details.";
+          Swal.fire({
+            icon: "error",
+            title: t("firmLogoInfo.messages.loadFailed"),
+            text: errorMessage,
+            showConfirmButton: true,
+          });
+        } finally {
+          setIsLoading(false);
+        }
+      };
+
+      fetchFirmDetails();
+    }, [userFirmId, reset, setIsLoading, t]);
+
+    if (isLoading) {
+      return (
+        <div
+          className="d-flex justify-content-center align-items-center"
+          style={{ minHeight: "400px" }}
+        >
+          <div className="spinner-border" role="status">
+            <span className="visually-hidden">Loading...</span>
+          </div>
         </div>
-      </div>
+      );
+    }
+
+    return (
+      <>
+        <div className="setting-title">
+          <h4>{t("firmLogoInfo.title")}</h4>
+        </div>
+
+        {/* Firm Logo Upload */}
+        <PhotoUpload
+          name="file"
+          label={t("firmLogoInfo.firmLogo")}
+          changeText={t("changeImage")}
+          helpText={t("firmLogoInfo.imageUploadHelp")}
+          accept="image/*"
+          previewImageUrl={
+            typeof logoValue === "string" ? logoValue : undefined
+          }
+        />
+
+        {/* Account Owner Section */}
+        <div className="card-title-head">
+          <h6>{t("firmLogoInfo.accountOwner")}</h6>
+        </div>
+        <div className="row">
+          <div className="col-md-12">
+            <Select
+              name="accountOwner"
+              label={t("firmLogoInfo.accountOwner")}
+              options={accountOwnerOptions}
+              placeholder={t("firmLogoInfo.selectAccountOwner")}
+              disabled
+            />
+          </div>
+        </div>
+
+        {/* Business Information Section */}
+        <div className="row">
+          <div className="col-md-12">
+            <Input name="name" label={t("firmLogoInfo.name")} type="text" />
+          </div>
+          <div className="col-md-12">
+            <Select
+              name="countryId"
+              label={t("firmLogoInfo.country")}
+              options={countries}
+              placeholder={t("firmLogoInfo.selectCountry")}
+              disabled={countriesLoading}
+            />
+          </div>
+          <div className="col-md-12">
+            <Select
+              name="stateId"
+              label={t("firmLogoInfo.state")}
+              options={states}
+              placeholder={t("firmLogoInfo.selectState")}
+              disabled={!countryId || statesLoading}
+            />
+          </div>
+          <div className="col-md-12">
+            <Select
+              name="currencyId"
+              label={t("firmLogoInfo.currency")}
+              options={currencies}
+              placeholder={t("firmLogoInfo.selectCurrency")}
+              disabled={currenciesLoading}
+            />
+          </div>
+          <div className="col-md-12">
+            <Input
+              name="address1"
+              label={t("firmLogoInfo.address1")}
+              type="text"
+            />
+          </div>
+          <div className="col-md-12">
+            <Input
+              name="address2"
+              label={t("firmLogoInfo.address2")}
+              type="text"
+            />
+          </div>
+          <div className="col-md-12">
+            <Input name="city" label={t("firmLogoInfo.city")} type="text" />
+          </div>
+          <div className="col-md-12">
+            <Input
+              name="zipCode"
+              label={t("firmLogoInfo.zipPostalCode")}
+              type="text"
+            />
+          </div>
+          <div className="col-md-12">
+            <Input
+              id="phone1"
+              name="phone"
+              label={t("firmLogoInfo.phoneNumber")}
+              type="text"
+            />
+          </div>
+          <div className="col-md-12">
+            <Input
+              name="email"
+              label={t("firmLogoInfo.firmEmailAddress")}
+              type="email"
+              required
+            />
+          </div>
+          <div className="col-md-12">
+            <Input
+              name="website"
+              label={t("firmLogoInfo.website")}
+              type="url"
+            />
+          </div>
+          <div className="col-md-12">
+            <Input name="taxId" label={t("firmLogoInfo.taxId")} type="text" />
+          </div>
+        </div>
+
+        {/* Business and Business Owner Info Section */}
+        <div className="card-title-head">
+          <h6>{t("firmLogoInfo.businessAndOwnerInfo")}</h6>
+          <p className="text-muted small mt-2">
+            {t("firmLogoInfo.businessInfoHelp")}
+          </p>
+        </div>
+        <div className="row">
+          <div className="col-md-12">
+            <Select
+              name="primaryPracticeArea"
+              label={t("firmLogoInfo.primaryPracticeArea")}
+              options={primaryPracticeAreaOptions}
+              placeholder={t("firmLogoInfo.selectPrimaryPracticeArea")}
+            />
+          </div>
+          <div className="col-md-12">
+            <Select
+              name="numberOfAttorneys"
+              label={t("firmLogoInfo.numberOfAttorneys")}
+              options={numberOfAttorneysOptions}
+              placeholder={t("firmLogoInfo.selectNumberOfAttorneys")}
+            />
+          </div>
+          <div className="col-md-12">
+            <Select
+              name="businessStructure"
+              label={t("firmLogoInfo.businessStructure")}
+              options={businessStructureOptions}
+              placeholder={t("firmLogoInfo.selectBusinessStructure")}
+            />
+          </div>
+          <div className="col-md-12">
+            <DatePicker
+              name="formationDate"
+              label={t("firmLogoInfo.formationDate")}
+              placeholder={t("firmLogoInfo.selectFormationDate")}
+              showYearDropdown
+              showMonthDropdown
+              dateFormat="dd/MM/yyyy"
+            />
+          </div>
+          <div className="col-md-12">
+            <Input
+              name="primaryOwnerEmail"
+              label={t("firmLogoInfo.primaryOwnerEmail")}
+              type="email"
+            />
+          </div>
+          <div className="col-md-6">
+            <Input
+              name="ownerFirstName"
+              label={t("firmLogoInfo.ownerFirstName")}
+              type="text"
+            />
+          </div>
+          <div className="col-md-6">
+            <Input
+              name="ownerLastName"
+              label={t("firmLogoInfo.ownerLastName")}
+              type="text"
+            />
+          </div>
+          <div className="col-md-12">
+            <Input
+              name="ownerPhoneNumber"
+              label={t("firmLogoInfo.ownerPhoneNumber")}
+              type="tel"
+            />
+          </div>
+          <div className="col-md-12">
+            <Input
+              name="barNumber"
+              label={t("firmLogoInfo.barNumber")}
+              type="text"
+            />
+          </div>
+        </div>
+
+        <FormSubmitButtons />
+      </>
     );
   }
+);
 
-  return (
-    <>
-      <div className="setting-title">
-        <h4>{t("firmLogoInfo.title")}</h4>
-      </div>
-
-      {/* Firm Logo Upload */}
-      <PhotoUpload
-        name="firmLogo"
-        label={t("firmLogoInfo.firmLogo")}
-        changeText={t("changeImage")}
-        helpText={t("firmLogoInfo.imageUploadHelp")}
-        accept="image/*"
-        previewImageUrl={
-          typeof firmLogoValue === "string" ? firmLogoValue : undefined
-        }
-      />
-
-      {/* Account Owner Section */}
-      <div className="card-title-head">
-        <h6>{t("firmLogoInfo.accountOwner")}</h6>
-      </div>
-      <div className="row">
-        <div className="col-md-12">
-          <Select
-            name="accountOwner"
-            label={t("firmLogoInfo.accountOwner")}
-            options={accountOwnerOptions}
-            placeholder={t("firmLogoInfo.selectAccountOwner")}
-          />
-        </div>
-      </div>
-
-      {/* Business Information Section */}
-      <div className="row">
-        <div className="col-md-12">
-          <Input
-            name="legalBusinessName"
-            label={t("firmLogoInfo.legalBusinessName")}
-            type="text"
-          />
-        </div>
-        <div className="col-md-12">
-          <Select
-            name="country"
-            label={t("firmLogoInfo.country")}
-            options={countryOptions}
-            placeholder={t("firmLogoInfo.selectCountry")}
-          />
-        </div>
-        <CountrySpecifyField />
-        <div className="col-md-12">
-          <Input
-            name="address1"
-            label={t("firmLogoInfo.address1")}
-            type="text"
-          />
-        </div>
-        <div className="col-md-12">
-          <Input
-            name="address2"
-            label={t("firmLogoInfo.address2")}
-            type="text"
-          />
-        </div>
-        <div className="col-md-12">
-          <Input name="city" label={t("firmLogoInfo.city")} type="text" />
-        </div>
-        <div className="col-md-12">
-          <Input
-            name="zipPostalCode"
-            label={t("firmLogoInfo.zipPostalCode")}
-            type="text"
-          />
-        </div>
-        <div className="col-md-12">
-          <Input
-            name="phoneNumber"
-            label={t("firmLogoInfo.phoneNumber")}
-            type="tel"
-          />
-        </div>
-        <div className="col-md-12">
-          <Input
-            name="firmEmailAddress"
-            label={t("firmLogoInfo.firmEmailAddress")}
-            type="email"
-            required
-          />
-        </div>
-        <div className="col-md-12">
-          <Input name="website" label={t("firmLogoInfo.website")} type="url" />
-        </div>
-        <div className="col-md-12">
-          <Input name="taxId" label={t("firmLogoInfo.taxId")} type="text" />
-        </div>
-      </div>
-
-      {/* Business and Business Owner Info Section */}
-      <div className="card-title-head">
-        <h6>{t("firmLogoInfo.businessAndOwnerInfo")}</h6>
-        <p className="text-muted small mt-2">
-          {t("firmLogoInfo.businessInfoHelp")}
-        </p>
-      </div>
-      <div className="row">
-        <div className="col-md-12">
-          <Select
-            name="primaryPracticeArea"
-            label={t("firmLogoInfo.primaryPracticeArea")}
-            options={primaryPracticeAreaOptions}
-            placeholder={t("firmLogoInfo.selectPrimaryPracticeArea")}
-            required
-          />
-        </div>
-        <div className="col-md-12">
-          <Select
-            name="numberOfAttorneys"
-            label={t("firmLogoInfo.numberOfAttorneys")}
-            options={numberOfAttorneysOptions}
-            placeholder={t("firmLogoInfo.selectNumberOfAttorneys")}
-          />
-        </div>
-        <div className="col-md-12">
-          <Select
-            name="businessStructure"
-            label={t("firmLogoInfo.businessStructure")}
-            options={businessStructureOptions}
-            placeholder={t("firmLogoInfo.selectBusinessStructure")}
-          />
-        </div>
-        <div className="col-md-12">
-          <DatePicker
-            name="formationDate"
-            label={t("firmLogoInfo.formationDate")}
-            placeholder={t("firmLogoInfo.selectFormationDate")}
-            showYearDropdown
-            showMonthDropdown
-            dateFormat="dd/MM/yyyy"
-          />
-        </div>
-        <div className="col-md-12">
-          <Input
-            name="primaryOwnerEmail"
-            label={t("firmLogoInfo.primaryOwnerEmail")}
-            type="email"
-            required
-          />
-        </div>
-        <div className="col-md-6">
-          <Input
-            name="ownerFirstName"
-            label={t("firmLogoInfo.ownerFirstName")}
-            type="text"
-            required
-          />
-        </div>
-        <div className="col-md-6">
-          <Input
-            name="ownerLastName"
-            label={t("firmLogoInfo.ownerLastName")}
-            type="text"
-            required
-          />
-        </div>
-        <div className="col-md-12">
-          <Input
-            name="ownerPhoneNumber"
-            label={t("firmLogoInfo.ownerPhoneNumber")}
-            type="tel"
-            required
-          />
-        </div>
-        <div className="col-md-12">
-          <Input
-            name="barNumber"
-            label={t("firmLogoInfo.barNumber")}
-            type="text"
-          />
-        </div>
-      </div>
-
-      <FormSubmitButtons />
-    </>
-  );
-};
-
-/**
- * Country Specify Field component.
- * Conditionally renders based on country selection.
- * Shows when "Other" is selected.
- *
- * @returns {JSX.Element|null} Input component or null
- */
-const CountrySpecifyField = () => {
-  const { t } = useTranslation();
-  const { setValue } = useFormContext();
-  const country = useWatch({ name: "country" });
-
-  /**
-   * Clears the countrySpecify value when country is changed from "Other".
-   */
-  React.useEffect(() => {
-    if (country !== "Other") {
-      setValue("countrySpecify", "");
-    }
-  }, [country, setValue]);
-
-  if (country !== "Other") {
-    return null;
-  }
-
-  return (
-    <div className="col-md-12">
-      <Input
-        name="countrySpecify"
-        label={t("firmLogoInfo.specifyCountry")}
-        type="text"
-        required
-      />
-    </div>
-  );
-};
+FirmLogoInfoContent.displayName = "FirmLogoInfoContent";
 
 /**
  * Form submit buttons component.

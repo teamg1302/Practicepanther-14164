@@ -69,3 +69,111 @@ export const getTitles = async (params = {}) => {
     throw error.response?.data || error.message;
   }
 };
+
+/**
+ * Get countries list
+ * Fetches available countries from the API
+ * @param {Object} [params={}] - Optional query parameters
+ * @param {number} [params.limit=50] - Number of items to fetch
+ * @returns {Promise} API response with countries list
+ *
+ * @example
+ * // Get all countries with default limit
+ * await getCountries();
+ *
+ * @example
+ * // Get countries with custom limit
+ * await getCountries({ limit: 100 });
+ */
+export const getCountries = async (params = {}) => {
+  try {
+    const { limit = 50, ...otherParams } = params;
+
+    // Build query string
+    const queryParams = new URLSearchParams({
+      limit: limit.toString(),
+      ...otherParams, // Allow additional params to be passed
+    });
+
+    const response = await api.get(
+      `/masters/country?${queryParams.toString()}`
+    );
+
+    // Handle nested response structure if needed
+    return response.data?.data || response.data;
+  } catch (error) {
+    throw error.response?.data || error.message;
+  }
+};
+
+/**
+ * Get currencies list
+ * Fetches available currencies from the API
+ * @param {Object} [params={}] - Optional query parameters
+ * @param {number} [params.limit=50] - Number of items to fetch
+ * @returns {Promise} API response with currencies list
+ *
+ * @example
+ * // Get all currencies with default limit
+ * await getCurrencies();
+ *
+ * @example
+ * // Get currencies with custom limit
+ * await getCurrencies({ limit: 100 });
+ */
+export const getCurrencies = async (params = {}) => {
+  try {
+    const { limit = 50, ...otherParams } = params;
+
+    // Build query string
+    const queryParams = new URLSearchParams({
+      limit: limit.toString(),
+      ...otherParams, // Allow additional params to be passed
+    });
+
+    const response = await api.get(
+      `/masters/currency?${queryParams.toString()}`
+    );
+
+    // Handle nested response structure if needed
+    return response.data?.data || response.data;
+  } catch (error) {
+    throw error.response?.data || error.message;
+  }
+};
+
+/**
+ * Get states by country
+ * Fetches available states for a specific country from the API
+ * @param {Object} params - Query parameters
+ * @param {string} params.countryId - Country ID to fetch states for
+ * @param {number} [params.limit=500] - Number of items to fetch
+ * @returns {Promise} API response with states list
+ *
+ * @example
+ * // Get states for a country
+ * await getStatesByCountry({ countryId: "123", limit: 500 });
+ */
+export const getStatesByCountry = async (params) => {
+  try {
+    const { countryId, limit = 500, ...otherParams } = params;
+
+    if (!countryId) {
+      throw new Error("countryId is required");
+    }
+
+    // Build query string
+    const queryParams = new URLSearchParams({
+      countryId: countryId.toString(),
+      limit: limit.toString(),
+      ...otherParams, // Allow additional params to be passed
+    });
+
+    const response = await api.get(`/masters/state?${queryParams.toString()}`);
+
+    // Handle nested response structure if needed
+    return response.data?.data || response.data;
+  } catch (error) {
+    throw error.response?.data || error.message;
+  }
+};

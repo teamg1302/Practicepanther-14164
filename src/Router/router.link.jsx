@@ -14,6 +14,7 @@ import PersonalSettings from "@/feature-module/pages/settings/personal-settings"
 import FirmLogoInfoSettings from "@/feature-module/pages/settings/firm-logo-info";
 import UsersSettings from "@/feature-module/pages/settings/users";
 import RolePermissionList from "@/feature-module/pages/settings/roles-permissions";
+import RolePermissionAddEdit from "@/feature-module/pages/settings/roles-permissions/AddEdit";
 import { all_routes } from "./all_routes";
 
 const routes = all_routes;
@@ -62,6 +63,34 @@ export const settingsRoutes = [
     path: routes.settings[1].children[1].path,
     name: routes.settings[1].children[1].name,
     element: <RolePermissionList />,
+    route: Route,
+  },
+  {
+    id: 5,
+    path: routes.editRolePermission,
+    name: "editRolePermission",
+    element: <RolePermissionAddEdit />,
+    route: Route,
+  },
+  {
+    id: 6,
+    path: routes.addRolePermission,
+    name: "addRolePermission",
+    element: <RolePermissionAddEdit />,
+    route: Route,
+  },
+  {
+    id: 7,
+    path: routes.editUser,
+    name: "editUser",
+    element: <PersonalSettings />,
+    route: Route,
+  },
+  {
+    id: 8,
+    path: routes.addUser,
+    name: "addUser",
+    element: <PersonalSettings />,
     route: Route,
   },
 ];

@@ -5,7 +5,13 @@
  */
 
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { getTimezone, getTitles } from "@/core/services/mastersService";
+import {
+  getTimezone,
+  getTitles,
+  getCountries,
+  getCurrencies,
+  getStatesByCountry,
+} from "@/core/services/mastersService";
 
 /**
  * Initial state for masters slice.
@@ -18,6 +24,15 @@ const initialState = {
   jobTitles: [],
   jobTitlesLoading: false,
   jobTitlesError: null,
+  countries: [],
+  countriesLoading: false,
+  countriesError: null,
+  currencies: [],
+  currenciesLoading: false,
+  currenciesError: null,
+  states: [],
+  statesLoading: false,
+  statesError: null,
 };
 
 /**
@@ -84,6 +99,116 @@ export const fetchJobTitles = createAsyncThunk(
 );
 
 /**
+ * Async thunk for fetching countries from API
+ * @type {Function}
+ * @returns {Promise} Promise that resolves with countries data
+ * @example
+ * dispatch(fetchCountries());
+ */
+export const fetchCountries = createAsyncThunk(
+  "masters/fetchCountries",
+  async (params = {}, { rejectWithValue }) => {
+    try {
+      const countriesData = await getCountries(params);
+
+      // Transform API response to match Select component format
+      const formattedCountries = Array.isArray(countriesData?.list)
+        ? countriesData.list.map((country) => ({
+            label: country.name,
+            value: country._id,
+          }))
+        : Array.isArray(countriesData?.data)
+        ? countriesData.data.map((country) => ({
+            label: country.name || country.label,
+            value: country._id || country.value,
+          }))
+        : Array.isArray(countriesData)
+        ? countriesData.map((country) => ({
+            label: country.name || country.label,
+            value: country._id || country.value,
+          }))
+        : [];
+
+      return formattedCountries;
+    } catch (error) {
+      return rejectWithValue(
+        error?.response?.data || error?.message || "Failed to fetch countries"
+      );
+    }
+  }
+);
+
+/**
+ * Async thunk for fetching currencies from API
+ * @type {Function}
+ * @returns {Promise} Promise that resolves with currencies data
+ * @example
+ * dispatch(fetchCurrencies());
+ */
+export const fetchCurrencies = createAsyncThunk(
+  "masters/fetchCurrencies",
+  async (params = {}, { rejectWithValue }) => {
+    try {
+      const currenciesData = await getCurrencies(params);
+
+      // Transform API response to match Select component format
+      const formattedCurrencies = Array.isArray(currenciesData?.list)
+        ? currenciesData.list.map((currency) => ({
+            label: currency.name || currency.symbol,
+            value: currency._id,
+          }))
+        : Array.isArray(currenciesData?.data)
+        ? currenciesData.data.map((currency) => ({
+            label: currency.name || currency.symbol || currency.label,
+            value: currency._id || currency.value,
+          }))
+        : Array.isArray(currenciesData)
+        ? currenciesData.map((currency) => ({
+            label: currency.name || currency.symbol || currency.label,
+            value: currency._id || currency.value,
+          }))
+        : [];
+
+      return formattedCurrencies;
+    } catch (error) {
+      return rejectWithValue(
+        error?.response?.data || error?.message || "Failed to fetch currencies"
+      );
+    }
+  }
+);
+
+/**
+ * Async thunk for fetching states by country from API
+ * @type {Function}
+ * @returns {Promise} Promise that resolves with states data
+ * @example
+ * dispatch(fetchStatesByCountry({ countryId: "123" }));
+ */
+export const fetchStatesByCountry = createAsyncThunk(
+  "masters/fetchStatesByCountry",
+  async (params, { rejectWithValue }) => {
+    try {
+      const statesData = await getStatesByCountry(params);
+
+      // Transform API response to match Select component format
+      const formattedStates = Array.isArray(statesData?.list)
+        ? statesData.list.map((state) => ({
+            label: state.name,
+            value: state._id,
+          }))
+        : [];
+
+      return formattedStates;
+    } catch (error) {
+      return rejectWithValue(
+        error?.response?.data || error?.message || "Failed to fetch states"
+      );
+    }
+  }
+);
+
+/**
  * Masters slice using Redux Toolkit's createSlice
  * @type {Object}
  */
@@ -102,6 +227,31 @@ const mastersSlice = createSlice({
      */
     clearJobTitlesError: (state) => {
       state.jobTitlesError = null;
+    },
+    /**
+     * Clear countries error
+     */
+    clearCountriesError: (state) => {
+      state.countriesError = null;
+    },
+    /**
+     * Clear currencies error
+     */
+    clearCurrenciesError: (state) => {
+      state.currenciesError = null;
+    },
+    /**
+     * Clear states error
+     */
+    clearStatesError: (state) => {
+      state.statesError = null;
+    },
+    /**
+     * Clear states data (when country changes)
+     */
+    clearStates: (state) => {
+      state.states = [];
+      state.statesError = null;
     },
     /**
      * Reset masters state to initial
@@ -143,13 +293,68 @@ const mastersSlice = createSlice({
       .addCase(fetchJobTitles.rejected, (state, action) => {
         state.jobTitlesLoading = false;
         state.jobTitlesError = action.payload || action.error.message;
+      })
+      // Fetch countries - pending
+      .addCase(fetchCountries.pending, (state) => {
+        state.countriesLoading = true;
+        state.countriesError = null;
+      })
+      // Fetch countries - fulfilled (success)
+      .addCase(fetchCountries.fulfilled, (state, action) => {
+        state.countriesLoading = false;
+        state.countries = action.payload;
+        state.countriesError = null;
+      })
+      // Fetch countries - rejected (error)
+      .addCase(fetchCountries.rejected, (state, action) => {
+        state.countriesLoading = false;
+        state.countriesError = action.payload || action.error.message;
+      })
+      // Fetch currencies - pending
+      .addCase(fetchCurrencies.pending, (state) => {
+        state.currenciesLoading = true;
+        state.currenciesError = null;
+      })
+      // Fetch currencies - fulfilled (success)
+      .addCase(fetchCurrencies.fulfilled, (state, action) => {
+        state.currenciesLoading = false;
+        state.currencies = action.payload;
+        state.currenciesError = null;
+      })
+      // Fetch currencies - rejected (error)
+      .addCase(fetchCurrencies.rejected, (state, action) => {
+        state.currenciesLoading = false;
+        state.currenciesError = action.payload || action.error.message;
+      })
+      // Fetch states by country - pending
+      .addCase(fetchStatesByCountry.pending, (state) => {
+        state.statesLoading = true;
+        state.statesError = null;
+      })
+      // Fetch states by country - fulfilled (success)
+      .addCase(fetchStatesByCountry.fulfilled, (state, action) => {
+        state.statesLoading = false;
+        state.states = action.payload;
+        state.statesError = null;
+      })
+      // Fetch states by country - rejected (error)
+      .addCase(fetchStatesByCountry.rejected, (state, action) => {
+        state.statesLoading = false;
+        state.statesError = action.payload || action.error.message;
       });
   },
 });
 
 // Export actions
-export const { clearTimezonesError, clearJobTitlesError, resetMasters } =
-  mastersSlice.actions;
+export const {
+  clearTimezonesError,
+  clearJobTitlesError,
+  clearCountriesError,
+  clearCurrenciesError,
+  clearStatesError,
+  clearStates,
+  resetMasters,
+} = mastersSlice.actions;
 
 // Export reducer
 export default mastersSlice.reducer;

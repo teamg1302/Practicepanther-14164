@@ -25,8 +25,8 @@ import api from "./api";
 export const getRoles = async (params = {}) => {
   try {
     const {
-      limit = 10,
-      pageSize = 10,
+      limit = 50,
+      pageSize = 1,
       page = 1,
       search = "",
       sortBy = "updatedAt",
@@ -50,7 +50,7 @@ export const getRoles = async (params = {}) => {
     });
 
     const response = await api.get(`/masters/role?${queryParams.toString()}`);
-    
+
     // Handle nested response structure if needed
     return response.data?.data || response.data;
   } catch (error) {
@@ -98,6 +98,32 @@ export const createRole = async (roleData) => {
 };
 
 /**
+ * Add a new role
+ * @param {Object} roleData - Role data to add
+ * @param {string} roleData.name - Role name
+ * @param {string} [roleData.description] - Role description
+ * @param {string} [roleData.firmId] - Firm ID
+ * @param {Array<Object>} [roleData.permissions] - Array of permission objects with moduleName and actions
+ * @param {boolean} [roleData.isActive] - Whether the role is active
+ * @returns {Promise} API response with created role
+ *
+ * @example
+ * await addRole({ 
+ *   name: "Admin", 
+ *   description: "Administrator role", 
+ *   permissions: [{ moduleName: "manage_contacts", actions: { create: true, read: true } }] 
+ * });
+ */
+export const addRole = async (roleData) => {
+  try {
+    const response = await api.post("/masters/role", roleData);
+    return response.data?.data || response.data;
+  } catch (error) {
+    throw error.response?.data || error.message;
+  }
+};
+
+/**
  * Update role details by role ID
  * @param {string|number} roleId - Role ID to update
  * @param {Object} roleData - Role data to update
@@ -118,6 +144,8 @@ export const updateRole = async (roleId, roleData) => {
     throw error.response?.data || error.message;
   }
 };
+
+
 
 /**
  * Delete role by role ID
@@ -147,10 +175,10 @@ export const deleteRole = async (roleId) => {
 export const getPermissions = async (params = {}) => {
   try {
     const queryParams = new URLSearchParams(params).toString();
-    const url = queryParams 
+    const url = queryParams
       ? `/masters/permission?${queryParams}`
       : "/masters/permission";
-    
+
     const response = await api.get(url);
     return response.data?.data || response.data;
   } catch (error) {
@@ -158,3 +186,18 @@ export const getPermissions = async (params = {}) => {
   }
 };
 
+/**
+ * Get role modules list
+ * @returns {Promise} API response with role modules list
+ *
+ * @example
+ * await getRoleModules();
+ */
+export const getRoleModules = async () => {
+  try {
+    const response = await api.get("/masters/role/modules");
+    return response.data?.data || response.data;
+  } catch (error) {
+    throw error.response?.data || error.message;
+  }
+};

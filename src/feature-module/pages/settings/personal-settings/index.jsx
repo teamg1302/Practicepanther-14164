@@ -12,10 +12,10 @@
  */
 
 import React from "react";
-import { useNavigate } from "react-router-dom";
 import { useFormContext, useWatch } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { useSelector, useDispatch } from "react-redux";
+import { useLocation, useParams } from "react-router-dom";
 import PropTypes from "prop-types";
 import * as yup from "yup";
 import Swal from "sweetalert2";
@@ -25,17 +25,28 @@ import Switch from "@/feature-module/components/form-elements/switch";
 import Select from "@/feature-module/components/form-elements/select";
 import { PhotoUpload } from "@/feature-module/components/form-elements/file-upload";
 import { FormButton } from "@/feature-module/components/buttons";
-import { getUserDetails, updateUserDetails } from "@/core/services/userService";
+import {
+  getUserDetails,
+  updateUserDetails,
+  createUser,
+} from "@/core/services/userService";
+import { getRoles } from "@/core/services/roleService";
 import { fetchTimezones, fetchJobTitles } from "@/core/redux/mastersReducer";
+import { convertToFormData } from "@/core/utilities/formDataConverter";
 import { all_routes } from "@/Router/all_routes";
 
 const PersonalSettings = () => {
+  const { userId } = useParams();
+  const location = useLocation();
   const { t } = useTranslation();
-  const navigate = useNavigate();
-  const route = all_routes;
   const user = useSelector((state) => state.auth?.user);
   const [isLoading, setIsLoading] = React.useState(false);
   const formRef = React.useRef(null);
+
+  // Determine if we're in create mode (add user) or edit mode
+  const isCreateMode = React.useMemo(() => {
+    return location.pathname === all_routes.addUser || !userId;
+  }, [location.pathname, userId]);
 
   const personalSettingsSchema = React.useMemo(
     () =>
@@ -57,7 +68,30 @@ const PersonalSettings = () => {
           .trim()
           .email(t("personalSettings.validation.emailInvalid"))
           .required(t("personalSettings.validation.emailRequired")),
+        password: isCreateMode
+          ? yup
+              .string()
+              .trim()
+              .required(
+                t("personalSettings.validation.passwordRequired") ||
+                  "Password is required"
+              )
+              .min(
+                6,
+                t("personalSettings.validation.passwordMinLength") ||
+                  "Password must be at least 6 characters"
+              )
+          : yup
+              .string()
+              .trim()
+              .optional()
+              .min(
+                6,
+                t("personalSettings.validation.passwordMinLength") ||
+                  "Password must be at least 6 characters"
+              ),
         timezoneId: yup.string().trim().optional(),
+        roleId: yup.string().trim().optional(),
         home: yup.string().trim().optional(),
         office: yup.string().trim().optional(),
         hourlyRate: yup.string().trim().optional(),
@@ -76,7 +110,7 @@ const PersonalSettings = () => {
           }),
         dailyAgendaEmail: yup.boolean().optional(),
       }),
-    [t]
+    [t, isCreateMode]
   );
 
   /**
@@ -87,71 +121,61 @@ const PersonalSettings = () => {
    */
   const onSubmit = async (formData) => {
     try {
-      // Create FormData object for file upload
-      const formDataToSubmit = new FormData();
+      // For edit mode, remove password from formData if it's empty (not changed)
+      let dataToSubmit = { ...formData };
+      if (
+        !isCreateMode &&
+        (!formData.password || formData.password.trim() === "")
+      ) {
+        delete dataToSubmit.password;
+      }
 
-      // Get the actual File object from form state using getValues
-      // React Hook Form might serialize File objects in formData parameter
+      // Convert form data to FormData using utility function
       const getValues = formRef.current?.getValues;
-
-      // Append all form fields to FormData
-      Object.keys(formData).forEach((key) => {
-        let value = formData[key];
-
-        // For profileImage, try to get the actual File object from form state
-        if (key === "profileImage" && getValues) {
-          const fileValue = getValues("profileImage");
-          if (fileValue instanceof File) {
-            value = fileValue;
-          }
-        }
-
-        // Skip null, undefined, or empty string values
-        if (value === null || value === undefined || value === "") {
-          return;
-        }
-
-        // Handle file uploads - single File object (append as binary)
-        if (value instanceof File) {
-          formDataToSubmit.append(key, value);
-          return;
-        }
-
-        // Convert boolean to string for FormData
-        if (typeof value === "boolean") {
-          formDataToSubmit.append(key, value.toString());
-          return;
-        }
-
-        // Handle arrays and objects (convert to JSON string if needed)
-        if (typeof value === "object" && !(value instanceof File)) {
-          formDataToSubmit.append(key, JSON.stringify(value));
-          return;
-        }
-
-        // Handle primitive values (strings, numbers, etc.)
-        formDataToSubmit.append(key, value);
+      const formDataToSubmit = convertToFormData(dataToSubmit, {
+        getValues,
+        fileFields: ["profileImage"],
       });
 
-      await updateUserDetails(user?.id, formDataToSubmit);
+      if (isCreateMode) {
+        // Create new user
+        await createUser(formDataToSubmit);
+        Swal.fire({
+          icon: "success",
+          title: t("personalSettings.messages.userCreated") || "User Created",
+          text:
+            t("personalSettings.messages.userCreatedMessage") ||
+            "User has been created successfully.",
+          showConfirmButton: true,
+          timer: 2000,
+        });
+      } else {
+        // Update existing user
+        const targetUserId = userId || user?.id;
+        await updateUserDetails(targetUserId, formDataToSubmit);
+        Swal.fire({
+          icon: "success",
+          title: t("personalSettings.messages.settingsSaved"),
+          text: t("personalSettings.messages.settingsSavedMessage"),
+          showConfirmButton: true,
+          timer: 2000,
+        });
+      }
 
-      Swal.fire({
-        icon: "success",
-        title: t("personalSettings.messages.settingsSaved"),
-        text: t("personalSettings.messages.settingsSavedMessage"),
-        showConfirmButton: true,
-        timer: 2000,
-      });
-
-      navigate(route.settings[0].path);
+      //  navigate(route.settings[0].path);
     } catch (error) {
       const errorMessage =
         error?.message ||
         error?.error ||
-        t("personalSettings.messages.saveFailedMessage");
+        (isCreateMode
+          ? t("personalSettings.messages.createFailedMessage") ||
+            "Failed to create user."
+          : t("personalSettings.messages.saveFailedMessage"));
       Swal.fire({
         icon: "error",
-        title: t("personalSettings.messages.saveFailed"),
+        title: isCreateMode
+          ? t("personalSettings.messages.createFailed") || "Create Failed"
+          : t("personalSettings.messages.saveFailed"),
         text: errorMessage,
         showConfirmButton: true,
       });
@@ -169,7 +193,9 @@ const PersonalSettings = () => {
           jobTitleId: "",
           mobile: "",
           email: "",
+          password: "",
           timezoneId: "",
+          roleId: "",
           home: "",
           office: "",
           hourlyRate: "",
@@ -182,9 +208,11 @@ const PersonalSettings = () => {
       >
         <PersonalSettingsContent
           ref={formRef}
-          userId={user?.id}
+          userId={isCreateMode ? null : userId || user?.id}
+          userIdFromParams={userId}
           isLoading={isLoading}
           setIsLoading={setIsLoading}
+          isCreateMode={isCreateMode}
         />
       </FormProvider>
     </div>
@@ -196,14 +224,19 @@ const PersonalSettings = () => {
  * Handles fetching user details and populating the form.
  *
  * @param {Object} props
- * @param {string|number} props.userId - User ID to fetch details for
+ * @param {string|number|null} props.userId - User ID to fetch details for (null for create mode)
+ * @param {string|number|undefined} props.userIdFromParams - User ID from URL params (for determining if role field should show)
  * @param {boolean} props.isLoading - Loading state
  * @param {Function} props.setIsLoading - Function to set loading state
+ * @param {boolean} props.isCreateMode - Whether we're in create mode
  * @returns {JSX.Element} Form content
  */
 
 const PersonalSettingsContent = React.forwardRef(
-  ({ userId, isLoading, setIsLoading }, ref) => {
+  (
+    { userId, userIdFromParams, isLoading, setIsLoading, isCreateMode },
+    ref
+  ) => {
     const { t } = useTranslation();
     const { reset, watch, getValues } = useFormContext();
     const dispatch = useDispatch();
@@ -221,6 +254,42 @@ const PersonalSettingsContent = React.forwardRef(
 
     // Get profileImage from form values for preview
     const profileImage = watch("profileImage");
+
+    // State for roles
+    const [roles, setRoles] = React.useState([]);
+    const [rolesLoading, setRolesLoading] = React.useState(false);
+
+    // Determine if role field should be shown (only for create mode or when editing specific user via userId param)
+    const shouldShowRoleField = React.useMemo(() => {
+      return isCreateMode || !!userIdFromParams;
+    }, [isCreateMode, userIdFromParams]);
+
+    // Fetch roles when needed (only for create mode or when editing specific user)
+    React.useEffect(() => {
+      const fetchRoles = async () => {
+        if (!shouldShowRoleField) return;
+
+        setRolesLoading(true);
+        try {
+          const rolesData = await getRoles({ tab: "all", limit: 100 });
+          // Format roles to match Select component format
+          const formattedRoles = Array.isArray(rolesData?.list)
+            ? rolesData.list.map((role) => ({
+                label: role.name,
+                value: role._id,
+              }))
+            : [];
+          setRoles(formattedRoles);
+        } catch (error) {
+          console.error("Error fetching roles:", error);
+          setRoles([]);
+        } finally {
+          setRolesLoading(false);
+        }
+      };
+
+      fetchRoles();
+    }, [shouldShowRoleField]);
 
     const roundTimeEntryTypeOptionsTranslated = React.useMemo(
       () => [
@@ -251,7 +320,8 @@ const PersonalSettingsContent = React.forwardRef(
 
     React.useEffect(() => {
       const fetchUserDetails = async () => {
-        if (!userId) return;
+        // Skip fetching if in create mode or no userId
+        if (isCreateMode || !userId) return;
 
         setIsLoading(true);
         try {
@@ -267,6 +337,7 @@ const PersonalSettingsContent = React.forwardRef(
             mobile: userData?.mobile || userData?.phone || "",
             email: userData?.email || "",
             timezoneId: userData?.timezoneId?._id || "",
+            roleId: userData?.roleId?._id || userData?.role?._id || "",
             home: userData?.home || userData?.homeAddress || "",
             office: userData?.office || userData?.officeAddress || "",
             hourlyRate: userData?.hourlyRate || userData?.hourly_rate || "",
@@ -311,7 +382,7 @@ const PersonalSettingsContent = React.forwardRef(
       };
 
       fetchUserDetails();
-    }, [userId, reset, setIsLoading, t]);
+    }, [userId, reset, setIsLoading, t, isCreateMode]);
 
     if (isLoading) {
       return (
@@ -328,9 +399,13 @@ const PersonalSettingsContent = React.forwardRef(
 
     return (
       <>
-        <div className="setting-title">
-          <h4>{t("personalSettings.title")}</h4>
-        </div>
+        {/* <div className="setting-title">
+          <h4>
+            {isCreateMode
+              ? t("personalSettings.addUserTitle") || "Add New User"
+              : t("personalSettings.title")}
+          </h4>
+        </div> */}
         <PhotoUpload
           name="profileImage"
           label={t("personalSettings.profilePhoto")}
@@ -389,6 +464,24 @@ const PersonalSettingsContent = React.forwardRef(
               helpText={t("personalSettings.emailHelpText")}
             />
           </div>
+          {shouldShowRoleField && (
+            <div className="col-md-12">
+              <Input
+                name="password"
+                label={t("formElements.password")}
+                placeholder={t("formElements.passwordPlaceholder")}
+                type="password"
+                required={isCreateMode}
+                helpText={
+                  isCreateMode
+                    ? t("formElements.passwordHelpText") ||
+                      "Password must be at least 6 characters"
+                    : t("formElements.passwordEditHelpText") ||
+                      "Leave blank to keep current password"
+                }
+              />
+            </div>
+          )}
           <div className="col-md-12">
             <Select
               name="timezoneId"
@@ -398,6 +491,17 @@ const PersonalSettingsContent = React.forwardRef(
               disabled={timezonesLoading}
             />
           </div>
+          {shouldShowRoleField && (
+            <div className="col-md-12">
+              <Select
+                name="roleId"
+                label={t("personalSettings.role") || "Role"}
+                options={roles}
+                placeholder={t("personalSettings.selectRole") || "Select Role"}
+                disabled={rolesLoading}
+              />
+            </div>
+          )}
         </div>
         <div className="card-title-head">
           <h6>
@@ -551,8 +655,10 @@ PersonalSettingsContent.displayName = "PersonalSettingsContent";
 
 PersonalSettingsContent.propTypes = {
   userId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  userIdFromParams: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   isLoading: PropTypes.bool.isRequired,
   setIsLoading: PropTypes.func.isRequired,
+  isCreateMode: PropTypes.bool,
 };
 
 export default PersonalSettings;
