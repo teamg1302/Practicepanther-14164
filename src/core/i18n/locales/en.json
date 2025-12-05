@@ -256,16 +256,30 @@
     }
   },
   "formElements": {
+    "currentPassword": "Current Password",
+    "currentPasswordPlaceholder": "Enter current password",
+    "currentPasswordHelpText": "Current password is required.",
+    "newPassword": "New Password",
+    "newPasswordPlaceholder": "Enter new password",
+    "newPasswordHelpText": "New password is required.",
+    "confirmPassword": "Confirm Password",
+    "confirmPasswordPlaceholder": "Confirm new password",
+    "confirmPasswordHelpText": "Confirm password is required.",
     "password": "Password",
     "passwordPlaceholder": "Enter password",
     "passwordHelpText": "Password must be at least 6 characters.",
     "passwordEditHelpText": "Leave blank to keep current password.",
     "select": {
       "placeholder": "Select...",
-      "required": "is required."
+      "required": "This field is required."
     },
     "validation": {
-      "required": "is required."
+      "required": "This field is required.",
+      "invalid": "This fields is invalid.",
+      "match": "This fields is not match.",
+      "minLength": "This fields must be at least {min} characters.",
+      "maxLength": "This fields must be at most {max} characters.",
+      "url": "This fields must be a valid URL."
     }
   },
   "common": {

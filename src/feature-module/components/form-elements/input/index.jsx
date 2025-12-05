@@ -99,6 +99,10 @@ const Input = ({
   const errorMessage = error?.message;
   const inputAriaLabel = ariaLabel || label;
 
+  // Extract className from inputProps to merge with form-control
+  const { className: inputPropsClassName, ...restInputProps } = inputProps;
+  const inputClassName = `form-control ${hasError ? "is-invalid" : ""} ${inputPropsClassName || ""}`.trim();
+
   return (
     <div className={`mb-3 ${className}`}>
       <label htmlFor={inputId} className="form-label">
@@ -112,7 +116,7 @@ const Input = ({
       <input
         id={inputId}
         type={type}
-        className={`form-control ${hasError ? "is-invalid" : ""}`}
+        className={inputClassName}
         placeholder={placeholder}
         aria-label={inputAriaLabel}
         aria-required={required}
@@ -128,7 +132,7 @@ const Input = ({
           required: required ? `${label} is required.` : false,
           ...registerOptions,
         })}
-        {...inputProps}
+        {...restInputProps}
       />
       {showError && hasError && (
         <p

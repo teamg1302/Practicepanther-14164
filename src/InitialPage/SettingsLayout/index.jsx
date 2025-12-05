@@ -124,15 +124,13 @@ const SettingsLayout = () => {
           </div>
           <div className="row">
             <div className="col-xl-12">
-              <div className="settings-wrapper d-flex">
+              <div className="settings-wrapper d-flex gap-4">
                 <SettingsSidebar
                   id="settings-sidebar"
                   isMobileOpen={isMobileSidebarOpen}
                   onClose={() => setIsMobileSidebarOpen(false)}
                 />
-                <main className="settings-content-main w-100">
-                  <Outlet />
-                </main>
+                <Outlet />
               </div>
             </div>
           </div>

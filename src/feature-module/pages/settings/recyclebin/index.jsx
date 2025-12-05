@@ -9,7 +9,7 @@ import {
   InputLabel,
 } from "@mui/material";
 import { all_routes } from "@/Router/all_routes";
-import { getUsers } from "@/core/services/userService";
+import { getRecyclebin } from "@/core/services/recyclebinService";
 import EntityListView from "@/feature-module/components/entity-list-view";
 import withEntityHandlers from "@/feature-module/hoc/withEntityHandlers";
 import { getTableColumns } from "@/feature-module/components/table-columns";
@@ -17,25 +17,11 @@ import { getTableColumns } from "@/feature-module/components/table-columns";
 // Columns definition - Pure JSON configuration (srNo and actions are added by withEntityHandlers)
 const COLUMNS_CONFIG = [
   { header: "Name", accessorKey: "name" },
-  { header: "Email", accessorKey: "email" },
-  { header: "Phone", accessorKey: "mobile" },
-  { header: "Role", accessorKey: "roleId", type: "nested" },
-  { header: "Timezone", accessorKey: "timezoneId", type: "nested" },
-  {
-    header: "Status",
-    accessorKey: "isActive",
-    type: "chip",
-    chipMap: {
-      true: { label: "Active", color: "success" },
-      false: { label: "Inactive", color: "error" },
-    },
-  },
   { header: "Created At", accessorKey: "createdAt", type: "date" },
   { header: "Updated At", accessorKey: "updatedAt", type: "date" },
-  { header: "Last Login", accessorKey: "lastLogin", type: "date" },
 ];
 
-const Users = () => {
+const RecycleBin = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const route = all_routes;
@@ -105,14 +91,14 @@ const Users = () => {
       onDelete={handleDelete}
       addButtonRoute={route.addUser}
       addButtonLabel={t("Add")}
-      service={getUsers}
+      service={getRecyclebin}
       // filterFormContent={filterFormContent}
       // onApplyFilters=
       // {handleApplyFilters}
       options={{
         customButtons: {
-          add: true,
-          edit: true,
+          add: false,
+          edit: false,
           delete: true,
         },
         tableSetting: {
@@ -125,4 +111,4 @@ const Users = () => {
 };
 
 const EnhancedList = withEntityHandlers(EntityListView);
-export default Users;
+export default RecycleBin;

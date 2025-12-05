@@ -250,15 +250,17 @@ const RolePermissionAddEdit = () => {
   }
 
   return (
-    <div className="settings-page-wrap">
-      <FormProvider
-        schema={rolePermissionSchema}
-        defaultValues={defaultValues}
-        onSubmit={onSubmit}
-      >
-        <RolePermissionContent modules={modules} loading={loading} />
-      </FormProvider>
-    </div>
+    <main className="settings-content-main w-100">
+      <div className="settings-page-wrap">
+        <FormProvider
+          schema={rolePermissionSchema}
+          defaultValues={defaultValues}
+          onSubmit={onSubmit}
+        >
+          <RolePermissionContent modules={modules} loading={loading} />
+        </FormProvider>
+      </div>
+    </main>
   );
 };
 

@@ -42,7 +42,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 const PhotoUpload = ({
   name,
   label,
-  changeText = "Change Image",
+  changeText = "Change",
   helpText,
   accept = "image/*",
   className = "",
@@ -168,7 +168,7 @@ PhotoUpload.propTypes = {
 };
 
 PhotoUpload.defaultProps = {
-  changeText: "Change Image",
+  changeText: "Change",
   helpText: undefined,
   accept: "image/*",
   className: "",

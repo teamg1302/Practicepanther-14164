@@ -1,4 +1,5 @@
 import api from "./api";
+import { ApiPath } from "./path";
 
 /**
  * Get users list with pagination and filtering
@@ -49,7 +50,9 @@ export const getUsers = async (params = {}) => {
       includeCounts: includeCounts.toString(),
     });
 
-    const response = await api.get(`/masters/user?${queryParams.toString()}`);
+    const response = await api.get(
+      `${ApiPath.userList}?${queryParams.toString()}`
+    );
 
     // Handle nested response structure if needed
     return response.data?.data || response.data;
@@ -220,6 +223,37 @@ export const updateUserDetails = async (userId, userData) => {
     // - Standard JSON request
 
     const response = await api.patch(`/masters/user/${userId}`, userData);
+
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || error.message;
+  }
+};
+
+/**
+ * Change user password
+ * Updates the password for the authenticated user
+ *
+ * @param {Object} passwordData - Password change data
+ * @param {string} passwordData.currentPassword - Current password
+ * @param {string} passwordData.newPassword - New password
+ * @param {string} [passwordData.confirmPassword] - Confirm new password (optional, validated on frontend)
+ *
+ * @returns {Promise} API response with success message
+ *
+ * @example
+ * // Change password
+ * await changePassword({
+ *   currentPassword: "oldPassword123",
+ *   newPassword: "newPassword456"
+ * });
+ */
+export const changePassword = async (passwordData) => {
+  try {
+    const response = await api.post(
+      `/masters/user/change-password`,
+      passwordData
+    );
 
     return response.data;
   } catch (error) {

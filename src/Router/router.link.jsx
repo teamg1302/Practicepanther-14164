@@ -15,6 +15,8 @@ import FirmLogoInfoSettings from "@/feature-module/pages/settings/firm-logo-info
 import UsersSettings from "@/feature-module/pages/settings/users";
 import RolePermissionList from "@/feature-module/pages/settings/roles-permissions";
 import RolePermissionAddEdit from "@/feature-module/pages/settings/roles-permissions/AddEdit";
+import RecycleBin from "@/feature-module/pages/settings/recyclebin";
+import SecuritySettings from "@/feature-module/pages/settings/security";
 import { all_routes } from "./all_routes";
 
 const routes = all_routes;
@@ -46,48 +48,62 @@ export const settingsRoutes = [
   },
   {
     id: 2,
-    path: routes.settings[0].children[3].path,
-    name: routes.settings[0].children[3].name,
-    element: <FirmLogoInfoSettings />,
+    path: routes.settings[0].children[1].path,
+    name: routes.settings[0].children[1].name,
+    element: <SecuritySettings />,
     route: Route,
   },
   {
     id: 3,
+    path: routes.settings[0].children[2].path,
+    name: routes.settings[0].children[2].name,
+    element: <FirmLogoInfoSettings />,
+    route: Route,
+  },
+  {
+    id: 4,
+    path: routes.settings[0].children[3].path,
+    name: routes.settings[0].children[3].name,
+    element: <RecycleBin />,
+    route: Route,
+  },
+  {
+    id: 5,
     path: routes.settings[1].children[0].path,
     name: routes.settings[1].children[0].name,
     element: <UsersSettings />,
     route: Route,
   },
   {
-    id: 4,
+    id: 6,
     path: routes.settings[1].children[1].path,
     name: routes.settings[1].children[1].name,
     element: <RolePermissionList />,
     route: Route,
   },
   {
-    id: 5,
+    id: 7,
     path: routes.editRolePermission,
     name: "editRolePermission",
     element: <RolePermissionAddEdit />,
     route: Route,
   },
   {
-    id: 6,
+    id: 8,
     path: routes.addRolePermission,
     name: "addRolePermission",
     element: <RolePermissionAddEdit />,
     route: Route,
   },
   {
-    id: 7,
+    id: 9,
     path: routes.editUser,
     name: "editUser",
     element: <PersonalSettings />,
     route: Route,
   },
   {
-    id: 8,
+    id: 10,
     path: routes.addUser,
     name: "addUser",
     element: <PersonalSettings />,

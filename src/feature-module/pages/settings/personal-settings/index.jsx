@@ -45,7 +45,7 @@ const PersonalSettings = () => {
 
   // Determine if we're in create mode (add user) or edit mode
   const isCreateMode = React.useMemo(() => {
-    return location.pathname === all_routes.addUser || !userId;
+    return location.pathname === all_routes.addUser;
   }, [location.pathname, userId]);
 
   const personalSettingsSchema = React.useMemo(
@@ -183,39 +183,41 @@ const PersonalSettings = () => {
   };
 
   return (
-    <div className="settings-page-wrap">
-      <FormProvider
-        schema={personalSettingsSchema}
-        defaultValues={{
-          name: "",
-          // middleName: "",
-          // lastName: "",
-          jobTitleId: "",
-          mobile: "",
-          email: "",
-          password: "",
-          timezoneId: "",
-          roleId: "",
-          home: "",
-          office: "",
-          hourlyRate: "",
-          roundTimeEntries: false,
-          roundTimeEntryType: "",
-          dailyAgendaEmail: false,
-          profileImage: null,
-        }}
-        onSubmit={onSubmit}
-      >
-        <PersonalSettingsContent
-          ref={formRef}
-          userId={isCreateMode ? null : userId || user?.id}
-          userIdFromParams={userId}
-          isLoading={isLoading}
-          setIsLoading={setIsLoading}
-          isCreateMode={isCreateMode}
-        />
-      </FormProvider>
-    </div>
+    <main className="settings-content-main">
+      <div className="settings-page-wrap">
+        <FormProvider
+          schema={personalSettingsSchema}
+          defaultValues={{
+            name: "",
+            // middleName: "",
+            // lastName: "",
+            jobTitleId: "",
+            mobile: "",
+            email: "",
+            password: "",
+            timezoneId: "",
+            roleId: "",
+            home: "",
+            office: "",
+            hourlyRate: "",
+            roundTimeEntries: false,
+            roundTimeEntryType: "",
+            dailyAgendaEmail: false,
+            profileImage: null,
+          }}
+          onSubmit={onSubmit}
+        >
+          <PersonalSettingsContent
+            ref={formRef}
+            userId={isCreateMode ? null : userId || user?.id}
+            userIdFromParams={userId}
+            isLoading={isLoading}
+            setIsLoading={setIsLoading}
+            isCreateMode={isCreateMode}
+          />
+        </FormProvider>
+      </div>
+    </main>
   );
 };
 
