@@ -10,15 +10,15 @@ const ThemeSettings = () => {
 
   const [show, setShow] = useState(false);
   const [layoutColor, setlayoutColor] = useState(
-    localStorage.getItem("colorschema")
+    localStorage.getItem("colorschema") || "light_mode"
   );
 
   const [layoutView, setLayoutView] = useState(
-    localStorage.getItem("layoutStyling")
+    localStorage.getItem("layoutStyling") || "modern"
   );
 
   const [layoutTheme, setLayoutTheme] = useState(
-    localStorage.getItem("layoutThemeColors")
+    localStorage.getItem("layoutThemeColors") || "light"
   );
 
   const showSettings = () => {
@@ -50,6 +50,7 @@ const ThemeSettings = () => {
     dispatch(setLayoutChange("box"));
     document.documentElement.setAttribute("data-layout-style", "box");
   };
+
   const collapsedLayout = () => {
     localStorage.setItem("layoutStyling", "collapsed");
     setLayoutView("collapsed");
@@ -63,6 +64,7 @@ const ThemeSettings = () => {
     dispatch(setLayoutChange("horizontal"));
     document.documentElement.setAttribute("data-layout-style", "horizontal");
   };
+
   const modernLayout = () => {
     localStorage.setItem("layoutStyling", "modern");
     setLayoutView("modern");
@@ -81,11 +83,13 @@ const ThemeSettings = () => {
     setLayoutTheme("dark");
     document.documentElement.setAttribute("data-nav-color", "dark");
   };
+
   const LayoutLight = () => {
     localStorage.setItem("layoutThemeColors", "light");
     setLayoutTheme("light");
     document.documentElement.setAttribute("data-nav-color", "light");
   };
+
   const ResetData = () => {
     localStorage.setItem("colorschema", "light_mode");
     localStorage.setItem("layoutStyling", "modern");

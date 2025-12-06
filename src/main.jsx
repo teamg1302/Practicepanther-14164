@@ -24,7 +24,10 @@ if (rootElement) {
     <React.StrictMode>
       <Provider store={store}>
         <PersistGate loading={null} persistor={persistor}>
-          <BrowserRouter basename={base_path}>
+          <BrowserRouter
+            basename={base_path}
+            future={{ v7_startTransition: true, v7_relativeSplatPath: true }}
+          >
             <AllRoutes />
           </BrowserRouter>
         </PersistGate>

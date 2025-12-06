@@ -29,7 +29,7 @@ const FormButton = ({ type, isSubmitting, ...props }) => {
 
   return (
     <button
-      type={type === "cancel" ? "button" : "submit"}
+      type={type === "cancel" || type === "reset" ? "button" : "submit"}
       className={`btn btn-${type} d-flex flex-row gap-2 `}
       disabled={isSubmitting}
       aria-label={

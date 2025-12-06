@@ -1,16 +1,15 @@
 import React, { useMemo } from "react";
 import PropTypes from "prop-types";
-import { FormProvider, useFormContext } from "@/feature-module/components/rhf";
 import { Input, Select } from "@/feature-module/components/form-elements";
 import { PhotoUpload } from "@/feature-module/components/form-elements/file-upload";
 import DatePicker from "@/feature-module/components/form-elements/datepicker";
-import { FormButton } from "@/feature-module/components/buttons";
+import Textarea from "@/feature-module/components/form-elements/textarea";
 
-const EntityFormView = ({ schema, defaultValues, fields, onSubmit }) => {
+const EntityFormView = ({ fields }) => {
   const formFields = useMemo(() => {
     return fields && fields.length > 0
       ? fields.map((field) => {
-          const { id, name, label, type, col, ...rest } = field;
+          const { id, name, label, type, col, element, ...rest } = field;
           // Check if type is one of the input types
           const isInputType = [
             "text",
@@ -31,6 +30,14 @@ const EntityFormView = ({ schema, defaultValues, fields, onSubmit }) => {
                   type={type}
                   {...rest}
                 />
+              </div>
+            );
+          }
+
+          if (type === "textarea") {
+            return (
+              <div key={id} className={`col-md-${col || 12}`}>
+                <Textarea name={name} label={label} {...rest} />
               </div>
             );
           }
@@ -59,12 +66,9 @@ const EntityFormView = ({ schema, defaultValues, fields, onSubmit }) => {
             );
           }
 
-          // Default to text input for unknown types
-          return (
-            <div key={id} className={`col-md-${col || 12}`}>
-              <Input id={id} name={name} label={label} type="text" {...rest} />
-            </div>
-          );
+          if (type === "ui") {
+            return element;
+          }
         })
       : [
           <div key="empty-form">
@@ -74,33 +78,9 @@ const EntityFormView = ({ schema, defaultValues, fields, onSubmit }) => {
   }, [fields]);
 
   return (
-    <FormProvider
-      schema={schema}
-      defaultValues={defaultValues}
-      onSubmit={onSubmit}
-    >
+    <>
       <div className="row">{formFields}</div>
-      <FormSubmitButtons />
-    </FormProvider>
-  );
-};
-
-/**
- * Form submit buttons component.
- * Uses form context to access submission state.
- *
- * @returns {JSX.Element} Submit and cancel buttons
- */
-const FormSubmitButtons = () => {
-  const {
-    formState: { isSubmitting },
-  } = useFormContext();
-
-  return (
-    <div className="settings-bottom-btn d-flex flex-row gap-2 align-items-center justify-content-end">
-      <FormButton type="submit" isSubmitting={isSubmitting} />
-      <FormButton type="cancel" isSubmitting={isSubmitting} />
-    </div>
+    </>
   );
 };
 

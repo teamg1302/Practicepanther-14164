@@ -1,5 +1,6 @@
 {
   "signin": {
+    "welcomeBack": "Welcome Back!",
     "title": "Sign In",
     "subtitle": "Access the Practice Management System using your email and passcode.",
     "emailLabel": "Email Address",
@@ -87,9 +88,9 @@
     }
   },
   "dashboard": {
-    "totalPurchaseDue": "Total Purchase Due",
-    "totalSalesDue": "Total Sales Due",
-    "totalSaleAmount": "Total Sale Amount",
+    "totalMonthRevenue": "Monthly Revenue",
+    "totalTodayRevenue": "Today's Revenue",
+    "totalRevenue": "Total Revenue",
     "totalExpenseAmount": "Total Expense Amount",
     "customers": "Customers",
     "suppliers": "Suppliers",
@@ -281,6 +282,12 @@
       "maxLength": "This fields must be at most {max} characters.",
       "url": "This fields must be a valid URL."
     }
+  },
+  "changePasswordSetting": {
+    "title": "Change Password",
+    "subtitle": "Update your password to keep your account secure",
+    "passwordUpdateFailedMessage": "Password Update Failed",
+    "passwordUpdatedSuccessfully": "Password has been changed successfully"
   },
   "common": {
     "required": "required",

@@ -1,5 +1,9 @@
 .table-wrapper {
-  flex: 1;
+  // flex: 1;
   min-width: 0 !important;
   overflow-x: auto;
+}
+
+.react-select__menu {
+  z-index: 3 !important;
 }

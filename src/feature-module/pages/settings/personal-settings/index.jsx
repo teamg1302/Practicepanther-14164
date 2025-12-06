@@ -183,7 +183,7 @@ const PersonalSettings = () => {
   };
 
   return (
-    <main className="settings-content-main">
+    <main className="settings-content-main w-100">
       <div className="settings-page-wrap">
         <FormProvider
           schema={personalSettingsSchema}

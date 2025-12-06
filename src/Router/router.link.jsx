@@ -17,6 +17,8 @@ import RolePermissionList from "@/feature-module/pages/settings/roles-permission
 import RolePermissionAddEdit from "@/feature-module/pages/settings/roles-permissions/AddEdit";
 import RecycleBin from "@/feature-module/pages/settings/recyclebin";
 import SecuritySettings from "@/feature-module/pages/settings/security";
+import { ContactAddEdit, ContactsList } from "@/feature-module/pages/contacts";
+import { MattersAddEdit, MattersList } from "@/feature-module/pages/matters";
 import { all_routes } from "./all_routes";
 
 const routes = all_routes;
@@ -30,10 +32,31 @@ export const publicRoutes = [
     route: Route,
   },
   {
-    id: 1,
+    id: 2,
     path: routes.headers[0].path,
     name: routes.headers[0].name,
     element: <Dashboard />,
+    route: Route,
+  },
+  {
+    id: 3,
+    path: routes.headers[1].path,
+    name: routes.headers[1].name,
+    element: <ContactsList />,
+    route: Route,
+  },
+  {
+    id: 4,
+    path: routes.addContact.path,
+    name: routes.addContact.name,
+    element: <ContactAddEdit />,
+    route: Route,
+  },
+  {
+    id: 5,
+    path: routes.headers[2].path,
+    name: routes.headers[2].name,
+    element: <MattersList />,
     route: Route,
   },
 ];

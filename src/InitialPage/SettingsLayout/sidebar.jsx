@@ -42,7 +42,7 @@ const SettingsSideBar = ({ isMobileOpen, onClose }) => {
         }`}
         id="sidebar2"
       >
-        <div className="stickybar">
+        <div className="stickybar w-100">
           <div className="sidebar-inner">
             <div id="sidebar-menu5" className="sidebar-menu">
               <ul>

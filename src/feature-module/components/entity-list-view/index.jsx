@@ -32,7 +32,7 @@ const EntityListView = ({ table, showColumnSettings }) => {
   if (!enhancedTable && !table) return null;
 
   return (
-    <div className="settings-content-main table-wrapper">
+    <div className="settings-content-main table-wrapper w-100">
       <MaterialReactTable table={enhancedTable || table} />
     </div>
   );

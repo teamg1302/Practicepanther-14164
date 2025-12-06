@@ -88,6 +88,8 @@ const Input = ({
   helpText,
   inputProps = {},
 }) => {
+  const [showPassword, setShowPassword] = React.useState(false);
+
   const {
     register,
     formState: { errors },
@@ -101,7 +103,9 @@ const Input = ({
 
   // Extract className from inputProps to merge with form-control
   const { className: inputPropsClassName, ...restInputProps } = inputProps;
-  const inputClassName = `form-control ${hasError ? "is-invalid" : ""} ${inputPropsClassName || ""}`.trim();
+  const inputClassName = `form-control ${hasError ? "is-invalid" : ""} ${
+    inputPropsClassName || ""
+  }`.trim();
 
   return (
     <div className={`mb-3 ${className}`}>
@@ -113,27 +117,40 @@ const Input = ({
           </span>
         )}
       </label>
-      <input
-        id={inputId}
-        type={type}
-        className={inputClassName}
-        placeholder={placeholder}
-        aria-label={inputAriaLabel}
-        aria-required={required}
-        aria-invalid={hasError}
-        aria-describedby={
-          hasError
-            ? `${inputId}-error`
-            : helpText
-            ? `${inputId}-help`
-            : undefined
-        }
-        {...register(name, {
-          required: required ? `${label} is required.` : false,
-          ...registerOptions,
-        })}
-        {...restInputProps}
-      />
+      <div className="pass-group" style={{ position: "relative" }}>
+        <input
+          id={inputId}
+          type={
+            type === "password" ? (showPassword ? "text" : "password") : type
+          }
+          className={inputClassName}
+          placeholder={placeholder}
+          aria-label={inputAriaLabel}
+          aria-required={required}
+          aria-invalid={hasError}
+          aria-describedby={
+            hasError
+              ? `${inputId}-error`
+              : helpText
+              ? `${inputId}-help`
+              : undefined
+          }
+          {...register(name, {
+            required: required ? `${label} is required.` : false,
+            ...registerOptions,
+          })}
+          {...restInputProps}
+        />
+        {!hasError && type === "password" && (
+          <span
+            className={`fas toggle-password ${
+              showPassword ? "fa-eye" : "fa-eye-slash"
+            }`}
+            onClick={() => setShowPassword(!showPassword)}
+          ></span>
+        )}
+      </div>
+
       {showError && hasError && (
         <p
           id={`${inputId}-error`}

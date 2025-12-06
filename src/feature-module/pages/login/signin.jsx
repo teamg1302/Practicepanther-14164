@@ -18,19 +18,17 @@ const Signin = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [isPasswordVisible, setPasswordVisible] = useState(false);
-  
+
   const signInSchema = yup.object({
     email: yup
       .string()
       .trim()
       .email(t("signin.validation.emailInvalid"))
       .required(t("signin.validation.emailRequired")),
-    password: yup
-      .string()
-      .required(t("signin.validation.passwordRequired")),
+    password: yup.string().required(t("signin.validation.passwordRequired")),
     rememberMe: yup.boolean().optional(),
   });
-  
+
   const {
     register,
     handleSubmit,
@@ -71,7 +69,9 @@ const Signin = () => {
     } catch (error) {
       // Show error message
       const errorMessage =
-        error?.message || error?.error || t("signin.messages.loginFailedMessage");
+        error?.message ||
+        error?.error ||
+        t("signin.messages.loginFailedMessage");
       Swal.fire({
         icon: "error",
         title: t("signin.messages.loginFailed"),
@@ -95,7 +95,7 @@ const Signin = () => {
                   <ImageWithBasePath src="assets/img/logo-white.png" alt />
                 </Link>
                 <div className="login-userheading">
-                  <h3>{t("signin.title")}</h3>
+                  <h3>{t("signin.welcomeBack")}</h3>
                   <h4>{t("signin.subtitle")}</h4>
                 </div>
                 <div className="form-login mb-3">
@@ -136,7 +136,9 @@ const Signin = () => {
                   )}
                 </div>
                 <div className="form-login mb-3">
-                  <label className="form-label">{t("signin.passwordLabel")}</label>
+                  <label className="form-label">
+                    {t("signin.passwordLabel")}
+                  </label>
                   <div className="pass-group" style={{ position: "relative" }}>
                     <Lock
                       style={{
@@ -205,7 +207,9 @@ const Signin = () => {
                     className="btn btn-login"
                     disabled={isSubmitting}
                   >
-                    {isSubmitting ? t("signin.signingIn") : t("signin.signInButton")}
+                    {isSubmitting
+                      ? t("signin.signingIn")
+                      : t("signin.signInButton")}
                   </button>
                 </div>
                 {/* <div className="signinform">

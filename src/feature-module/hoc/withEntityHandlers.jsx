@@ -298,8 +298,24 @@ const withEntityHandlers = (WrappedComponent) => {
       muiTablePaperProps: {
         elevation: 0,
         sx: {
-          border: "1px solid #ccc",
-          borderRadius: "8px",
+          width: "100%",
+          border: merged.tableSetting.onlyTopBorder
+            ? "unset"
+            : "1px solid #ccc",
+          borderTop: merged.tableSetting.onlyTopBorder
+            ? "1px solid #ccc"
+            : "1px solid #ccc",
+          borderRadius: merged.tableSetting.onlyTopBorder ? "0" : "8px",
+        },
+      },
+      muiTableContainerProps: {
+        sx: {
+          width: "100%",
+        },
+      },
+      muiTableProps: {
+        sx: {
+          width: "100%",
         },
       },
       muiTableHeadCellProps: {

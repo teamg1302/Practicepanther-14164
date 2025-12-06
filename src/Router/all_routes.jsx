@@ -1,5 +1,6 @@
 import {
   User,
+  Users,
   Server,
   Lock,
   // Tool,
@@ -7,6 +8,7 @@ import {
   Trash2,
   Home,
   Info,
+  Briefcase,
 } from "react-feather";
 import { Settings } from "feather-icons-react/build/IconComponents";
 
@@ -26,7 +28,41 @@ export const all_routes = {
       text: "Dashboard",
       permission: "read",
     },
+    {
+      id: 2,
+      module: "contacts",
+      name: "Contacts",
+      path: "/contacts",
+      icon: Users,
+      text: "Contacts",
+      permission: "read",
+    },
+    {
+      id: 3,
+      module: "matters",
+      name: "Matters",
+      path: "/matters",
+      icon: Briefcase,
+      text: "Matters",
+      permission: "read",
+    },
   ],
+  addContact: {
+    module: "contacts",
+    name: "addContact",
+    path: "/contacts/add",
+    icon: UserPlus,
+    text: "New",
+    permission: "create",
+  },
+  editContact: {
+    module: "contacts",
+    name: "editContact",
+    path: "/contacts/:contactId/edit",
+    icon: User,
+    text: "Edit Contact",
+    permission: "update",
+  },
   settings: [
     {
       id: 1,

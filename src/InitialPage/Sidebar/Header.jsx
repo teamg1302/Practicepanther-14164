@@ -18,8 +18,9 @@
  */
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import FeatherIcon from "feather-icons-react";
+import { Lock } from "react-feather";
 import ImageWithBasePath from "../../core/img/imagewithbasebath";
 import { Search, Settings, XCircle } from "react-feather";
 import { all_routes } from "../../Router/all_routes";
@@ -27,6 +28,7 @@ import { logout } from "../../core/services/authService";
 import { clearAuth } from "../../core/redux/action";
 
 const Header = () => {
+  const auth = useSelector((state) => state.auth);
   const route = all_routes;
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -505,17 +507,17 @@ const Header = () => {
               <FeatherIcon icon="maximize" aria-hidden="true" />
             </Link>
           </li>
-          <li className="nav-item nav-item-box">
+          {/* <li className="nav-item nav-item-box">
             <Link to="#" aria-label="Email notifications (1 unread)">
-              {/* <i data-feather="mail" /> */}
+              <i data-feather="mail" />
               <FeatherIcon icon="mail" aria-hidden="true" />
               <span className="badge rounded-pill" aria-label="1 unread email">
                 1
               </span>
             </Link>
-          </li>
+          </li> */}
           {/* Notifications */}
-          <li className="nav-item dropdown nav-item-box">
+          {/* <li className="nav-item dropdown nav-item-box">
             <Link
               to="#"
               className="dropdown-toggle nav-link"
@@ -525,7 +527,7 @@ const Header = () => {
               aria-expanded="false"
               aria-haspopup="true"
             >
-              {/* <i data-feather="bell" /> */}
+              <i data-feather="bell" />
               <FeatherIcon icon="bell" aria-hidden="true" />
               <span
                 className="badge rounded-pill"
@@ -683,14 +685,15 @@ const Header = () => {
                 <Link to="#">View all Notifications</Link>
               </div>
             </div>
-          </li>
+          </li> */}
           {/* /Notifications */}
           <li className="nav-item nav-item-box">
             <Link to="/settings/personal" aria-label="Settings">
-              {/* <i data-feather="settings" /> */}
+              <i data-feather="settings" />
               <FeatherIcon icon="settings" aria-hidden="true" />
             </Link>
           </li>
+
           <li className="nav-item dropdown has-arrow main-drop">
             <Link
               to="#"
@@ -710,8 +713,8 @@ const Header = () => {
                   />
                 </span>
                 <span className="user-detail">
-                  <span className="user-name">John Smilga</span>
-                  <span className="user-role">Super Admin</span>
+                  <span className="user-name">{auth?.user.name}</span>
+                  <span className="user-role">{auth?.role}</span>
                 </span>
               </span>
             </Link>
@@ -732,9 +735,17 @@ const Header = () => {
                 </div>
                 <hr className="m-0" /> */}
 
-                <Link className="dropdown-item" to={route.generalsettings}>
+                <Link className="dropdown-item" to={route.settings[0].path}>
                   <Settings className="me-2" />
-                  Settings
+                  Personal Settings
+                </Link>
+                <hr className="m-0" />
+                <Link
+                  className="dropdown-item"
+                  to={route.settings[0].children[1].path}
+                >
+                  <Lock className="me-2" />
+                  Change Password
                 </Link>
                 <hr className="m-0" />
                 <Link

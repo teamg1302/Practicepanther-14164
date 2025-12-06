@@ -22,6 +22,10 @@ export const getValidationRules = (t, passwordField = "") => {
   }
 
   return {
+    textOnlyRequired: yup
+      .string()
+      .trim()
+      .required(t("formElements.validation.required")),
     passwordOnlyRequired: yup
       .string()
       .trim()
@@ -33,7 +37,7 @@ export const getValidationRules = (t, passwordField = "") => {
       .max(16, () => t("formElements.validation.maxLength", { max: 16 }))
       .matches(
         /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
-        t("formElements.validation.passwordPattern")
+        t("formElements.validation.invalid")
       )
       .required(t("formElements.validation.required")),
     confirmPassword: confirmPasswordSchema,

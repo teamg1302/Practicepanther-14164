@@ -128,7 +128,7 @@ const Dashboard = () => {
                   <h5>
                     <CountUp start={0} end={307144} duration={3} prefix="$" />
                   </h5>
-                  <h6>{t("dashboard.totalPurchaseDue")}</h6>
+                  <h6>{t("dashboard.totalMonthRevenue")}</h6>
                 </div>
               </div>
             </div>
@@ -151,7 +151,7 @@ const Dashboard = () => {
                       duration={3} // Duration in seconds
                     />
                   </h5>
-                  <h6>{t("dashboard.totalSalesDue")}</h6>
+                  <h6>{t("dashboard.totalTodayRevenue")}</h6>
                 </div>
               </div>
             </div>
@@ -175,7 +175,7 @@ const Dashboard = () => {
                       decimals={1}
                     />
                   </h5>
-                  <h6>{t("dashboard.totalSaleAmount")}</h6>
+                  <h6>{t("dashboard.totalRevenue")}</h6>
                 </div>
               </div>
             </div>
@@ -205,8 +205,8 @@ const Dashboard = () => {
             <div className="col-xl-3 col-sm-6 col-12 d-flex">
               <div className="dash-count">
                 <div className="dash-counts">
-                  <h4>100</h4>
-                  <h5>{t("dashboard.customers")}</h5>
+                  <h4>125</h4>
+                  <h5>Users</h5>
                 </div>
                 <div className="dash-imgs">
                   <User />
@@ -217,7 +217,7 @@ const Dashboard = () => {
               <div className="dash-count das1">
                 <div className="dash-counts">
                   <h4>110</h4>
-                  <h5>{t("dashboard.suppliers")}</h5>
+                  <h5>Active Users</h5>
                 </div>
                 <div className="dash-imgs">
                   <UserCheck />
@@ -228,7 +228,7 @@ const Dashboard = () => {
               <div className="dash-count das2">
                 <div className="dash-counts">
                   <h4>150</h4>
-                  <h5>{t("dashboard.purchaseInvoice")}</h5>
+                  <h5>Active Matters</h5>
                 </div>
                 <div className="dash-imgs">
                   <ImageWithBasePath
@@ -243,7 +243,7 @@ const Dashboard = () => {
               <div className="dash-count das3">
                 <div className="dash-counts">
                   <h4>170</h4>
-                  <h5>{t("dashboard.salesInvoice")}</h5>
+                  <h5>Total Contacts</h5>
                 </div>
                 <div className="dash-imgs">
                   <File />
@@ -257,14 +257,14 @@ const Dashboard = () => {
             <div className="col-xl-7 col-sm-12 col-12 d-flex">
               <div className="card flex-fill">
                 <div className="card-header d-flex justify-content-between align-items-center">
-                  <h5 className="card-title mb-0">{t("dashboard.purchaseAndSales")}</h5>
+                  <h5 className="card-title mb-0">Revenue</h5>
                   <div className="graph-sets">
                     <ul className="mb-0">
                       <li>
-                        <span>{t("dashboard.sales")}</span>
+                        <span>Revenue</span>
                       </li>
                       <li>
-                        <span>{t("dashboard.purchase")}</span>
+                        <span>Matters</span>
                       </li>
                     </ul>
                     <div className="dropdown dropdown-wraper">
@@ -314,7 +314,7 @@ const Dashboard = () => {
             <div className="col-xl-5 col-sm-12 col-12 d-flex">
               <div className="card flex-fill default-cover mb-4">
                 <div className="card-header d-flex justify-content-between align-items-center">
-                  <h4 className="card-title mb-0">{t("dashboard.recentProducts")}</h4>
+                  <h4 className="card-title mb-0">Recent Activities</h4>
                   <div className="view-all-link">
                     <Link to="#" className="view-all d-flex align-items-center">
                       {t("dashboard.viewAll")}
@@ -330,78 +330,66 @@ const Dashboard = () => {
                       <thead>
                         <tr>
                           <th>#</th>
-                          <th>{t("dashboard.recentProducts")}</th>
-                          <th>Price</th>
+                          <th>Activity</th>
+                          <th>Time</th>
                         </tr>
                       </thead>
                       <tbody>
                         <tr>
                           <td>1</td>
                           <td className="productimgname">
-                            <Link
-                              to={route.productlist}
-                              className="product-img"
-                            >
-                              <ImageWithBasePath
-                                src="assets/img/products/stock-img-01.png"
-                                alt="product"
-                              />
-                            </Link>
-                            <Link to={route.productlist}>
-                              Lenevo 3rd Generation
-                            </Link>
+                            New matter opened: Smith v. Johnson - Personal
+                            Injury
                           </td>
-                          <td>$12500</td>
+                          <td>Dec 06, 2025 00:19</td>
                         </tr>
                         <tr>
                           <td>2</td>
                           <td className="productimgname">
-                            <Link
-                              to={route.productlist}
-                              className="product-img"
-                            >
-                              <ImageWithBasePath
-                                src="assets/img/products/stock-img-06.png"
-                                alt="product"
-                              />
-                            </Link>
-                            <Link to={route.productlist}>Bold V3.2</Link>
+                            Payment received: $5,000 from Acme Corp - Invoice
+                            #INV-2024-001
                           </td>
-                          <td>$1600</td>
+                          <td>Dec 05, 2025 23:19</td>
                         </tr>
                         <tr>
                           <td>3</td>
                           <td className="productimgname">
-                            <Link
-                              to={route.productlist}
-                              className="product-img"
-                            >
-                              <ImageWithBasePath
-                                src="assets/img/products/stock-img-02.png"
-                                alt="product"
-                              />
-                            </Link>
-                            <Link to={route.productlist}>Nike Jordan</Link>
+                            Document signed: Contract Agreement - Client: Jane
+                            Williams
                           </td>
-                          <td>$2000</td>
+                          <td>Dec 05, 2025 22:19</td>
                         </tr>
                         <tr>
                           <td>4</td>
                           <td className="productimgname">
-                            <Link
-                              to={route.productlist}
-                              className="product-img"
-                            >
-                              <ImageWithBasePath
-                                src="assets/img/products/stock-img-03.png"
-                                alt="product"
-                              />
-                            </Link>
-                            <Link to={route.productlist}>
-                              Apple Series 5 Watch
-                            </Link>
+                            New client onboarded: Robert Martinez - Estate
+                            Planning
                           </td>
-                          <td>$800</td>
+                          <td>Dec 05, 2025 21:19</td>
+                        </tr>
+                        <tr>
+                          <td>5</td>
+                          <td className="productimgname">
+                            New client onboarded: Robert Martinez - Estate
+                            Planning
+                          </td>
+                          <td>Dec 05, 2025 21:19</td>
+                        </tr>
+                        <tr>
+                          <td>6</td>
+                          <td className="productimgname">
+                            New client onboarded: Robert Martinez - Estate
+                            Planning
+                          </td>
+                          <td>Dec 05, 2025 21:19</td>
+                        </tr>
+                        <tr>
+                          <td>7</td>
+                          <td className="productimgname">
+                            New client onboarded: Robert Martinez - Estate
+                            Planning
+                          </td>
+                          <td>Dec 05, 2025 21:19</td>
                         </tr>
                       </tbody>
                     </table>
@@ -412,50 +400,26 @@ const Dashboard = () => {
           </div>
           <div className="card">
             <div className="card-header">
-              <h4 className="card-title">{t("dashboard.expiredProducts")}</h4>
+              <h4 className="card-title">Recent Matters </h4>
             </div>
             <div className="card-body">
               <div className="table-responsive dataview">
                 <table className="table dashboard-expired-products">
                   <thead>
                     <tr>
-                      <th className="no-sort">
-                        <label className="checkboxs">
-                          <input type="checkbox" id="select-all" />
-                          <span className="checkmarks" />
-                        </label>
-                      </th>
-                      <th>{t("dashboard.product")}</th>
-                      <th>{t("dashboard.sku")}</th>
-                      <th>{t("dashboard.manufacturedDate")}</th>
-                      <th>{t("dashboard.expiredDate")}</th>
+                      <th>Client</th>
+                      <th>Matter Type </th>
+                      <th>Date</th>
+                      <th>Amount</th>
                       <th className="no-sort">{t("dashboard.action")}</th>
                     </tr>
                   </thead>
                   <tbody>
                     <tr>
-                      <td>
-                        <label className="checkboxs">
-                          <input type="checkbox" />
-                          <span className="checkmarks" />
-                        </label>
-                      </td>
-                      <td>
-                        <div className="productimgname">
-                          <Link to="#" className="product-img stock-img">
-                            <ImageWithBasePath
-                              src="assets/img/products/expire-product-01.png"
-                              alt="product"
-                            />
-                          </Link>
-                          <Link to="#">Red Premium Handy </Link>
-                        </div>
-                      </td>
-                      <td>
-                        <Link to="#">PT006</Link>
-                      </td>
-                      <td>17 Jan 2023</td>
-                      <td>29 Mar 2023</td>
+                      <td>Sarah Johnson</td>
+                      <td>Personal Injury</td>
+                      <td>Dec 06, 2025, 12:19 AM </td>
+                      <td>$12,500.00 </td>
                       <td className="action-table-data">
                         <div className="edit-delete-action">
                           <Link className="me-2 p-2" to="#">
@@ -475,28 +439,10 @@ const Dashboard = () => {
                       </td>
                     </tr>
                     <tr>
-                      <td>
-                        <label className="checkboxs">
-                          <input type="checkbox" />
-                          <span className="checkmarks" />
-                        </label>
-                      </td>
-                      <td>
-                        <div className="productimgname">
-                          <Link to="#" className="product-img stock-img">
-                            <ImageWithBasePath
-                              src="assets/img/products/expire-product-02.png"
-                              alt="product"
-                            />
-                          </Link>
-                          <Link to="#">Iphone 14 Pro</Link>
-                        </div>
-                      </td>
-                      <td>
-                        <Link to="#">PT007</Link>
-                      </td>
-                      <td>22 Feb 2023</td>
-                      <td>04 Apr 2023</td>
+                      <td>Michael Chen</td>
+                      <td>Corporate Law</td>
+                      <td>Dec 05, 2025, 11:19 PM </td>
+                      <td>$8,750.00 </td>
                       <td className="action-table-data">
                         <div className="edit-delete-action">
                           <Link className="me-2 p-2" to="#">
@@ -516,28 +462,10 @@ const Dashboard = () => {
                       </td>
                     </tr>
                     <tr>
-                      <td>
-                        <label className="checkboxs">
-                          <input type="checkbox" />
-                          <span className="checkmarks" />
-                        </label>
-                      </td>
-                      <td>
-                        <div className="productimgname">
-                          <Link to="#" className="product-img stock-img">
-                            <ImageWithBasePath
-                              src="assets/img/products/expire-product-03.png"
-                              alt="product"
-                            />
-                          </Link>
-                          <Link to="#">Black Slim 200 </Link>
-                        </div>
-                      </td>
-                      <td>
-                        <Link to="#">PT008</Link>
-                      </td>
-                      <td>18 Mar 2023</td>
-                      <td>13 May 2023</td>
+                      <td>Emily Rodriguez</td>
+                      <td>Family Law</td>
+                      <td>Dec 05, 2025, 10:19 PM </td>
+                      <td>$15,200.00 </td>
                       <td className="action-table-data">
                         <div className="edit-delete-action">
                           <Link className="me-2 p-2" to="#">
@@ -557,28 +485,10 @@ const Dashboard = () => {
                       </td>
                     </tr>
                     <tr>
-                      <td>
-                        <label className="checkboxs">
-                          <input type="checkbox" />
-                          <span className="checkmarks" />
-                        </label>
-                      </td>
-                      <td>
-                        <div className="productimgname">
-                          <Link to="#" className="product-img stock-img">
-                            <ImageWithBasePath
-                              src="assets/img/products/expire-product-04.png"
-                              alt="product"
-                            />
-                          </Link>
-                          <Link to="#">Woodcraft Sandal</Link>
-                        </div>
-                      </td>
-                      <td>
-                        <Link to="#">PT009</Link>
-                      </td>
-                      <td>29 Mar 2023</td>
-                      <td>27 May 2023</td>
+                      <td>David Thompson</td>
+                      <td>Estate Planning</td>
+                      <td>Dec 05, 2025, 09:19 PM </td>
+                      <td>$6,200.00 </td>
                       <td className="action-table-data">
                         <div className="edit-delete-action">
                           <Link className="me-2 p-2" to="#">
@@ -598,28 +508,10 @@ const Dashboard = () => {
                       </td>
                     </tr>
                     <tr>
-                      <td>
-                        <label className="checkboxs">
-                          <input type="checkbox" />
-                          <span className="checkmarks" />
-                        </label>
-                      </td>
-                      <td>
-                        <div className="productimgname">
-                          <Link to="#" className="product-img stock-img">
-                            <ImageWithBasePath
-                              src="assets/img/products/stock-img-03.png"
-                              alt="product"
-                            />
-                          </Link>
-                          <Link to="#">Apple Series 5 Watch </Link>
-                        </div>
-                      </td>
-                      <td>
-                        <Link to="#">PT010</Link>
-                      </td>
-                      <td>24 Mar 2023</td>
-                      <td>26 May 2023</td>
+                      <td>David Thompson</td>
+                      <td>Estate Planning</td>
+                      <td>Dec 05, 2025, 09:19 PM </td>
+                      <td>$6,200.00 </td>
                       <td className="action-table-data">
                         <div className="edit-delete-action">
                           <Link

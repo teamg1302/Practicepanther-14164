@@ -29,7 +29,7 @@
  */
 const initialState = {
   toggle_header: false,
-  layoutstyledata: localStorage.getItem("layoutStyling"),
+  layoutstyledata: localStorage.getItem("layoutStyling") || "modern",
   auth: {
     user: null,
     token: null,
