@@ -301,13 +301,13 @@ const mastersSlice = createSlice({
       })
       // Fetch countries - fulfilled (success)
       .addCase(fetchCountries.fulfilled, (state, action) => {
-        state.countriesLoading = false;
+        state.countriesLoading = true;
         state.countries = action.payload;
         state.countriesError = null;
       })
       // Fetch countries - rejected (error)
       .addCase(fetchCountries.rejected, (state, action) => {
-        state.countriesLoading = false;
+        state.countriesLoading = true;
         state.countriesError = action.payload || action.error.message;
       })
       // Fetch currencies - pending

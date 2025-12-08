@@ -2,25 +2,19 @@ import React, { useState, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import * as yup from "yup";
 import { Link } from "react-router-dom";
-import Select from "react-select";
 import Swal from "sweetalert2";
 import PropTypes from "prop-types";
-import { FormButton } from "@/feature-module/components/buttons";
-import { FormProvider, useFormContext } from "@/feature-module/components/rhf";
-import {
-  ArrowLeft,
-  Calendar,
-  ChevronDown,
-  ChevronUp,
-  Info,
-  LifeBuoy,
-  List,
-  PlusCircle,
-  Trash2,
-  X,
-} from "feather-icons-react/build/IconComponents";
+import { ArrowLeft, ChevronUp } from "feather-icons-react/build/IconComponents";
 import { useDispatch, useSelector } from "react-redux";
 import { OverlayTrigger, Tooltip } from "react-bootstrap";
+import { clearCountriesError, fetchCountries } from "@/core/redux/countries";
+import { getStatesByCountry } from "@/core/services/mastersService";
+import { getUsers } from "@/core/services/userService";
+import { getTags } from "@/core/services/tagService";
+import { getContacts } from "@/core/services/contactsService";
+import { FormButton } from "@/feature-module/components/buttons";
+import { FormProvider, useFormContext } from "@/feature-module/components/rhf";
+import { createContact } from "@/core/services/contactsService";
 import { getValidationRules } from "@/core/validation-rules";
 import { all_routes } from "@/Router/all_routes";
 
@@ -46,15 +40,34 @@ const MattersAddEdit = () => {
       yup.object({
         name: getValidationRules(t).textOnlyRequired,
         registrationNumber: getValidationRules(t).textOnlyRequired,
+        country: getValidationRules(t).textOnlyRequired,
         assignedTo: getValidationRules(t).textOnlyRequired,
       }),
     [t]
   );
 
   const defaultValues = {
-    currentPassword: "",
-    newPassword: "",
-    confirmPassword: "",
+    contactPhoto: "",
+    name: "",
+    registrationNumber: "",
+    status: "",
+    website: "",
+    homePhone: "",
+    mobilePhone: "",
+    officePhone: "",
+    fax: "",
+    email: "",
+    preferredContactMethod: "",
+    contactNotes: "",
+    addressLine1: "",
+    addressLine2: "",
+    city: "",
+    zipCode: "",
+    country: "",
+    state: "",
+    assignedTo: "",
+    tags: [],
+    additionalInvoiceRecipients: [],
   };
 
   const fields = useMemo(
@@ -65,39 +78,43 @@ const MattersAddEdit = () => {
           <div className="card-title-head mb-3">
             <h6 className="border-bottom-0 mb-0 pb-0">{"Basic Information"}</h6>
             <small className="text-muted">
-              {"Enter the contact's basic details"}
+              {"Enter the matter's basic details"}
             </small>
           </div>
         ),
       },
+
       {
-        id: "contactPhoto",
-        col: 12,
-        name: "contactPhoto",
-        label: "Contact Photo",
-        type: "userImage",
-        required: true,
-      },
-      {
-        id: "name",
+        id: "matterName",
         col: 6,
-        name: "name",
-        label: "Name",
+        name: "matterName",
+        label: "Matter Name",
         type: "text",
         required: true,
         inputProps: {
-          placeholder: "Enter the contact's name",
+          placeholder: "Enter the matter's name",
         },
       },
       {
-        id: "registrationNumber ",
+        id: "matterNumber ",
         col: 6,
-        name: "registrationNumber",
-        label: "Registration Number",
+        name: "matterNumber",
+        label: "Matter Number",
         type: "text",
         inputProps: {
-          placeholder: "Enter  registration/case number",
+          placeholder: "Enter  matter number",
         },
+      },
+      {
+        id: "contact",
+        col: 6,
+        name: "contact",
+        label: "Contact",
+        type: "async-select-pagination",
+        api: getContacts,
+        pageSize: 50,
+        searchKey: "search",
+        required: true,
       },
       {
         id: "status",
@@ -111,235 +128,84 @@ const MattersAddEdit = () => {
         ],
       },
       {
-        id: "website",
-        col: 6,
-        name: "website",
-        label: "Website",
-        type: "text",
-        inputProps: {
-          placeholder: "Enter the contact's website",
-        },
-      },
-      {
-        type: "ui",
-        element: (
-          <div className="card-title-head mb-3">
-            <h6 className="border-bottom-0 mb-0 pb-0">
-              {"Contact Information"}
-            </h6>
-            <small className="text-muted">{"Phone numbers and emails"}</small>
-          </div>
-        ),
-      },
-      {
-        id: "homePhone",
-        col: 6,
-        name: "homePhone",
-        label: "Home Phone",
-        type: "text",
-        inputProps: {
-          placeholder: "Enter the contact's home phone",
-        },
-      },
-      {
-        id: "mobilePhone",
-        col: 6,
-        name: "mobilePhone",
-        label: "Mobile Phone",
-        type: "text",
-        inputProps: {
-          placeholder: "Enter the contact's mobile phone",
-        },
-      },
-      {
-        id: "officePhone",
-        col: 6,
-        name: "officePhone",
-        label: "Office Phone",
-        type: "text",
-        inputProps: {
-          placeholder: "Enter the contact's office phone",
-        },
-      },
-      {
-        id: "fax",
-        col: 6,
-        name: "fax",
-        label: "Fax",
-        type: "text",
-        inputProps: {
-          placeholder: "Enter the contact's fax",
-        },
-      },
-      {
-        id: "email",
-        col: 6,
-        name: "email",
-        label: "Email",
-        type: "email",
-        inputProps: {
-          placeholder: "Enter the contact's email",
-        },
-      },
-      {
-        id: "preferredContactMethod",
-        col: 6,
-        name: "preferredContactMethod",
-        label: "Preferred Contact Method",
-        type: "select",
-        options: [
-          { label: "Email", value: "email" },
-          { label: "Phone", value: "phone" },
-        ],
-      },
-      {
-        id: "contactNotes",
+        id: "notes",
         col: 12,
-        name: "contactNotes",
-        label: "Contact Notes",
+        name: "notes",
+        label: "Notes",
         type: "textarea",
         rows: 5,
         maxLength: 500,
         inputProps: {
-          placeholder: "Enter the contact's notes",
+          placeholder: "Enter any notes about the matter",
         },
-      },
-      {
-        type: "ui",
-        element: (
-          <div className="card-title-head mb-3">
-            <h6 className="border-bottom-0 mb-0 pb-0">{"Address"}</h6>
-            <small className="text-muted">{"Contact's physical address"}</small>
-          </div>
-        ),
-      },
-      {
-        id: "addressLine1",
-        col: 12,
-        name: "addressLine1",
-        label: "Address Line 1",
-        type: "text",
-        inputProps: {
-          placeholder: "Enter the contact's address line 1",
-        },
-      },
-      {
-        id: "addressLine2",
-        col: 12,
-        name: "addressLine2",
-        label: "Address Line 2",
-        type: "text",
-        inputProps: {
-          placeholder: "Enter the contact's address line 2",
-        },
-      },
-      {
-        id: "city",
-        col: 6,
-        name: "city",
-        label: "City",
-        type: "text",
-        inputProps: {
-          placeholder: "Enter the contact's city",
-        },
-      },
-      {
-        id: "zipCode",
-        col: 6,
-        name: "zipCode",
-        label: "Zip/Postal Code",
-        type: "text",
-        inputProps: {
-          placeholder: "Enter the contact's zip code",
-        },
-      },
-      {
-        id: "country",
-        col: 6,
-        name: "country",
-        label: "Country",
-        type: "select",
-        options: [
-          { label: "United States", value: "united_states" },
-          { label: "Canada", value: "canada" },
-          { label: "United Kingdom", value: "united_kingdom" },
-          { label: "Australia", value: "australia" },
-          { label: "New Zealand", value: "new_zealand" },
-        ],
-      },
-      {
-        id: "state",
-        col: 6,
-        name: "state",
-        label: "State",
-        type: "select",
-        options: [
-          { label: "California", value: "california" },
-          { label: "New York", value: "new_york" },
-          { label: "Texas", value: "texas" },
-          { label: "Florida", value: "florida" },
-          { label: "Illinois", value: "illinois" },
-        ],
       },
       {
         type: "ui",
         element: (
           <div className="card-title-head mb-3">
             <h6 className="border-bottom-0 mb-0 pb-0">
-              {"Assignment & Organization"}
+              {"Financial Information"}
             </h6>
             <small className="text-muted">
-              {"Assign contact to a user and firm"}
+              {"Matter rates and billing details"}
             </small>
           </div>
         ),
       },
       {
-        id: "assignedTo",
+        id: "matterRate ",
         col: 6,
-        name: "assignedTo",
-        label: "Assigned To",
-        type: "select",
-        options: [
-          { label: "User 1", value: "user_1" },
-          { label: "User 2", value: "user_2" },
-        ],
-        required: true,
+        name: "matterRate",
+        label: "Matter Rate",
+        type: "text",
+        inputProps: {
+          placeholder: "Enter the matter's rate",
+        },
       },
       {
-        id: "tags",
-        col: 12,
-        name: "tags",
-        label: "Tags",
+        id: "userHourlyRate ",
+        col: 6,
+        name: "userHourlyRate",
+        label: "User Hourly Rate",
+        type: "text",
+        inputProps: {
+          placeholder: "Enter the user's hourly rate",
+        },
+      },
+      {
+        id: "invoiceTemplate",
+        col: 6,
+        name: "invoiceTemplate",
+        label: "Invoice Template",
         type: "select",
         options: [
-          { label: "Tag 1", value: "tag_1" },
-          { label: "Tag 2", value: "tag_2" },
+          { label: "Template 1", value: "template1" },
+          { label: "Template 2", value: "template2" },
         ],
       },
       {
-        type: "ui",
-        element: (
-          <div className="card-title-head mb-3">
-            <h6 className="border-bottom-0 mb-0 pb-0">
-              {"Additional Invoice Recipients"}
-            </h6>
-            <small className="text-muted">
-              {"Add other people who should receive invoices"}
-            </small>
-          </div>
-        ),
+        id: "isEvergreenRetainer",
+        col: 6,
+        name: "isEvergreenRetainer",
+        label: "Is Evergreen Retainer",
+        type: "switch",
       },
       {
-        id: "additionalInvoiceRecipients",
-        col: 12,
-        name: "additionalInvoiceRecipients",
-        label: "Additional Invoice Recipients",
-        type: "select",
-        options: [
-          { label: "Recipient 1", value: "recipient_1" },
-          { label: "Recipient 2", value: "recipient_2" },
-        ],
+        id: "evergreenRetainerRate",
+        col: 6,
+        name: "evergreenRetainerRate",
+        label: "Evergreen Retainer Rate",
+        type: "text",
+        inputProps: {
+          placeholder: "Enter the evergreen retainer rate",
+        },
+      },
+      {
+        id: "isAddRetainerToInvoice",
+        col: 6,
+        name: "isAddRetainerToInvoice",
+        label: "Add Retainer to Invoice",
+        type: "switch",
       },
     ],
     [t]
@@ -347,14 +213,10 @@ const MattersAddEdit = () => {
 
   const onSubmit = async (data, event) => {
     try {
-      // Remove confirmPassword before sending to API (only used for frontend validation)
-      // eslint-disable-next-line no-unused-vars
-      //  const { confirmPassword, ...passwordData } = data;
-
-      // await changePassword(data);
+      await createContact(data);
 
       Swal.fire({
-        title: t("changePasswordSetting.passwordUpdatedSuccessfully"),
+        title: t("httpMessages.createdSuccessfullyMessage"),
         icon: "success",
         timer: 1500,
       });
@@ -382,8 +244,8 @@ const MattersAddEdit = () => {
         <div className="page-header">
           <div className="add-item d-flex">
             <div className="page-title">
-              <h4>New Contact</h4>
-              <h6>Create new contact</h6>
+              <h4>New Matter</h4>
+              <h6>Create new matter</h6>
             </div>
           </div>
           <ul className="table-top-head">
@@ -391,7 +253,7 @@ const MattersAddEdit = () => {
               <div className="page-btn">
                 <Link to={route.headers[1].path} className="btn btn-secondary">
                   <ArrowLeft className="me-2" />
-                  Back to Contacts
+                  Back to Matters
                 </Link>
               </div>
             </li>
@@ -419,7 +281,7 @@ const MattersAddEdit = () => {
           defaultValues={defaultValues}
           onSubmit={onSubmit}
         >
-          <ContactForm fields={fields} />
+          <MattersForm fields={fields} />
         </FormProvider>
 
         {/* /add */}
@@ -428,7 +290,7 @@ const MattersAddEdit = () => {
   );
 };
 
-const ContactForm = ({ fields }) => {
+const MattersForm = ({ fields }) => {
   const {
     formState: { isSubmitting },
     reset,
@@ -455,7 +317,7 @@ const ContactForm = ({ fields }) => {
   );
 };
 
-ContactForm.propTypes = {
+MattersForm.propTypes = {
   fields: PropTypes.array.isRequired,
 };
 

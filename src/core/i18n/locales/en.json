@@ -256,6 +256,9 @@
       "saving": "Saving settings"
     }
   },
+  "httpMessages": {
+    "createdSuccessfullyMessage": "Item has been created successfully."
+  },
   "formElements": {
     "currentPassword": "Current Password",
     "currentPasswordPlaceholder": "Enter current password",

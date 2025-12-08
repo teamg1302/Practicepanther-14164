@@ -38,6 +38,11 @@ const initialState = {
     loginEmail: null,
   },
   masters: {
+    country: {
+      data: null,
+      loading: false,
+      error: null,
+    },
     timezones: [],
     timezonesLoading: false,
     timezonesError: null,

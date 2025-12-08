@@ -4,6 +4,10 @@ import { Input, Select } from "@/feature-module/components/form-elements";
 import { PhotoUpload } from "@/feature-module/components/form-elements/file-upload";
 import DatePicker from "@/feature-module/components/form-elements/datepicker";
 import Textarea from "@/feature-module/components/form-elements/textarea";
+import MasterPicker from "@/feature-module/components/form-elements/master-picker";
+import ApiSelect from "@/feature-module/components/form-elements/api-select";
+import AsyncSelectPagination from "@/feature-module/components/form-elements/async-select-pagination";
+import AsyncMultiSelectPagination from "@/feature-module/components/form-elements/async-multi-select-pagination";
 
 const EntityFormView = ({ fields }) => {
   const formFields = useMemo(() => {
@@ -50,6 +54,14 @@ const EntityFormView = ({ fields }) => {
             );
           }
 
+          if (type === "master") {
+            return (
+              <div key={id} className={`col-md-${col || 12}`}>
+                <MasterPicker name={name} label={label} {...rest} />
+              </div>
+            );
+          }
+
           if (type === "userImage") {
             return (
               <div key={id} className={`col-md-${col || 12}`}>
@@ -62,6 +74,34 @@ const EntityFormView = ({ fields }) => {
             return (
               <div key={id} className={`col-md-${col || 12}`}>
                 <DatePicker name={name} label={label} {...rest} />
+              </div>
+            );
+          }
+
+          if (type === "api") {
+            return (
+              <div key={id} className={`col-md-${col || 12}`}>
+                <ApiSelect name={name} label={label} {...rest} />
+              </div>
+            );
+          }
+
+          if (type === "async-select-pagination") {
+            return (
+              <div key={id} className={`col-md-${col || 12}`}>
+                <AsyncSelectPagination name={name} label={label} {...rest} />
+              </div>
+            );
+          }
+
+          if (type === "async-multi-select-pagination") {
+            return (
+              <div key={id} className={`col-md-${col || 12}`}>
+                <AsyncMultiSelectPagination
+                  name={name}
+                  label={label}
+                  {...rest}
+                />
               </div>
             );
           }

@@ -127,7 +127,8 @@ const FormSelect = ({
   const hasError = !!error;
   const errorMessage = error?.message;
   const selectAriaLabel = ariaLabel || label;
-  const defaultPlaceholder = placeholder || t("formElements.select.placeholder");
+  const defaultPlaceholder =
+    placeholder || t("formElements.select.placeholder");
 
   /**
    * Custom styles for react-select to match Bootstrap form styling.

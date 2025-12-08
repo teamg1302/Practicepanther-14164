@@ -65,7 +65,11 @@ const SettingsSideBar = ({ isMobileOpen, onClose }) => {
                               {route.children.map((child) => {
                                 const ChildIcon = child.icon;
                                 const isActive =
-                                  location.pathname === child.path;
+                                  location.pathname === child.path ||
+                                  (child.path !== "/" &&
+                                    location.pathname.startsWith(
+                                      child.path + "/"
+                                    ));
 
                                 return (
                                   <li key={child.id}>
@@ -85,7 +89,11 @@ const SettingsSideBar = ({ isMobileOpen, onClose }) => {
                           <Link
                             to={route.path}
                             className={
-                              location.pathname === route.path ? "active" : ""
+                              location.pathname === route.path ||
+                              (route.path !== "/" &&
+                                location.pathname.startsWith(route.path + "/"))
+                                ? "active"
+                                : ""
                             }
                           >
                             {Icon && <Icon />}

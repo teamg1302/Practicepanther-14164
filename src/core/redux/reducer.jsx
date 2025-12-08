@@ -10,6 +10,7 @@
 
 import initialState from "./initial.value";
 import mastersReducer from "./mastersReducer";
+import countriesReducer from "./countries";
 
 /**
  * Root reducer function that handles all Redux actions.
@@ -100,11 +101,24 @@ const rootReducer = (state = initialState, action) => {
       // Delegate all actions to mastersReducer (handles its own actions via slice)
       // This allows the slice to handle both sync and async actions
       const newMastersState = mastersReducer(state.masters, action);
-      // Only update if masters state changed (slice handles its own actions)
-      if (newMastersState !== state.masters) {
+
+      // Check countriesReducer for country-specific actions
+      const newCountriesState = countriesReducer(
+        state.masters?.country || { data: null, loading: false, error: null },
+        action
+      );
+
+      // Check if either reducer handled the action
+      const mastersChanged = newMastersState !== state.masters;
+      const countriesChanged = newCountriesState !== state.masters?.country;
+
+      if (mastersChanged || countriesChanged) {
         return {
           ...state,
-          masters: newMastersState,
+          masters: {
+            ...newMastersState,
+            country: newCountriesState,
+          },
         };
       }
       return state;

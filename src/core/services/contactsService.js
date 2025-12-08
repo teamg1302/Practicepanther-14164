@@ -45,3 +45,26 @@ export const getContacts = async (params = {}) => {
     throw error.response?.data || error.message;
   }
 };
+
+/**
+ * Create a new contact
+ * @param {Object} contactData - Contact data to create
+ * @returns {Promise} API response with created contact
+ *
+ * @example
+ * // Create a new contact
+ * await createContact({
+ *   firstName: "John",
+ *   lastName: "Doe",
+ *   email: "john.doe@example.com",
+ *   // ... other contact fields
+ * });
+ */
+export const createContact = async (contactData) => {
+  try {
+    const response = await api.post("/contacts", contactData);
+    return response.data?.data || response.data;
+  } catch (error) {
+    throw error.response?.data || error.message;
+  }
+};

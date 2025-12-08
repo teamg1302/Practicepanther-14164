@@ -59,6 +59,20 @@ export const publicRoutes = [
     element: <MattersList />,
     route: Route,
   },
+  {
+    id: 6,
+    path: routes.addMatter.path,
+    name: routes.addMatter.name,
+    element: <MattersAddEdit />,
+    route: Route,
+  },
+  {
+    id: 7,
+    path: routes.editMatter.path,
+    name: routes.editMatter.name,
+    element: <MattersAddEdit />,
+    route: Route,
+  },
 ];
 
 export const settingsRoutes = [

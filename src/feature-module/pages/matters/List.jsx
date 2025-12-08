@@ -167,9 +167,9 @@ const MattersList = () => {
             </li>
           </ul>
           <div className="page-btn">
-            <Link to={route.addContact.path} className="btn btn-added">
+            <Link to={route.addMatter.path} className="btn btn-added">
               <PlusCircle className="me-2 iconsize" />
-              {route.addContact.text}
+              {route.addMatter.text}
             </Link>
           </div>
           <div className="page-btn import">

@@ -63,6 +63,22 @@ export const all_routes = {
     text: "Edit Contact",
     permission: "update",
   },
+  addMatter: {
+    module: "matters",
+    name: "addMatter",
+    path: "/matters/add",
+    icon: Briefcase,
+    text: "New",
+    permission: "create",
+  },
+  editMatter: {
+    module: "matters",
+    name: "editMatter",
+    path: "/matters/:matterId/edit",
+    icon: Briefcase,
+    text: "Edit",
+    permission: "update",
+  },
   settings: [
     {
       id: 1,

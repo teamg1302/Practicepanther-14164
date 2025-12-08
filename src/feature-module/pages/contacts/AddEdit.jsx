@@ -2,25 +2,19 @@ import React, { useState, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import * as yup from "yup";
 import { Link } from "react-router-dom";
-import Select from "react-select";
 import Swal from "sweetalert2";
 import PropTypes from "prop-types";
-import { FormButton } from "@/feature-module/components/buttons";
-import { FormProvider, useFormContext } from "@/feature-module/components/rhf";
-import {
-  ArrowLeft,
-  Calendar,
-  ChevronDown,
-  ChevronUp,
-  Info,
-  LifeBuoy,
-  List,
-  PlusCircle,
-  Trash2,
-  X,
-} from "feather-icons-react/build/IconComponents";
+import { ArrowLeft, ChevronUp } from "feather-icons-react/build/IconComponents";
 import { useDispatch, useSelector } from "react-redux";
 import { OverlayTrigger, Tooltip } from "react-bootstrap";
+import { clearCountriesError, fetchCountries } from "@/core/redux/countries";
+import { getStatesByCountry } from "@/core/services/mastersService";
+import { getUsers } from "@/core/services/userService";
+import { getTags } from "@/core/services/tagService";
+import { getContacts } from "@/core/services/contactsService";
+import { FormButton } from "@/feature-module/components/buttons";
+import { FormProvider, useFormContext } from "@/feature-module/components/rhf";
+import { createContact } from "@/core/services/contactsService";
 import { getValidationRules } from "@/core/validation-rules";
 import { all_routes } from "@/Router/all_routes";
 
@@ -46,15 +40,34 @@ const ContactsAddEdit = () => {
       yup.object({
         name: getValidationRules(t).textOnlyRequired,
         registrationNumber: getValidationRules(t).textOnlyRequired,
+        country: getValidationRules(t).textOnlyRequired,
         assignedTo: getValidationRules(t).textOnlyRequired,
       }),
     [t]
   );
 
   const defaultValues = {
-    currentPassword: "",
-    newPassword: "",
-    confirmPassword: "",
+    contactPhoto: "",
+    name: "",
+    registrationNumber: "",
+    status: "",
+    website: "",
+    homePhone: "",
+    mobilePhone: "",
+    officePhone: "",
+    fax: "",
+    email: "",
+    preferredContactMethod: "",
+    contactNotes: "",
+    addressLine1: "",
+    addressLine2: "",
+    city: "",
+    zipCode: "",
+    country: "",
+    state: "",
+    assignedTo: "",
+    tags: [],
+    additionalInvoiceRecipients: [],
   };
 
   const fields = useMemo(
@@ -258,28 +271,21 @@ const ContactsAddEdit = () => {
         col: 6,
         name: "country",
         label: "Country",
-        type: "select",
-        options: [
-          { label: "United States", value: "united_states" },
-          { label: "Canada", value: "canada" },
-          { label: "United Kingdom", value: "united_kingdom" },
-          { label: "Australia", value: "australia" },
-          { label: "New Zealand", value: "new_zealand" },
-        ],
+        type: "master",
+        action: fetchCountries,
+        clearError: clearCountriesError,
+        dataKey: "country",
+        required: true,
       },
       {
         id: "state",
         col: 6,
         name: "state",
         label: "State",
-        type: "select",
-        options: [
-          { label: "California", value: "california" },
-          { label: "New York", value: "new_york" },
-          { label: "Texas", value: "texas" },
-          { label: "Florida", value: "florida" },
-          { label: "Illinois", value: "illinois" },
-        ],
+        type: "api",
+        isDependent: true,
+        dependentKey: "country",
+        api: getStatesByCountry,
       },
       {
         type: "ui",
@@ -299,11 +305,10 @@ const ContactsAddEdit = () => {
         col: 6,
         name: "assignedTo",
         label: "Assigned To",
-        type: "select",
-        options: [
-          { label: "User 1", value: "user_1" },
-          { label: "User 2", value: "user_2" },
-        ],
+        type: "async-select-pagination",
+        api: getUsers,
+        pageSize: 50,
+        searchKey: "search",
         required: true,
       },
       {
@@ -311,11 +316,10 @@ const ContactsAddEdit = () => {
         col: 12,
         name: "tags",
         label: "Tags",
-        type: "select",
-        options: [
-          { label: "Tag 1", value: "tag_1" },
-          { label: "Tag 2", value: "tag_2" },
-        ],
+        type: "async-multi-select-pagination",
+        api: getTags,
+        pageSize: 50,
+        searchKey: "search",
       },
       {
         type: "ui",
@@ -335,11 +339,10 @@ const ContactsAddEdit = () => {
         col: 12,
         name: "additionalInvoiceRecipients",
         label: "Additional Invoice Recipients",
-        type: "select",
-        options: [
-          { label: "Recipient 1", value: "recipient_1" },
-          { label: "Recipient 2", value: "recipient_2" },
-        ],
+        type: "async-multi-select-pagination",
+        api: getContacts,
+        pageSize: 50,
+        searchKey: "search",
       },
     ],
     [t]
@@ -347,14 +350,10 @@ const ContactsAddEdit = () => {
 
   const onSubmit = async (data, event) => {
     try {
-      // Remove confirmPassword before sending to API (only used for frontend validation)
-      // eslint-disable-next-line no-unused-vars
-      //  const { confirmPassword, ...passwordData } = data;
-
-      // await changePassword(data);
+      await createContact(data);
 
       Swal.fire({
-        title: t("changePasswordSetting.passwordUpdatedSuccessfully"),
+        title: t("httpMessages.createdSuccessfullyMessage"),
         icon: "success",
         timer: 1500,
       });
