@@ -46,7 +46,7 @@ const PersonalSettings = () => {
   // Determine if we're in create mode (add user) or edit mode
   const isCreateMode = React.useMemo(() => {
     return location.pathname === all_routes.addUser;
-  }, [location.pathname, userId]);
+  }, [location.pathname]);
 
   const personalSettingsSchema = React.useMemo(
     () =>

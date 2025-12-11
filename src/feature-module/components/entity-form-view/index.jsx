@@ -18,6 +18,7 @@ const EntityFormView = ({ fields }) => {
           const isInputType = [
             "text",
             "email",
+            "date",
             "number",
             "password",
             "tel",

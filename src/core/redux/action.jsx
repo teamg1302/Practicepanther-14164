@@ -145,3 +145,15 @@ export const setTimezonesLoading = (payload) => ({
   type: "SET_TIMEZONES_LOADING",
   payload,
 });
+
+/**
+ * Action creator to set page loader state.
+ * @param {boolean} payload - Loading state (true/false)
+ * @returns {Object} Redux action object with type "SET_PAGE_LOADER" and payload
+ * @example
+ * dispatch(setPageLoader(true));
+ */
+export const setPageLoader = (payload) => ({
+  type: "SET_PAGE_LOADER",
+  payload,
+});

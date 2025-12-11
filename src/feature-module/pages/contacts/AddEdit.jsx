@@ -1,21 +1,27 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import * as yup from "yup";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import Swal from "sweetalert2";
 import PropTypes from "prop-types";
 import { ArrowLeft, ChevronUp } from "feather-icons-react/build/IconComponents";
 import { useDispatch, useSelector } from "react-redux";
 import { OverlayTrigger, Tooltip } from "react-bootstrap";
+import { convertToFormData } from "@/core/utilities/formDataConverter";
 import { clearCountriesError, fetchCountries } from "@/core/redux/countries";
 import { getStatesByCountry } from "@/core/services/mastersService";
 import { getUsers } from "@/core/services/userService";
 import { getTags } from "@/core/services/tagService";
-import { getContacts } from "@/core/services/contactsService";
+import {
+  getContacts,
+  getContactById,
+  createContact,
+  updateContact,
+} from "@/core/services/contactsService";
 import { FormButton } from "@/feature-module/components/buttons";
 import { FormProvider, useFormContext } from "@/feature-module/components/rhf";
-import { createContact } from "@/core/services/contactsService";
 import { getValidationRules } from "@/core/validation-rules";
+
 import { all_routes } from "@/Router/all_routes";
 
 import { setToogleHeader } from "@/core/redux/action";
@@ -25,7 +31,7 @@ import EntityFormView from "@/feature-module/components/entity-form-view";
 const ContactsAddEdit = () => {
   const route = all_routes;
   const dispatch = useDispatch();
-
+  const { contactId } = useParams();
   const data = useSelector((state) => state.toggle_header);
 
   const renderCollapseTooltip = (props) => (
@@ -40,35 +46,35 @@ const ContactsAddEdit = () => {
       yup.object({
         name: getValidationRules(t).textOnlyRequired,
         registrationNumber: getValidationRules(t).textOnlyRequired,
-        country: getValidationRules(t).textOnlyRequired,
+        countryId: getValidationRules(t).textOnlyRequired,
         assignedTo: getValidationRules(t).textOnlyRequired,
       }),
     [t]
   );
 
-  const defaultValues = {
-    contactPhoto: "",
+  const [defaultValues, setDefaultValues] = useState({
+    image: "",
     name: "",
     registrationNumber: "",
     status: "",
     website: "",
-    homePhone: "",
-    mobilePhone: "",
-    officePhone: "",
+    phoneHome: "",
+    phoneMobile: "",
+    phoneOffice: "",
     fax: "",
     email: "",
     preferredContactMethod: "",
     contactNotes: "",
-    addressLine1: "",
+    address1: "",
     addressLine2: "",
     city: "",
     zipCode: "",
-    country: "",
-    state: "",
+    countryId: "",
+    stateId: "",
     assignedTo: "",
     tags: [],
     additionalInvoiceRecipients: [],
-  };
+  });
 
   const fields = useMemo(
     () => [
@@ -84,10 +90,10 @@ const ContactsAddEdit = () => {
         ),
       },
       {
-        id: "contactPhoto",
+        id: "image",
         col: 12,
-        name: "contactPhoto",
-        label: "Contact Photo",
+        name: "image",
+        label: "Contact's Image",
         type: "userImage",
         required: true,
       },
@@ -145,9 +151,9 @@ const ContactsAddEdit = () => {
         ),
       },
       {
-        id: "homePhone",
+        id: "phoneHome",
         col: 6,
-        name: "homePhone",
+        name: "phoneHome",
         label: "Home Phone",
         type: "text",
         inputProps: {
@@ -155,9 +161,9 @@ const ContactsAddEdit = () => {
         },
       },
       {
-        id: "mobilePhone",
+        id: "phoneMobile",
         col: 6,
-        name: "mobilePhone",
+        name: "phoneMobile",
         label: "Mobile Phone",
         type: "text",
         inputProps: {
@@ -165,9 +171,9 @@ const ContactsAddEdit = () => {
         },
       },
       {
-        id: "officePhone",
+        id: "phoneOffice",
         col: 6,
-        name: "officePhone",
+        name: "phoneOffice",
         label: "Office Phone",
         type: "text",
         inputProps: {
@@ -227,9 +233,9 @@ const ContactsAddEdit = () => {
         ),
       },
       {
-        id: "addressLine1",
+        id: "address1",
         col: 12,
-        name: "addressLine1",
+        name: "address1",
         label: "Address Line 1",
         type: "text",
         inputProps: {
@@ -267,9 +273,9 @@ const ContactsAddEdit = () => {
         },
       },
       {
-        id: "country",
+        id: "countryId",
         col: 6,
-        name: "country",
+        name: "countryId",
         label: "Country",
         type: "master",
         action: fetchCountries,
@@ -278,13 +284,13 @@ const ContactsAddEdit = () => {
         required: true,
       },
       {
-        id: "state",
+        id: "stateId",
         col: 6,
-        name: "state",
+        name: "stateId",
         label: "State",
         type: "api",
         isDependent: true,
-        dependentKey: "country",
+        dependentKey: "countryId",
         api: getStatesByCountry,
       },
       {
@@ -350,14 +356,28 @@ const ContactsAddEdit = () => {
 
   const onSubmit = async (data, event) => {
     try {
-      await createContact(data);
+      const formData = convertToFormData(data);
 
-      Swal.fire({
-        title: t("httpMessages.createdSuccessfullyMessage"),
-        icon: "success",
-        timer: 1500,
-      });
-      event.target.reset();
+      if (contactId) {
+        // Update existing contact
+        await updateContact(contactId, formData);
+        Swal.fire({
+          title:
+            t("httpMessages.updatedSuccessfullyMessage") ||
+            "Updated Successfully",
+          icon: "success",
+          timer: 1500,
+        });
+      } else {
+        // Create new contact
+        await createContact(formData);
+        Swal.fire({
+          title: t("httpMessages.createdSuccessfullyMessage"),
+          icon: "success",
+          timer: 1500,
+        });
+        event.target.reset();
+      }
     } catch (error) {
       console.log("error", error);
 
@@ -381,8 +401,10 @@ const ContactsAddEdit = () => {
         <div className="page-header">
           <div className="add-item d-flex">
             <div className="page-title">
-              <h4>New Contact</h4>
-              <h6>Create new contact</h6>
+              <h4>{contactId ? "Edit Contact" : "New Contact"}</h4>
+              <h6>
+                {contactId ? "Update contact details" : "Create new contact"}
+              </h6>
             </div>
           </div>
           <ul className="table-top-head">
@@ -418,7 +440,7 @@ const ContactsAddEdit = () => {
           defaultValues={defaultValues}
           onSubmit={onSubmit}
         >
-          <ContactForm fields={fields} />
+          <ContactForm fields={fields} contactId={contactId || false} t={t} />
         </FormProvider>
 
         {/* /add */}
@@ -427,11 +449,76 @@ const ContactsAddEdit = () => {
   );
 };
 
-const ContactForm = ({ fields }) => {
+const ContactForm = ({ fields, contactId, t }) => {
   const {
     formState: { isSubmitting },
     reset,
+    setValue,
   } = useFormContext();
+
+  useEffect(() => {
+    if (contactId) {
+      const fetchContact = async () => {
+        try {
+          const contact = await getContactById(contactId);
+
+          // Transform the API response to match form structure
+          const formData = {
+            image: contact?.image || "",
+            name: contact?.name || "",
+            registrationNumber: contact?.registrationNumber || "",
+            status: contact?.status || "",
+            website: contact?.website || "",
+            phoneHome: contact?.phoneHome || "",
+            phoneMobile: contact?.phoneMobile || "",
+            phoneOffice: contact?.phoneOffice || "",
+            fax: contact?.fax || "",
+            email: contact?.email || "",
+            preferredContactMethod: contact?.preferredContactMethod || "",
+            contactNotes: contact?.contactNotes || "",
+            address1: contact?.address1 || "",
+            addressLine2: contact?.address2 || contact?.addressLine2 || "",
+            city: contact?.city || "",
+            zipCode: contact?.zipCode || "",
+            countryId: contact?.countryId?._id || contact?.countryId || "",
+            stateId: contact?.stateId?._id || contact?.stateId || "",
+            assignedTo: contact?.assignedTo?._id || contact?.assignedTo || "",
+            tags: contact?.tags || [],
+            additionalInvoiceRecipients:
+              contact?.additionalInvoiceRecipients?.map(
+                (recipient) => recipient._id || recipient
+              ) || [],
+          };
+
+          // Use setTimeout to ensure form fields are fully mounted
+          setTimeout(() => {
+            // Reset form with options to ensure values are set
+            reset(formData, {
+              keepDefaultValues: false,
+              keepValues: false,
+            });
+
+            // Also use setValue for all fields to ensure they update
+            Object.keys(formData).forEach((key) => {
+              setValue(key, formData[key], {
+                shouldValidate: false,
+                shouldDirty: false,
+                shouldTouch: false,
+              });
+            });
+          }, 100);
+        } catch (error) {
+          console.log("error", error);
+          Swal.fire({
+            text: error?.message || t("httpMessages.errorMessage"),
+            icon: "error",
+            timer: 1500,
+          });
+        }
+      };
+      fetchContact();
+    }
+  }, [contactId, reset, setValue, t]);
 
   return (
     <>
@@ -456,6 +543,8 @@ const ContactForm = ({ fields }) => {
 
 ContactForm.propTypes = {
   fields: PropTypes.array.isRequired,
+  contactId: PropTypes.string,
+  t: PropTypes.func.isRequired,
 };
 
 export default ContactsAddEdit;

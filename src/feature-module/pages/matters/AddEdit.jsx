@@ -1,20 +1,23 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import * as yup from "yup";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import Swal from "sweetalert2";
 import PropTypes from "prop-types";
 import { ArrowLeft, ChevronUp } from "feather-icons-react/build/IconComponents";
 import { useDispatch, useSelector } from "react-redux";
 import { OverlayTrigger, Tooltip } from "react-bootstrap";
-import { clearCountriesError, fetchCountries } from "@/core/redux/countries";
-import { getStatesByCountry } from "@/core/services/mastersService";
+import { convertToFormData } from "@/core/utilities/formDataConverter";
 import { getUsers } from "@/core/services/userService";
 import { getTags } from "@/core/services/tagService";
 import { getContacts } from "@/core/services/contactsService";
+import {
+  getMatterById,
+  createMatter,
+  updateMatter,
+} from "@/core/services/mattersService";
 import { FormButton } from "@/feature-module/components/buttons";
 import { FormProvider, useFormContext } from "@/feature-module/components/rhf";
-import { createContact } from "@/core/services/contactsService";
 import { getValidationRules } from "@/core/validation-rules";
 import { all_routes } from "@/Router/all_routes";
 
@@ -25,7 +28,7 @@ import EntityFormView from "@/feature-module/components/entity-form-view";
 const MattersAddEdit = () => {
   const route = all_routes;
   const dispatch = useDispatch();
-
+  const { matterId } = useParams();
   const data = useSelector((state) => state.toggle_header);
 
   const renderCollapseTooltip = (props) => (
@@ -38,37 +41,33 @@ const MattersAddEdit = () => {
   const securitySettingsSchema = useMemo(
     () =>
       yup.object({
-        name: getValidationRules(t).textOnlyRequired,
-        registrationNumber: getValidationRules(t).textOnlyRequired,
-        country: getValidationRules(t).textOnlyRequired,
+        matterName: getValidationRules(t).textOnlyRequired,
+        contactId: getValidationRules(t).textOnlyRequired,
         assignedTo: getValidationRules(t).textOnlyRequired,
       }),
     [t]
   );
 
-  const defaultValues = {
-    contactPhoto: "",
-    name: "",
-    registrationNumber: "",
+  const [defaultValues] = useState({
+    matterName: "",
+    matterNumber: "",
+    contactId: "",
     status: "",
-    website: "",
-    homePhone: "",
-    mobilePhone: "",
-    officePhone: "",
-    fax: "",
-    email: "",
-    preferredContactMethod: "",
-    contactNotes: "",
-    addressLine1: "",
-    addressLine2: "",
-    city: "",
-    zipCode: "",
-    country: "",
-    state: "",
+    notes: "",
+    matterRate: "",
+    userHourlyRate: "",
+    invoiceTemplate: "",
+    isEvergreenRetainer: false,
+    evergreenRetainerRate: "",
+    isAddRetainerToInvoice: false,
+    openDate: "",
+    closeDate: "",
+    statuteOfLimitations: "",
     assignedTo: "",
+    originatingAttorney: "",
     tags: [],
     additionalInvoiceRecipients: [],
-  };
+  });
 
   const fields = useMemo(
     () => [
@@ -106,9 +105,9 @@ const MattersAddEdit = () => {
         },
       },
       {
-        id: "contact",
+        id: "contactId",
         col: 6,
-        name: "contact",
+        name: "contactId",
         label: "Contact",
         type: "async-select-pagination",
         api: getContacts,
@@ -207,20 +206,120 @@ const MattersAddEdit = () => {
         label: "Add Retainer to Invoice",
         type: "switch",
       },
+      {
+        id: "additionalInvoiceRecipients",
+        col: 12,
+        name: "additionalInvoiceRecipients",
+        label: "Additional Invoice Recipients",
+        type: "async-multi-select-pagination",
+        api: getUsers,
+        pageSize: 50,
+        searchKey: "search",
+      },
+      {
+        type: "ui",
+        element: (
+          <div className="card-title-head mb-3">
+            <h6 className="border-bottom-0 mb-0 pb-0">{"Important Dates"}</h6>
+            <small className="text-muted">
+              {"Matter timeline and deadlines"}
+            </small>
+          </div>
+        ),
+      },
+      {
+        id: "openDate",
+        col: 4,
+        name: "openDate",
+        label: "Open Date",
+        type: "date",
+      },
+      {
+        id: "closeDate",
+        col: 4,
+        name: "closeDate",
+        label: "Close Date",
+        type: "date",
+      },
+      {
+        id: "statuteOfLimitations",
+        col: 4,
+        name: "statuteOfLimitations",
+        label: "Statute of Limitations Date",
+        type: "date",
+      },
+      {
+        type: "ui",
+        element: (
+          <div className="card-title-head mb-3">
+            <h6 className="border-bottom-0 mb-0 pb-0">
+              {"Assignment & Organization"}
+            </h6>
+            <small className="text-muted">
+              {"Assign matter to users and firm"}
+            </small>
+          </div>
+        ),
+      },
+      {
+        id: "assignedTo",
+        col: 6,
+        name: "assignedTo",
+        label: "Assigned To",
+        type: "async-select-pagination",
+        api: getUsers,
+        pageSize: 50,
+        searchKey: "search",
+        required: true,
+      },
+      {
+        id: "originatingAttorney",
+        col: 6,
+        name: "originatingAttorney",
+        label: "Originating Attorney",
+        type: "async-select-pagination",
+        api: getUsers,
+        pageSize: 50,
+        searchKey: "search",
+      },
+      {
+        id: "tags",
+        col: 12,
+        name: "tags",
+        label: "Tags",
+        type: "async-multi-select-pagination",
+        api: getTags,
+        pageSize: 50,
+        searchKey: "search",
+      },
     ],
     [t]
   );
 
   const onSubmit = async (data, event) => {
     try {
-      await createContact(data);
+      //  const formData = convertToFormData(data);
 
-      Swal.fire({
-        title: t("httpMessages.createdSuccessfullyMessage"),
-        icon: "success",
-        timer: 1500,
-      });
-      event.target.reset();
+      if (matterId) {
+        // Update existing matter
+        await updateMatter(matterId, data);
+        Swal.fire({
+          title:
+            t("httpMessages.updatedSuccessfullyMessage") ||
+            "Updated Successfully",
+          icon: "success",
+          timer: 1500,
+        });
+      } else {
+        // Create new matter
+        await createMatter(data);
+        Swal.fire({
+          title: t("httpMessages.createdSuccessfullyMessage"),
+          icon: "success",
+          timer: 1500,
+        });
+        event.target.reset();
+      }
     } catch (error) {
       console.log("error", error);
 
@@ -244,14 +343,16 @@ const MattersAddEdit = () => {
         <div className="page-header">
           <div className="add-item d-flex">
             <div className="page-title">
-              <h4>New Matter</h4>
-              <h6>Create new matter</h6>
+              <h4>{matterId ? "Edit Matter" : "New Matter"}</h4>
+              <h6>
+                {matterId ? "Update matter details" : "Create new matter"}
+              </h6>
             </div>
           </div>
           <ul className="table-top-head">
             <li>
               <div className="page-btn">
-                <Link to={route.headers[1].path} className="btn btn-secondary">
+                <Link to={route.headers[2].path} className="btn btn-secondary">
                   <ArrowLeft className="me-2" />
                   Back to Matters
                 </Link>
@@ -281,7 +382,7 @@ const MattersAddEdit = () => {
           defaultValues={defaultValues}
           onSubmit={onSubmit}
         >
-          <MattersForm fields={fields} />
+          <MattersForm fields={fields} matterId={matterId || false} t={t} />
         </FormProvider>
 
         {/* /add */}
@@ -290,11 +391,76 @@ const MattersAddEdit = () => {
   );
 };
 
-const MattersForm = ({ fields }) => {
+const MattersForm = ({ fields, matterId, t }) => {
   const {
     formState: { isSubmitting },
     reset,
+    setValue,
   } = useFormContext();
+
+  useEffect(() => {
+    if (matterId) {
+      const fetchMatter = async () => {
+        try {
+          const matter = await getMatterById(matterId);
+
+          // Transform the API response to match form structure
+          const formData = {
+            matterName: matter?.matterName || "",
+            matterNumber: matter?.matterNumber || "",
+            contactId: matter?.contactId?._id || matter?.contactId || "",
+            status: matter?.status || "",
+            notes: matter?.notes || "",
+            matterRate: matter?.matterRate || "",
+            userHourlyRate: matter?.userHourlyRate || "",
+            invoiceTemplate: matter?.invoiceTemplate || "",
+            isEvergreenRetainer: matter?.isEvergreenRetainer || false,
+            evergreenRetainerRate: matter?.evergreenRetainerRate || "",
+            isAddRetainerToInvoice: matter?.isAddRetainerToInvoice || false,
+            openDate: matter?.openDate || "",
+            closeDate: matter?.closeDate || "",
+            statuteOfLimitations: matter?.statuteOfLimitations || "",
+            assignedTo: matter?.assignedTo?._id || matter?.assignedTo || "",
+            originatingAttorney:
+              matter?.originatingAttorney?._id ||
+              matter?.originatingAttorney ||
+              "",
+            tags: matter?.tags || [],
+            additionalInvoiceRecipients:
+              matter?.additionalInvoiceRecipients?.map(
+                (recipient) => recipient._id || recipient
+              ) || [],
+          };
+
+          // Use setTimeout to ensure form fields are fully mounted
+          setTimeout(() => {
+            // Reset form with options to ensure values are set
+            reset(formData, {
+              keepDefaultValues: false,
+              keepValues: false,
+            });
+
+            // Also use setValue for all fields to ensure they update
+            Object.keys(formData).forEach((key) => {
+              setValue(key, formData[key], {
+                shouldValidate: false,
+                shouldDirty: false,
+                shouldTouch: false,
+              });
+            });
+          }, 100);
+        } catch (error) {
+          console.log("error", error);
+          Swal.fire({
+            text: error?.message || t("httpMessages.errorMessage"),
+            icon: "error",
+            timer: 1500,
+          });
+        }
+      };
+      fetchMatter();
+    }
+  }, [matterId, reset, setValue, t]);
 
   return (
     <>
@@ -319,6 +485,8 @@ const MattersForm = ({ fields }) => {
 
 MattersForm.propTypes = {
   fields: PropTypes.array.isRequired,
+  matterId: PropTypes.string,
+  t: PropTypes.func.isRequired,
 };
 
 export default MattersAddEdit;

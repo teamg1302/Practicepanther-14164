@@ -1,24 +1,23 @@
 import React, { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
-import {
-  TextField,
-  Select,
-  MenuItem,
-  FormControl,
-  InputLabel,
-} from "@mui/material";
+import Swal from "sweetalert2";
 import { all_routes } from "@/Router/all_routes";
-import { getRecyclebin } from "@/core/services/recyclebinService";
+import {
+  getRecyclebin,
+  deleteRecycleBin,
+} from "@/core/services/recyclebinService";
 import EntityListView from "@/feature-module/components/entity-list-view";
 import withEntityHandlers from "@/feature-module/hoc/withEntityHandlers";
 import { getTableColumns } from "@/feature-module/components/table-columns";
 
 // Columns definition - Pure JSON configuration (srNo and actions are added by withEntityHandlers)
 const COLUMNS_CONFIG = [
-  { header: "Name", accessorKey: "name" },
-  { header: "Created At", accessorKey: "createdAt", type: "date" },
-  { header: "Updated At", accessorKey: "updatedAt", type: "date" },
+  { header: "Name", accessorKey: "itemName" },
+  { header: "Type", accessorKey: "itemType" },
+  { header: "Type", accessorKey: "itemType" },
+  { header: "Deleted At", accessorKey: "deletedAt", type: "date" },
+  { header: "Deleted At", accessorKey: "deletedAt", type: "date" },
 ];
 
 const RecycleBin = () => {
@@ -30,58 +29,32 @@ const RecycleBin = () => {
   // Generate columns from JSON config
   const columns = useMemo(() => getTableColumns(COLUMNS_CONFIG), []);
 
-  const handleApplyFilters = (filters) => {
-    setCustomFilters(filters);
-  };
-
-  const handleAdd = () => {
-    navigate(route.addUser);
-  };
-
   const handleEdit = (row) => {
     navigate(route.editUser.replace(":userId", row._id));
   };
 
-  const handleDelete = (row) => {
-    console.log("Delete row:", row);
-    // TODO: Implement delete functionality
+  const handleDelete = async (row) => {
+    try {
+      await deleteRecycleBin(row._id);
+      Swal.fire({
+        title: "Success",
+        text: "Row deleted successfully",
+        icon: "success",
+      });
+      // Trigger refresh by updating customFilters with timestamp
+      setCustomFilters((prev) => ({
+        ...prev,
+        _refresh: Date.now(),
+      }));
+    } catch (error) {
+      console.log("Error deleting row:", error);
+      Swal.fire({
+        title: "Error",
+        text: error?.message || "Failed to delete item",
+        icon: "error",
+      });
+    }
   };
-
-  // Filter form content - only the inputs
-  const filterFormContent = ({ filters, setFilters }) => (
-    <>
-      <TextField
-        fullWidth
-        label="Role"
-        placeholder="Filter by role"
-        value={filters.role || ""}
-        onChange={(e) => setFilters({ ...filters, role: e.target.value })}
-        size="small"
-      />
-
-      <FormControl fullWidth size="small">
-        <InputLabel>Status</InputLabel>
-        <Select
-          value={filters.status || ""}
-          label="Status"
-          onChange={(e) => setFilters({ ...filters, status: e.target.value })}
-        >
-          <MenuItem value="">All</MenuItem>
-          <MenuItem value="active">Active</MenuItem>
-          <MenuItem value="inactive">Inactive</MenuItem>
-        </Select>
-      </FormControl>
-
-      <TextField
-        fullWidth
-        label="Tab"
-        placeholder="Filter by tab"
-        value={filters.tab || ""}
-        onChange={(e) => setFilters({ ...filters, tab: e.target.value })}
-        size="small"
-      />
-    </>
-  );
 
   return (
     <EnhancedList
@@ -92,14 +65,14 @@ const RecycleBin = () => {
       addButtonRoute={route.addUser}
       addButtonLabel={t("Add")}
       service={getRecyclebin}
-      // filterFormContent={filterFormContent}
-      // onApplyFilters=
-      // {handleApplyFilters}
       options={{
         customButtons: {
           add: false,
           edit: false,
           delete: true,
+          restore: true,
+          restoreLabel: "Restore",
+          deleteLabel: "Delete Permanently",
         },
         tableSetting: {
           srNo: true,

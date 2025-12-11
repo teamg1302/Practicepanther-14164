@@ -140,6 +140,7 @@ const FormSelect = ({
   const customStyles = {
     control: (base, state) => ({
       ...base,
+
       borderColor: hasError
         ? "#dc3545"
         : state.isFocused

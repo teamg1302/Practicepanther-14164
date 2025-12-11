@@ -1,12 +1,53 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo } from "react";
 import { Link, useLocation } from "react-router-dom";
+import { useSelector } from "react-redux";
 import PropTypes from "prop-types";
 
 import { all_routes } from "@/Router/all_routes";
+import { checkPermission } from "@/Router/PermissionRoute";
 
 const SettingsSideBar = ({ isMobileOpen, onClose }) => {
   const settingsRoutes = all_routes.settings;
   const location = useLocation();
+  const permissions = useSelector((state) => state.auth?.permissions || []);
+
+  // Filter routes based on permissions
+  const filteredRoutes = useMemo(() => {
+    return settingsRoutes
+      .map((route) => {
+        // Check if parent route has permission
+        const hasParentPermission =
+          !route.module || !route.permission
+            ? true
+            : checkPermission(permissions, route.module, route.permission);
+
+        // If route has children, filter them
+        if (route.children && route.children.length > 0) {
+          const filteredChildren = route.children.filter((child) => {
+            // If child has no module or permission, show it
+            if (!child.module || !child.permission) {
+              return true;
+            }
+            // Check if user has permission for this child
+            return checkPermission(permissions, child.module, child.permission);
+          });
+
+          // Only include parent route if it has at least one visible child
+          // or if the parent itself has permission and no children were filtered
+          if (filteredChildren.length > 0) {
+            return {
+              ...route,
+              children: filteredChildren,
+            };
+          }
+          return null; // Hide parent if no children are visible
+        }
+
+        // If route has no children, show it only if it has permission
+        return hasParentPermission ? route : null;
+      })
+      .filter((route) => route !== null); // Remove null entries
+  }, [settingsRoutes, permissions]);
 
   // Close sidebar when route changes on mobile
   useEffect(() => {
@@ -46,7 +87,7 @@ const SettingsSideBar = ({ isMobileOpen, onClose }) => {
           <div className="sidebar-inner">
             <div id="sidebar-menu5" className="sidebar-menu">
               <ul>
-                {settingsRoutes.map((route) => {
+                {filteredRoutes.map((route) => {
                   const Icon = route.icon;
 
                   const hasChildren =

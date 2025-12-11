@@ -260,3 +260,20 @@ export const changePassword = async (passwordData) => {
     throw error.response?.data || error.message;
   }
 };
+
+/**
+ * Delete user by user ID
+ * @param {string|number} userId - User ID to delete
+ * @returns {Promise} API response
+ *
+ * @example
+ * await deleteUser(1);
+ */
+export const deleteUser = async (userId) => {
+  try {
+    const response = await api.delete(`/masters/user/${userId}`);
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || error.message;
+  }
+};

@@ -28,6 +28,7 @@
  * @property {string|null} masters.statesError - Error message for states fetch
  */
 const initialState = {
+  pageLoader: false,
   toggle_header: false,
   layoutstyledata: localStorage.getItem("layoutStyling") || "modern",
   auth: {

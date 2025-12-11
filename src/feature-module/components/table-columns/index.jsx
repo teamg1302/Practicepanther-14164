@@ -29,6 +29,7 @@ export const getTableColumns = (columnConfig = [], options = {}) => {
       enableColumnFilter: true,
       enablePinning: true,
     },
+    navigate,
   } = options;
 
   return columnConfig.map((config) => {
@@ -40,6 +41,9 @@ export const getTableColumns = (columnConfig = [], options = {}) => {
       dateFormat,
       fallback = "-",
       size,
+      detailRoute,
+      idKey = "_id",
+      onClick,
       ...restConfig
     } = config;
 
@@ -54,6 +58,10 @@ export const getTableColumns = (columnConfig = [], options = {}) => {
     if (size) {
       baseColumn.size = size;
     }
+
+    // Handle clickable columns (detail navigation)
+    const isClickable = detailRoute || onClick;
+    const originalCell = baseColumn.Cell;
 
     // Handle different column types
     if (type === "chip" && chipMap) {
@@ -99,6 +107,56 @@ export const getTableColumns = (columnConfig = [], options = {}) => {
         return value !== null && value !== undefined && value !== ""
           ? String(value)
           : fallback;
+      };
+    }
+
+    // Wrap Cell with click handler if detailRoute or onClick is provided
+    if (isClickable) {
+      const originalCellRenderer = baseColumn.Cell;
+      baseColumn.Cell = ({ cell, row }) => {
+        const value = originalCellRenderer ? originalCellRenderer({ cell, row }) : cell.getValue();
+        
+        const handleClick = (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          
+          if (onClick && typeof onClick === "function") {
+            onClick(row.original);
+          } else if (detailRoute && navigate) {
+            const id = row.original[idKey] || row.original._id;
+            if (id) {
+              // Extract parameter name from route (e.g., :contactId -> contactId)
+              // Replace all parameter patterns in the route
+              let route = detailRoute;
+              const paramMatches = route.match(/:(\w+)/g);
+              if (paramMatches) {
+                paramMatches.forEach((param) => {
+                  const paramName = param.substring(1); // Remove the :
+                  // Try to find the value in row.original using the param name or _id
+                  const paramValue = row.original[paramName] || row.original._id || id;
+                  route = route.replace(param, paramValue);
+                });
+              } else {
+                // Fallback: replace :id if no specific parameter found
+                route = route.replace(":id", id);
+              }
+              navigate(route);
+            }
+          }
+        };
+
+        return (
+          <span
+            onClick={handleClick}
+            style={{
+              cursor: "pointer",
+              color: "#1976d2",
+              textDecoration: "underline",
+            }}
+          >
+            {value}
+          </span>
+        );
       };
     }
 

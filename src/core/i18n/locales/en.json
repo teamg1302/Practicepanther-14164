@@ -181,6 +181,8 @@
   },
   "firmLogoInfo": {
     "name": "Name",
+    "currency": "Currency",
+    "selectCurrency": "Select currency",
     "namePlaceholder": "Enter name",
     "title": "FIRM INFORMATION",
     "firmLogo": "Firm Logo",
@@ -221,6 +223,7 @@
     "saving": "Saving...",
     "cancel": "Cancel",
     "validation": {
+      "emailRequired": "Email is required.",
       "firmEmailRequired": "Firm email address is required.",
       "firmEmailInvalid": "Enter a valid email address.",
       "websiteInvalid": "Enter a valid website URL.",

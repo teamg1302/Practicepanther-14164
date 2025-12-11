@@ -22,6 +22,7 @@ export const all_routes = {
   headers: [
     {
       id: 1,
+      module: "dashboard",
       name: "dashboard",
       path: "/dashboard",
       icon: Home,
@@ -30,7 +31,7 @@ export const all_routes = {
     },
     {
       id: 2,
-      module: "contacts",
+      module: "manage_contacts",
       name: "Contacts",
       path: "/contacts",
       icon: Users,
@@ -39,7 +40,7 @@ export const all_routes = {
     },
     {
       id: 3,
-      module: "matters",
+      module: "manage_matters",
       name: "Matters",
       path: "/matters",
       icon: Briefcase,
@@ -48,7 +49,7 @@ export const all_routes = {
     },
   ],
   addContact: {
-    module: "contacts",
+    module: "manage_contacts",
     name: "addContact",
     path: "/contacts/add",
     icon: UserPlus,
@@ -56,15 +57,31 @@ export const all_routes = {
     permission: "create",
   },
   editContact: {
-    module: "contacts",
+    module: "manage_contacts",
     name: "editContact",
     path: "/contacts/:contactId/edit",
     icon: User,
     text: "Edit Contact",
     permission: "update",
   },
+  contactDetails: {
+    module: "manage_contacts",
+    name: "contactDetails",
+    path: "/contacts/:contactId/details",
+    icon: User,
+    text: "Contact Details",
+    permission: "read",
+  },
+  contactMatters: {
+    module: "manage_contacts",
+    name: "contactMatters",
+    path: "/contacts/:contactId/matters",
+    icon: Briefcase,
+    text: "Contact Matters",
+    permission: "read",
+  },
   addMatter: {
-    module: "matters",
+    module: "manage_matters",
     name: "addMatter",
     path: "/matters/add",
     icon: Briefcase,
@@ -72,37 +89,48 @@ export const all_routes = {
     permission: "create",
   },
   editMatter: {
-    module: "matters",
+    module: "manage_matters",
     name: "editMatter",
     path: "/matters/:matterId/edit",
     icon: Briefcase,
     text: "Edit",
     permission: "update",
   },
+  matterDetails: {
+    module: "manage_matters",
+    name: "matterDetails",
+    path: "/matters/:matterId/details",
+    icon: Briefcase,
+    text: "Matter Details",
+    permission: "read",
+  },
   settings: [
     {
       id: 1,
+      module: "manage_profile",
       name: "personal-settings-group",
       path: "/settings/personal",
       icon: Settings,
       text: "Personal Settings",
-      permission: "read",
+      permission: "update",
       children: [
         {
           id: 1,
+          module: "manage_profile",
           name: "personal-settings",
           path: "/settings/personal",
           icon: User,
           text: "Personal Settings",
-          permission: "read",
+          permission: "update",
         },
         {
           id: 2,
+          module: "manage_profile",
           name: "security-settings",
           path: "/settings/security",
           icon: Lock,
           text: "Security & Password",
-          permission: "read",
+          permission: "update",
         },
         // {
         //   id: 3,
@@ -114,11 +142,12 @@ export const all_routes = {
         // },
         {
           id: 4,
+          module: "manage_profile",
           name: "firm-logo-info-settings",
           path: "/settings/firm-logo-info",
           icon: Info,
           text: "Firm Logo & Info",
-          permission: "read",
+          permission: "update",
         },
         // {
         //   id: 5,
@@ -162,6 +191,7 @@ export const all_routes = {
         // },
         {
           id: 10,
+          module: "manage_profile",
           name: "recycle-bin-settings",
           path: "/settings/recycle-bin",
           icon: Trash2,
@@ -206,6 +236,7 @@ export const all_routes = {
     // },
     {
       id: 2,
+      module: "manage_users",
       name: "user-settings-group",
       path: "/settings/users",
       icon: Server,
@@ -214,6 +245,7 @@ export const all_routes = {
       children: [
         {
           id: 1,
+          module: "manage_users",
           name: "user-groups-settings",
           path: "/settings/users",
           icon: UserPlus,
@@ -230,6 +262,7 @@ export const all_routes = {
         // },
         {
           id: 3,
+          module: "manage_users_role",
           name: "roles-permissions-settings",
           path: "/settings/roles-permissions",
           icon: Lock,
@@ -239,10 +272,50 @@ export const all_routes = {
       ],
     },
   ],
-  editRolePermission: "/settings/roles-permissions/:roleId/edit",
-  addRolePermission: "/settings/roles-permissions/add",
-  addUser: "/settings/users/add",
-  editUser: "/settings/users/:userId/edit",
+  editRolePermission: {
+    module: "manage_users_role",
+    name: "editRolePermission",
+    path: "/settings/roles-permissions/:roleId/edit",
+    icon: Lock,
+    text: "Edit Role & Permission",
+    permission: "update",
+  },
+  editUserPermissions: {
+    module: "manage_users",
+    name: "editUserPermissions",
+    path: "/settings/users/:userId/permissions",
+    icon: Lock,
+    text: "Edit User Permissions",
+    permission: "update",
+  },
+
+  addRolePermission: {
+    module: "manage_users_role",
+    name: "addRolePermission",
+    path: "/settings/roles-permissions/add",
+    icon: Lock,
+    text: "Add Role & Permission",
+    permission: "create",
+  },
+
+  addUser: {
+    module: "manage_users",
+    name: "addUser",
+    path: "/settings/users/add",
+    icon: UserPlus,
+    text: "Add User",
+    permission: "create",
+  },
+
+  editUser: {
+    module: "manage_users",
+    name: "editUser",
+    path: "/settings/users/:userId/edit",
+    icon: User,
+    text: "Edit User",
+    permission: "update",
+  },
+
   error404: "/error-404",
   error500: "/error-500",
   comingsoon: "/coming-soon",

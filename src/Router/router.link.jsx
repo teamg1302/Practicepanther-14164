@@ -17,8 +17,17 @@ import RolePermissionList from "@/feature-module/pages/settings/roles-permission
 import RolePermissionAddEdit from "@/feature-module/pages/settings/roles-permissions/AddEdit";
 import RecycleBin from "@/feature-module/pages/settings/recyclebin";
 import SecuritySettings from "@/feature-module/pages/settings/security";
-import { ContactAddEdit, ContactsList } from "@/feature-module/pages/contacts";
-import { MattersAddEdit, MattersList } from "@/feature-module/pages/matters";
+import {
+  ContactAddEdit,
+  ContactsList,
+  ContactMatters,
+  ContactDetails,
+} from "@/feature-module/pages/contacts";
+import {
+  MattersAddEdit,
+  MattersList,
+  MatterDetails,
+} from "@/feature-module/pages/matters";
 import { all_routes } from "./all_routes";
 
 const routes = all_routes;
@@ -54,23 +63,51 @@ export const publicRoutes = [
   },
   {
     id: 5,
+    path: routes.editContact.path,
+    name: routes.editContact.name,
+    element: <ContactAddEdit />,
+    route: Route,
+  },
+  {
+    id: 6,
+    path: routes.contactDetails.path,
+    name: routes.contactDetails.name,
+    element: <ContactDetails />,
+    route: Route,
+  },
+  {
+    id: 7,
+    path: routes.contactMatters.path,
+    name: routes.contactMatters.name,
+    element: <ContactMatters />,
+    route: Route,
+  },
+  {
+    id: 6,
     path: routes.headers[2].path,
     name: routes.headers[2].name,
     element: <MattersList />,
     route: Route,
   },
   {
-    id: 6,
+    id: 7,
     path: routes.addMatter.path,
     name: routes.addMatter.name,
     element: <MattersAddEdit />,
     route: Route,
   },
   {
-    id: 7,
+    id: 8,
     path: routes.editMatter.path,
     name: routes.editMatter.name,
     element: <MattersAddEdit />,
+    route: Route,
+  },
+  {
+    id: 9,
+    path: routes.matterDetails.path,
+    name: routes.matterDetails.name,
+    element: <MatterDetails />,
     route: Route,
   },
 ];
@@ -120,29 +157,36 @@ export const settingsRoutes = [
   },
   {
     id: 7,
-    path: routes.editRolePermission,
-    name: "editRolePermission",
+    path: routes.editRolePermission.path,
+    name: routes.editRolePermission.name,
     element: <RolePermissionAddEdit />,
     route: Route,
   },
   {
     id: 8,
-    path: routes.addRolePermission,
-    name: "addRolePermission",
+    path: routes.addRolePermission.path,
+    name: routes.addRolePermission.name,
     element: <RolePermissionAddEdit />,
     route: Route,
   },
   {
     id: 9,
-    path: routes.editUser,
-    name: "editUser",
+    path: routes.editUserPermissions.path,
+    name: routes.editUserPermissions.name,
+    element: <RolePermissionAddEdit />,
+    route: Route,
+  },
+  {
+    id: 10,
+    path: routes.editUser.path,
+    name: routes.editUser.name,
     element: <PersonalSettings />,
     route: Route,
   },
   {
     id: 10,
-    path: routes.addUser,
-    name: "addUser",
+    path: routes.addUser.path,
+    name: routes.addUser.name,
     element: <PersonalSettings />,
     route: Route,
   },

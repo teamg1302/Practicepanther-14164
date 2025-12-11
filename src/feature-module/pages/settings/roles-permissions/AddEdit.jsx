@@ -13,6 +13,7 @@ import {
   addRole,
   updateRole,
 } from "@/core/services/roleService";
+import { getUserDetails, updateUserDetails } from "@/core/services/userService";
 import { formatToTitleCase } from "@/core/utilities/stringFormatter";
 import { FormButton } from "@/feature-module/components/buttons";
 import Input from "@/feature-module/components/form-elements/input";
@@ -108,20 +109,27 @@ const rolePermissionSchema = yup.object({
 const RolePermissionAddEdit = () => {
   const route = all_routes;
   const navigate = useNavigate();
-  const { roleId } = useParams();
+  const { roleId, userId } = useParams();
   const user = useSelector((state) => state.auth?.user);
   const [modules, setModules] = useState([]);
   const [roleDetails, setRoleDetails] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [userDetails, setUserDetails] = useState(null);
 
   useEffect(() => {
+    const fetchModules = async () => {
+      try {
+        const modulesData = await getRoleModules();
+        setModules(modulesData || []);
+      } catch (error) {
+        console.error("Error fetching modules:", error);
+      }
+    };
+    fetchModules();
+
     const fetchData = async () => {
       try {
         setLoading(true);
-
-        // Fetch modules
-        const modulesData = await getRoleModules();
-        setModules(modulesData || []);
 
         // Fetch role details if roleId exists (edit mode)
         if (roleId) {
@@ -136,9 +144,28 @@ const RolePermissionAddEdit = () => {
         setLoading(false);
       }
     };
-
-    fetchData();
+    if (roleId) {
+      fetchData();
+    }
   }, [roleId]);
+
+  useEffect(() => {
+    const fetchUserDetails = async () => {
+      try {
+        setLoading(true);
+        const userData = await getUserDetails(userId);
+        setUserDetails(userData);
+        setRoleDetails(userData.roleId);
+      } catch (error) {
+        console.error("Error fetching user details:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    if (userId) {
+      fetchUserDetails();
+    }
+  }, [userId]);
 
   /**
    * Transform roleDetails into defaultValues format
@@ -146,12 +173,13 @@ const RolePermissionAddEdit = () => {
   const defaultValues = useMemo(() => {
     if (roleDetails) {
       return {
+        userName: userDetails?.name || "",
         name: roleDetails.name || "",
         description: roleDetails.description || "",
         firmId: user?.firmId?._id || "",
         isActive:
           roleDetails.isActive !== undefined ? roleDetails.isActive : true,
-        permissions: roleDetails.permissions || [],
+        permissions: userDetails.permissions || [],
       };
     }
 
@@ -167,13 +195,14 @@ const RolePermissionAddEdit = () => {
     }));
 
     return {
+      userName: userDetails?.name || "",
       name: "",
       description: "",
       firmId: user?.firmId || "",
       isActive: true,
       permissions: initialPermissions,
     };
-  }, [roleDetails, modules, user?.firmId]);
+  }, [roleDetails, modules, user?.firmId, userDetails]);
 
   /**
    * Handles form submission
@@ -209,6 +238,21 @@ const RolePermissionAddEdit = () => {
           text: "Role updated successfully",
           showConfirmButton: true,
         });
+        navigate("/settings/roles-permissions");
+      } else if (userId) {
+        const userPermissions = {
+          ...userDetails,
+          permissions: cleanedData.permissions,
+        };
+        // Update existing user
+        await updateUserDetails(userId, userPermissions);
+        Swal.fire({
+          icon: "success",
+          title: "Success",
+          text: "User's permissions updated successfully",
+          showConfirmButton: true,
+        });
+        navigate("/settings/users");
       } else {
         // Add new role
         await addRole(cleanedData);
@@ -218,10 +262,8 @@ const RolePermissionAddEdit = () => {
           text: "Role created successfully",
           showConfirmButton: true,
         });
+        navigate("/settings/roles-permissions");
       }
-
-      // Navigate back to roles list
-      navigate("/settings/roles-permissions");
     } catch (error) {
       console.error("Error saving role:", error);
       Swal.fire({
@@ -257,7 +299,11 @@ const RolePermissionAddEdit = () => {
           defaultValues={defaultValues}
           onSubmit={onSubmit}
         >
-          <RolePermissionContent modules={modules} loading={loading} />
+          <RolePermissionContent
+            modules={modules}
+            userDetails={userDetails}
+            loading={loading}
+          />
         </FormProvider>
       </div>
     </main>
@@ -268,7 +314,7 @@ const RolePermissionAddEdit = () => {
  * Role Permission Content Component
  * Displays the form with modules and permissions
  */
-const RolePermissionContent = ({ modules, loading }) => {
+const RolePermissionContent = ({ modules, userDetails, loading }) => {
   const {
     watch,
     setValue,
@@ -436,10 +482,30 @@ const RolePermissionContent = ({ modules, loading }) => {
     <div className="security-settings">
       <div className="row">
         <div className="col-md-12">
-          <Input name="name" label="Role Name" type="text" required />
+          <Input
+            name="userName"
+            label="User Name"
+            type="text"
+            inputProps={{ disabled: !!userDetails }}
+            required
+          />
         </div>
         <div className="col-md-12">
-          <Input name="description" label="Description" type="text" />
+          <Input
+            name="name"
+            label="Role Name"
+            type="text"
+            inputProps={{ disabled: !!userDetails }}
+            required
+          />
+        </div>
+        <div className="col-md-12">
+          <Input
+            name="description"
+            label="Description"
+            inputProps={{ disabled: !!userDetails }}
+            type="text"
+          />
         </div>
       </div>
       <div className="table-responsive no-pagination">
@@ -597,6 +663,7 @@ const RolePermissionContent = ({ modules, loading }) => {
 
 RolePermissionContent.propTypes = {
   modules: PropTypes.array.isRequired,
+  userDetails: PropTypes.object.isRequired,
   loading: PropTypes.bool.isRequired,
 };
 

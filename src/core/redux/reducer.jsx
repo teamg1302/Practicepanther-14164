@@ -97,6 +97,8 @@ const rootReducer = (state = initialState, action) => {
           loginEmail: null,
         },
       };
+    case "SET_PAGE_LOADER":
+      return { ...state, pageLoader: action.payload };
     default: {
       // Delegate all actions to mastersReducer (handles its own actions via slice)
       // This allows the slice to handle both sync and async actions

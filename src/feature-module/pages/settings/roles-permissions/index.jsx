@@ -1,15 +1,17 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { Chip } from "@mui/material";
+import Swal from "sweetalert2";
 import { all_routes } from "@/Router/all_routes";
-import { getRoles } from "@/core/services/roleService";
+import { getRoles, deleteRole } from "@/core/services/roleService";
 import EntityListView from "@/feature-module/components/entity-list-view";
 import withEntityHandlers from "@/feature-module/hoc/withEntityHandlers";
 
 const RolePermissionList = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const [customFilters, setCustomFilters] = useState({});
   const route = all_routes;
 
   // Columns definition (srNo and actions are added by withEntityHandlers)
@@ -64,25 +66,39 @@ const RolePermissionList = () => {
     []
   );
 
-  const handleAdd = () => {
-    navigate(route.addRolePermission);
-  };
-
   const handleEdit = (row) => {
-    navigate(route.editRolePermission.replace(":roleId", row._id));
+    navigate(route.editRolePermission.path.replace(":roleId", row._id));
   };
 
-  const handleDelete = (row) => {
-    console.log("Delete row:", row);
-    // TODO: Implement delete functionality
+  const handleDelete = async (row) => {
+    try {
+      await deleteRole(row._id);
+      Swal.fire({
+        title: "Success",
+        text: "Row deleted successfully",
+        icon: "success",
+      });
+      setCustomFilters((prev) => ({
+        ...prev,
+        _refresh: Date.now(),
+      }));
+    } catch (error) {
+      console.log("Error deleting row:", error);
+      Swal.fire({
+        title: "Error",
+        text: error?.message || "Failed to delete item",
+        icon: "error",
+      });
+    }
   };
 
   return (
     <EnhancedList
       columns={columns}
       onEdit={handleEdit}
+      customFilters={customFilters}
       onDelete={handleDelete}
-      addButtonRoute={route.addRolePermission}
+      addButtonRoute={route.addRolePermission.path}
       addButtonLabel={t("formButton.addNew")}
       service={getRoles}
       options={{

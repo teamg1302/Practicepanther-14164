@@ -1,7 +1,15 @@
 // withEntityHandlers.jsx
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState, useMemo, useCallback } from "react";
 import { useMaterialReactTable } from "material-react-table";
-import { Edit, Delete, Add, FilterAltOutlined } from "@mui/icons-material";
+import {
+  Edit,
+  Delete,
+  Undo,
+  Add,
+  Security,
+  FilterAltOutlined,
+  MoreVert,
+} from "@mui/icons-material";
 import {
   IconButton,
   Popover,
@@ -10,9 +18,14 @@ import {
   Box,
   Typography,
   Divider,
+  Menu,
+  MenuItem,
+  ListItemIcon,
+  ListItemText,
 } from "@mui/material";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import Swal from "sweetalert2";
 
 const withEntityHandlers = (WrappedComponent) => {
   function EntityHandlerComponent({
@@ -21,7 +34,9 @@ const withEntityHandlers = (WrappedComponent) => {
     options = {},
     onAdd,
     onEdit,
+    onPermissions,
     onDelete,
+    onRestore,
     onApiRequest,
     service, // Service function (e.g., getUsers, getRoles) - auto-handles API requests
     customFilters, // << from parent modal
@@ -35,6 +50,8 @@ const withEntityHandlers = (WrappedComponent) => {
     const { t } = useTranslation();
     const [filterAnchorEl, setFilterAnchorEl] = useState(null);
     const [localFilters, setLocalFilters] = useState(customFilters || {});
+    const [menuAnchorEl, setMenuAnchorEl] = useState(null);
+    const [selectedRow, setSelectedRow] = useState(null);
     // State: Server-side state values
     const [data, setData] = useState([]);
     const [rowCount, setRowCount] = useState(0);
@@ -57,6 +74,11 @@ const withEntityHandlers = (WrappedComponent) => {
           add: true,
           edit: true,
           delete: true,
+          restore: false,
+          permissions: false,
+          permissionsLabel: t("Permissions"),
+          restoreLabel: "Restore",
+          deleteLabel: options.customButtons?.deleteLabel || "Delete",
           ...options.customButtons,
         },
         tableSetting: { srNo: true, selectRow: true, ...options.tableSetting },
@@ -216,6 +238,63 @@ const withEntityHandlers = (WrappedComponent) => {
       handleFilterClose();
     };
 
+    // Handle menu open
+    const handleMenuOpen = useCallback((event, row) => {
+      event.stopPropagation();
+      setMenuAnchorEl(event.currentTarget);
+      setSelectedRow(row);
+    }, []);
+
+    // Handle menu close
+    const handleMenuClose = () => {
+      setMenuAnchorEl(null);
+      setSelectedRow(null);
+    };
+
+    // Handle edit from menu
+    const handleMenuEdit = () => {
+      if (selectedRow && onEdit) {
+        onEdit(selectedRow.original);
+      }
+      handleMenuClose();
+    };
+
+    // Handle delete from menu
+    const handleMenuDelete = () => {
+      if (selectedRow && onDelete) {
+        Swal.fire({
+          title: "Are you sure you want to delete?",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonText: "Yes, delete it!",
+          cancelButtonText: "Cancel",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            onDelete(selectedRow.original);
+          }
+          handleMenuClose();
+        });
+        return; // prevent continuing to onDelete below until confirmed
+      }
+      handleMenuClose();
+    };
+
+    // Handle restore from menu
+    const handleMenuRestore = () => {
+      if (selectedRow && onRestore) {
+        onRestore(selectedRow.original);
+      }
+      handleMenuClose();
+    };
+
+    // Handle permissions from menu
+    const handleMenuPermissions = () => {
+      if (selectedRow && onPermissions) {
+        onPermissions(selectedRow.original);
+      }
+      handleMenuClose();
+    };
+
     // TABLE COLUMNS WITH SR NO + ACTION
     const finalColumns = useMemo(() => {
       const cols = Array.isArray(columns) ? [...columns] : [];
@@ -236,26 +315,13 @@ const withEntityHandlers = (WrappedComponent) => {
           header: "Actions",
           size: 100,
           Cell: ({ row }) => (
-            <div style={{ display: "flex", gap: 8 }}>
-              {merged.customButtons.edit && (
-                <IconButton
-                  onClick={() => onEdit?.(row.original)}
-                  size="small"
-                  className="text-primary p-0"
-                >
-                  <Edit />
-                </IconButton>
-              )}
-              {merged.customButtons.delete && (
-                <IconButton
-                  onClick={() => onDelete?.(row.original)}
-                  size="small"
-                  className="text-danger p-0"
-                >
-                  <Delete />
-                </IconButton>
-              )}
-            </div>
+            <IconButton
+              onClick={(e) => handleMenuOpen(e, row)}
+              size="small"
+              aria-label="more actions"
+            >
+              <MoreVert />
+            </IconButton>
           ),
         });
       }
@@ -266,8 +332,7 @@ const withEntityHandlers = (WrappedComponent) => {
       pagination.pageIndex,
       pagination.pageSize,
       merged,
-      onEdit,
-      onDelete,
+      handleMenuOpen,
     ]);
 
     // MATERIAL REACT TABLE CONFIG
@@ -311,6 +376,7 @@ const withEntityHandlers = (WrappedComponent) => {
       muiTableContainerProps: {
         sx: {
           width: "100%",
+          maxHeight: "460px",
         },
       },
       muiTableProps: {
@@ -356,11 +422,6 @@ const withEntityHandlers = (WrappedComponent) => {
 
       // Pagination
       paginationDisplayMode: "default",
-
-      // Container
-      muiTableContainerProps: {
-        sx: { maxHeight: "460px" },
-      },
 
       // Custom toolbar
       renderTopToolbarCustomActions: () => (
@@ -505,6 +566,64 @@ const withEntityHandlers = (WrappedComponent) => {
               </Box>
             </Paper>
           </Popover>
+        )}
+
+        {(merged.customButtons.edit ||
+          merged.customButtons.delete ||
+          merged.customButtons.restore ||
+          merged.customButtons.permissions) && (
+          <Menu
+            anchorEl={menuAnchorEl}
+            open={Boolean(menuAnchorEl)}
+            onClose={handleMenuClose}
+            anchorOrigin={{
+              vertical: "bottom",
+              horizontal: "right",
+            }}
+            transformOrigin={{
+              vertical: "top",
+              horizontal: "right",
+            }}
+          >
+            {merged.customButtons.permissions && (
+              <MenuItem onClick={handleMenuPermissions}>
+                <ListItemIcon>
+                  <Security fontSize="small" className="text-primary" />
+                </ListItemIcon>
+                <ListItemText>{t("Permissions")}</ListItemText>
+              </MenuItem>
+            )}
+
+            {merged.customButtons.edit && (
+              <MenuItem onClick={handleMenuEdit}>
+                <ListItemIcon>
+                  <Edit fontSize="small" className="text-primary" />
+                </ListItemIcon>
+                <ListItemText>{t("Edit")}</ListItemText>
+              </MenuItem>
+            )}
+            {merged.customButtons.restore && (
+              <MenuItem onClick={handleMenuRestore}>
+                <ListItemIcon>
+                  <Undo fontSize="small" className="text-primary" />
+                </ListItemIcon>
+                <ListItemText>
+                  {t(merged.customButtons.restoreLabel)}
+                </ListItemText>
+              </MenuItem>
+            )}
+
+            {merged.customButtons.delete && (
+              <MenuItem onClick={handleMenuDelete}>
+                <ListItemIcon>
+                  <Delete fontSize="small" className="text-danger" />
+                </ListItemIcon>
+                <ListItemText>
+                  {t(merged.customButtons.deleteLabel)}
+                </ListItemText>
+              </MenuItem>
+            )}
+          </Menu>
         )}
 
         <WrappedComponent
