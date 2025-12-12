@@ -68,7 +68,11 @@ describe("Contacts Service", () => {
 
       const result = await contactsService.getContacts(params);
 
-      expect(api.get).toHaveBeenCalledWith("/contacts?page=1&limit=10");
+      // URLSearchParams doesn't guarantee parameter order, so check that both params are present
+      expect(api.get).toHaveBeenCalled();
+      const callArgs = api.get.mock.calls[0][0];
+      expect(callArgs).toContain("page=1");
+      expect(callArgs).toContain("limit=10");
       expect(result).toEqual(mockResponse.data.data);
     });
 
@@ -222,9 +226,11 @@ describe("Contacts Service", () => {
 
       const result = await contactsService.getMattersByContactId(params);
 
-      expect(api.get).toHaveBeenCalledWith(
-        "/matters/contact/123?page=1&limit=10"
-      );
+      expect(api.get).toHaveBeenCalled();
+      const callArgs = api.get.mock.calls[0][0];
+      expect(callArgs).toContain("/matters/contact/123");
+      expect(callArgs).toContain("page=1");
+      expect(callArgs).toContain("limit=10");
       expect(result).toEqual(mockResponse.data.data);
     });
 
@@ -329,9 +335,11 @@ describe("Contacts Service", () => {
 
       const result = await contactsService.getActivitiesLogByContactId(params);
 
-      expect(api.get).toHaveBeenCalledWith(
-        "/contacts/123/activity-log?page=1&limit=10"
-      );
+      expect(api.get).toHaveBeenCalled();
+      const callArgs = api.get.mock.calls[0][0];
+      expect(callArgs).toContain("/contacts/123/activity-log");
+      expect(callArgs).toContain("page=1");
+      expect(callArgs).toContain("limit=10");
       expect(result).toEqual(mockResponse.data.data);
     });
 

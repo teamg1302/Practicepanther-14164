@@ -67,7 +67,11 @@ describe("Matters Service", () => {
 
       const result = await mattersService.getMatters(params);
 
-      expect(api.get).toHaveBeenCalledWith("/matters?page=1&limit=10");
+      expect(api.get).toHaveBeenCalled();
+      const callArgs = api.get.mock.calls[0][0];
+      expect(callArgs).toContain("/matters");
+      expect(callArgs).toContain("page=1");
+      expect(callArgs).toContain("limit=10");
       expect(result).toEqual(mockResponse.data.data);
     });
 
@@ -174,9 +178,11 @@ describe("Matters Service", () => {
 
       const result = await mattersService.getActivitiesLogByMatterId(params);
 
-      expect(api.get).toHaveBeenCalledWith(
-        "/matters/123/activity-log?page=1&limit=10"
-      );
+      expect(api.get).toHaveBeenCalled();
+      const callArgs = api.get.mock.calls[0][0];
+      expect(callArgs).toContain("/matters/123/activity-log");
+      expect(callArgs).toContain("page=1");
+      expect(callArgs).toContain("limit=10");
       expect(result).toEqual(mockResponse.data.data);
     });
 

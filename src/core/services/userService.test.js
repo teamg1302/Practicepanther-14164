@@ -12,6 +12,9 @@ vi.mock("./api", () => {
   const mockApi = {
     get: vi.fn(),
     put: vi.fn(),
+    patch: vi.fn(),
+    post: vi.fn(),
+    delete: vi.fn(),
   };
   return {
     default: mockApi,
@@ -35,7 +38,15 @@ describe("User Service", () => {
         },
       };
 
-      api.get.mockResolvedValue(mockResponse);
+      // getUserDetails expects response.data.data.user structure
+      const apiResponse = {
+        data: {
+          data: {
+            user: mockResponse.data,
+          },
+        },
+      };
+      api.get.mockResolvedValue(apiResponse);
 
       const result = await userService.getUserDetails(userId);
 
@@ -54,7 +65,15 @@ describe("User Service", () => {
         },
       };
 
-      api.get.mockResolvedValue(mockResponse);
+      // getUserDetails expects response.data.data.user structure
+      const apiResponse = {
+        data: {
+          data: {
+            user: mockResponse.data,
+          },
+        },
+      };
+      api.get.mockResolvedValue(apiResponse);
 
       const result = await userService.getUserDetails(userId);
 
@@ -131,11 +150,12 @@ describe("User Service", () => {
         },
       };
 
-      api.put.mockResolvedValue(mockResponse);
+      // updateUserDetails uses api.patch, not api.put
+      api.patch.mockResolvedValue(mockResponse);
 
       const result = await userService.updateUserDetails(userId, userData);
 
-      expect(api.put).toHaveBeenCalledWith(`/masters/user/${userId}`, userData);
+      expect(api.patch).toHaveBeenCalledWith(`/masters/user/${userId}`, userData);
       expect(result).toEqual(mockResponse.data);
     });
 
@@ -156,11 +176,12 @@ describe("User Service", () => {
         },
       };
 
-      api.put.mockResolvedValue(mockResponse);
+      // updateUserDetails uses api.patch, not api.put
+      api.patch.mockResolvedValue(mockResponse);
 
       const result = await userService.updateUserDetails(userId, userData);
 
-      expect(api.put).toHaveBeenCalledWith(`/masters/user/${userId}`, userData);
+      expect(api.patch).toHaveBeenCalledWith(`/masters/user/${userId}`, userData);
       expect(result).toEqual(mockResponse.data);
     });
 
@@ -176,7 +197,8 @@ describe("User Service", () => {
         },
       };
 
-      api.put.mockRejectedValue(errorResponse);
+      // updateUserDetails uses api.patch, not api.put
+      api.patch.mockRejectedValue(errorResponse);
 
       await expect(
         userService.updateUserDetails(userId, userData)
@@ -190,7 +212,8 @@ describe("User Service", () => {
       };
       const errorMessage = "Network Error";
 
-      api.put.mockRejectedValue(new Error(errorMessage));
+      // updateUserDetails uses api.patch, not api.put
+      api.patch.mockRejectedValue(new Error(errorMessage));
 
       await expect(
         userService.updateUserDetails(userId, userData)
@@ -210,7 +233,8 @@ describe("User Service", () => {
         },
       };
 
-      api.put.mockRejectedValue(errorResponse);
+      // updateUserDetails uses api.patch, not api.put
+      api.patch.mockRejectedValue(errorResponse);
 
       await expect(
         userService.updateUserDetails(userId, userData)
@@ -235,7 +259,8 @@ describe("User Service", () => {
         },
       };
 
-      api.put.mockRejectedValue(errorResponse);
+      // updateUserDetails uses api.patch, not api.put
+      api.patch.mockRejectedValue(errorResponse);
 
       await expect(
         userService.updateUserDetails(userId, userData)

@@ -5,19 +5,24 @@
 
 import { describe, it, expect, beforeEach, vi } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
-import { FormProvider, useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
+import FormProvider from "../../rhf/FormProvider";
 import Textarea from "./index";
 
 // Helper component to wrap Textarea with FormProvider
 const FormWrapper = ({ children, schema, defaultValues = {} }) => {
-  const methods = useForm({
-    resolver: schema ? yupResolver(schema) : undefined,
-    defaultValues,
-  });
+  const handleSubmit = vi.fn();
 
-  return <FormProvider {...methods}>{children}</FormProvider>;
+  return (
+    <FormProvider
+      schema={schema}
+      defaultValues={defaultValues}
+      onSubmit={handleSubmit}
+      mode="onSubmit"
+    >
+      {children}
+    </FormProvider>
+  );
 };
 
 describe("Textarea Component", () => {
@@ -210,14 +215,17 @@ describe("Textarea Component", () => {
       const submitButton = screen.getByText("Submit");
       fireEvent.click(submitButton);
 
-      await screen.findByText(/required/i);
+      await screen.findByText("Description must be at least 10 characters");
       const textarea = screen.getByLabelText("Description");
       expect(textarea).toHaveClass("is-invalid");
     });
 
     it("should validate maxLength and show error", async () => {
       const schema = yup.object({
-        description: yup.string().optional(),
+        description: yup
+          .string()
+          .max(60, "Description must not exceed 60 characters")
+          .optional(),
       });
 
       render(

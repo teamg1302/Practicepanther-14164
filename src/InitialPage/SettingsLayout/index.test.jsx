@@ -9,7 +9,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Provider } from "react-redux";
 import { configureStore } from "@reduxjs/toolkit";
 import SettingsLayout from "./index";
-import rootReducer from "../../../core/redux/reducer";
+import rootReducer from "../../core/redux/reducer";
 
 // Mock SettingsSidebar component
 vi.mock("./sidebar", () => ({
@@ -23,6 +23,15 @@ vi.mock("./sidebar", () => ({
       <div>Settings Sidebar</div>
     </nav>
   ),
+}));
+
+// Mock services used by reducers to prevent import errors
+vi.mock("@/core/services/mastersService", () => ({
+  getTimezone: vi.fn(),
+  getTitles: vi.fn(),
+  getCountries: vi.fn(),
+  getCurrencies: vi.fn(),
+  getStatesByCountry: vi.fn(),
 }));
 
 // Helper function to render component with providers
@@ -203,8 +212,12 @@ describe("SettingsLayout Component", () => {
         </Routes>
       );
 
-      const main = document.querySelector(".settings-content-main");
-      expect(main).toBeInTheDocument();
+      // Check for the settings content wrapper that actually exists
+      const settingsContent = document.querySelector(".settings-content");
+      expect(settingsContent).toBeInTheDocument();
+      
+      // Verify the content is rendered through Outlet
+      expect(screen.getByText("Content")).toBeInTheDocument();
     });
   });
 });

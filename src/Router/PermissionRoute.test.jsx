@@ -14,6 +14,7 @@ import { describe, it, expect, beforeEach, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { Provider } from "react-redux";
 import { configureStore } from "@reduxjs/toolkit";
+import { MemoryRouter, Routes, Route } from "react-router-dom";
 import PermissionRoute, { checkPermission } from "./PermissionRoute";
 import Error404 from "@/feature-module/pages/errorpages/error404";
 
@@ -162,9 +163,11 @@ describe("PermissionRoute", () => {
 
       render(
         <Provider store={store}>
-          <PermissionRoute module="manage_contacts" permission="read">
-            <TestComponent />
-          </PermissionRoute>
+          <MemoryRouter>
+            <PermissionRoute module="manage_contacts" permission="read">
+              <TestComponent />
+            </PermissionRoute>
+          </MemoryRouter>
         </Provider>
       );
 
@@ -185,9 +188,19 @@ describe("PermissionRoute", () => {
 
       render(
         <Provider store={store}>
-          <PermissionRoute module="manage_contacts" permission="read">
-            <TestComponent />
-          </PermissionRoute>
+          <MemoryRouter>
+            <Routes>
+              <Route
+                path="/"
+                element={
+                  <PermissionRoute module="manage_contacts" permission="read">
+                    <TestComponent />
+                  </PermissionRoute>
+                }
+              />
+              <Route path="/error-404" element={<Error404 />} />
+            </Routes>
+          </MemoryRouter>
         </Provider>
       );
 
@@ -212,9 +225,11 @@ describe("PermissionRoute", () => {
 
       render(
         <Provider store={store}>
-          <PermissionRoute module="manage_matters" permission="create">
-            <TestComponent />
-          </PermissionRoute>
+          <MemoryRouter>
+            <PermissionRoute module="manage_matters" permission="create">
+              <TestComponent />
+            </PermissionRoute>
+          </MemoryRouter>
         </Provider>
       );
 
@@ -227,9 +242,19 @@ describe("PermissionRoute", () => {
 
       render(
         <Provider store={store}>
-          <PermissionRoute module="manage_contacts" permission="read">
-            <TestComponent />
-          </PermissionRoute>
+          <MemoryRouter>
+            <Routes>
+              <Route
+                path="/"
+                element={
+                  <PermissionRoute module="manage_contacts" permission="read">
+                    <TestComponent />
+                  </PermissionRoute>
+                }
+              />
+              <Route path="/error-404" element={<Error404 />} />
+            </Routes>
+          </MemoryRouter>
         </Provider>
       );
 
@@ -254,9 +279,19 @@ describe("PermissionRoute", () => {
       // Test create permission
       const { rerender } = render(
         <Provider store={store}>
-          <PermissionRoute module="manage_contacts" permission="create">
-            <TestComponent />
-          </PermissionRoute>
+          <MemoryRouter>
+            <Routes>
+              <Route
+                path="/"
+                element={
+                  <PermissionRoute module="manage_contacts" permission="create">
+                    <TestComponent />
+                  </PermissionRoute>
+                }
+              />
+              <Route path="/error-404" element={<Error404 />} />
+            </Routes>
+          </MemoryRouter>
         </Provider>
       );
       expect(screen.getByText("Test Content")).toBeInTheDocument();
@@ -264,9 +299,19 @@ describe("PermissionRoute", () => {
       // Test update permission (should be denied)
       rerender(
         <Provider store={store}>
-          <PermissionRoute module="manage_contacts" permission="update">
-            <TestComponent />
-          </PermissionRoute>
+          <MemoryRouter>
+            <Routes>
+              <Route
+                path="/"
+                element={
+                  <PermissionRoute module="manage_contacts" permission="update">
+                    <TestComponent />
+                  </PermissionRoute>
+                }
+              />
+              <Route path="/error-404" element={<Error404 />} />
+            </Routes>
+          </MemoryRouter>
         </Provider>
       );
       expect(screen.getByTestId("error-404")).toBeInTheDocument();

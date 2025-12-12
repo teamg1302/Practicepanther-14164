@@ -151,7 +151,7 @@ const Switch = ({
               fontWeight: "500",
               color: isChecked ? "#ffffff" : "#6c757d",
               minWidth: "44px",
-              minHeight: "36px",
+              minHeight: "44px",
             }}
           >
             <span

@@ -7,6 +7,15 @@ import { describe, it, expect, beforeEach, vi } from "vitest";
 import rootReducer from "./reducer";
 import initialState from "./initial.value";
 
+// Mock services used by reducers to prevent import errors
+vi.mock("@/core/services/mastersService", () => ({
+  getTimezone: vi.fn(),
+  getTitles: vi.fn(),
+  getCountries: vi.fn(),
+  getCurrencies: vi.fn(),
+  getStatesByCountry: vi.fn(),
+}));
+
 describe("Root Reducer", () => {
   beforeEach(() => {
     // Clear localStorage before each test

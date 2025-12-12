@@ -29,7 +29,7 @@ export const checkPermission = (permissions, moduleName, action) => {
   );
 
   if (!modulePermission) {
-    return true;
+    return false;
   }
 
   return modulePermission.actions?.[action] === true;

@@ -24,25 +24,31 @@ describe("Recyclebin Service", () => {
 
   describe("getRecyclebin", () => {
     it("should fetch recycle bin items successfully with default parameters", async () => {
+      // Service returns response.data?.data || response.data
+      // So we need to structure the mock so that response.data.data contains the full object
+      const responseData = {
+        data: [
+          {
+            id: 1,
+            name: "Deleted Document",
+            type: "document",
+            deletedAt: "2024-01-15T10:00:00Z",
+          },
+          {
+            id: 2,
+            name: "Deleted Invoice",
+            type: "invoice",
+            deletedAt: "2024-01-14T10:00:00Z",
+          },
+        ],
+        total: 2,
+        page: 1,
+        limit: 50,
+      };
+
       const mockResponse = {
         data: {
-          data: [
-            {
-              id: 1,
-              name: "Deleted Document",
-              type: "document",
-              deletedAt: "2024-01-15T10:00:00Z",
-            },
-            {
-              id: 2,
-              name: "Deleted Invoice",
-              type: "invoice",
-              deletedAt: "2024-01-14T10:00:00Z",
-            },
-          ],
-          total: 2,
-          page: 1,
-          limit: 50,
+          data: responseData,
         },
       };
 
@@ -53,7 +59,7 @@ describe("Recyclebin Service", () => {
       expect(api.get).toHaveBeenCalledWith(
         "/recycle-bin?limit=50&page=1&search=&sortBy=updatedAt&order=desc"
       );
-      expect(result).toEqual(mockResponse.data);
+      expect(result).toEqual(responseData);
     });
 
     it("should fetch recycle bin items with custom pagination parameters", async () => {
@@ -61,18 +67,23 @@ describe("Recyclebin Service", () => {
         page: 2,
         limit: 10,
       };
+      // Service returns response.data?.data || response.data
+      const responseData = {
+        data: [
+          {
+            id: 11,
+            name: "Item 11",
+            type: "document",
+          },
+        ],
+        total: 25,
+        page: 2,
+        limit: 10,
+      };
+
       const mockResponse = {
         data: {
-          data: [
-            {
-              id: 11,
-              name: "Item 11",
-              type: "document",
-            },
-          ],
-          total: 25,
-          page: 2,
-          limit: 10,
+          data: responseData,
         },
       };
 
@@ -83,7 +94,7 @@ describe("Recyclebin Service", () => {
       expect(api.get).toHaveBeenCalledWith(
         "/recycle-bin?limit=10&page=2&search=&sortBy=updatedAt&order=desc"
       );
-      expect(result).toEqual(mockResponse.data);
+      expect(result).toEqual(responseData);
     });
 
     it("should fetch recycle bin items with search parameter", async () => {
@@ -92,19 +103,23 @@ describe("Recyclebin Service", () => {
         page: 1,
         limit: 20,
       };
+      const responseData = {
+        data: [
+          {
+            id: 3,
+            name: "Invoice #123",
+            type: "invoice",
+            deletedAt: "2024-01-13T10:00:00Z",
+          },
+        ],
+        total: 1,
+        page: 1,
+        limit: 20,
+      };
+
       const mockResponse = {
         data: {
-          data: [
-            {
-              id: 3,
-              name: "Invoice #123",
-              type: "invoice",
-              deletedAt: "2024-01-13T10:00:00Z",
-            },
-          ],
-          total: 1,
-          page: 1,
-          limit: 20,
+          data: responseData,
         },
       };
 
@@ -115,7 +130,7 @@ describe("Recyclebin Service", () => {
       expect(api.get).toHaveBeenCalledWith(
         "/recycle-bin?limit=20&page=1&search=invoice&sortBy=updatedAt&order=desc"
       );
-      expect(result).toEqual(mockResponse.data);
+      expect(result).toEqual(responseData);
     });
 
     it("should fetch recycle bin items with custom sorting parameters", async () => {
@@ -125,19 +140,23 @@ describe("Recyclebin Service", () => {
         page: 1,
         limit: 15,
       };
+      const responseData = {
+        data: [
+          {
+            id: 5,
+            name: "Oldest Item",
+            type: "document",
+            deletedAt: "2024-01-01T10:00:00Z",
+          },
+        ],
+        total: 1,
+        page: 1,
+        limit: 15,
+      };
+
       const mockResponse = {
         data: {
-          data: [
-            {
-              id: 5,
-              name: "Oldest Item",
-              type: "document",
-              deletedAt: "2024-01-01T10:00:00Z",
-            },
-          ],
-          total: 1,
-          page: 1,
-          limit: 15,
+          data: responseData,
         },
       };
 
@@ -148,7 +167,7 @@ describe("Recyclebin Service", () => {
       expect(api.get).toHaveBeenCalledWith(
         "/recycle-bin?limit=15&page=1&search=&sortBy=deletedAt&order=asc"
       );
-      expect(result).toEqual(mockResponse.data);
+      expect(result).toEqual(responseData);
     });
 
     it("should fetch recycle bin items with all parameters combined", async () => {
@@ -159,23 +178,27 @@ describe("Recyclebin Service", () => {
         sortBy: "name",
         order: "asc",
       };
+      const responseData = {
+        data: [
+          {
+            id: 51,
+            name: "Alpha Document",
+            type: "document",
+          },
+          {
+            id: 52,
+            name: "Beta Document",
+            type: "document",
+          },
+        ],
+        total: 50,
+        page: 3,
+        limit: 25,
+      };
+
       const mockResponse = {
         data: {
-          data: [
-            {
-              id: 51,
-              name: "Alpha Document",
-              type: "document",
-            },
-            {
-              id: 52,
-              name: "Beta Document",
-              type: "document",
-            },
-          ],
-          total: 50,
-          page: 3,
-          limit: 25,
+          data: responseData,
         },
       };
 
@@ -186,18 +209,22 @@ describe("Recyclebin Service", () => {
       expect(api.get).toHaveBeenCalledWith(
         "/recycle-bin?limit=25&page=3&search=document&sortBy=name&order=asc"
       );
-      expect(result).toEqual(mockResponse.data);
+      expect(result).toEqual(responseData);
     });
 
     it("should handle response with nested data structure", async () => {
+      const responseData = {
+        data: [
+          {
+            id: 1,
+            name: "Test Item",
+          },
+        ],
+      };
+
       const mockResponse = {
         data: {
-          data: [
-            {
-              id: 1,
-              name: "Test Item",
-            },
-          ],
+          data: responseData,
         },
       };
 
@@ -205,7 +232,7 @@ describe("Recyclebin Service", () => {
 
       const result = await recyclebinService.getRecyclebin();
 
-      expect(result).toEqual(mockResponse.data);
+      expect(result).toEqual(responseData);
     });
 
     it("should handle response without nested data structure", async () => {
@@ -312,12 +339,16 @@ describe("Recyclebin Service", () => {
       const params = {
         search: "nonexistent",
       };
+      const responseData = {
+        data: [],
+        total: 0,
+        page: 1,
+        limit: 50,
+      };
+
       const mockResponse = {
         data: {
-          data: [],
-          total: 0,
-          page: 1,
-          limit: 50,
+          data: responseData,
         },
       };
 
@@ -334,12 +365,16 @@ describe("Recyclebin Service", () => {
         page: "2", // String number
         limit: "10", // String number
       };
+      const responseData = {
+        data: [],
+        total: 0,
+        page: 2,
+        limit: 10,
+      };
+
       const mockResponse = {
         data: {
-          data: [],
-          total: 0,
-          page: 2,
-          limit: 10,
+          data: responseData,
         },
       };
 
@@ -350,7 +385,7 @@ describe("Recyclebin Service", () => {
       expect(api.get).toHaveBeenCalledWith(
         "/recycle-bin?limit=10&page=2&search=&sortBy=updatedAt&order=desc"
       );
-      expect(result).toEqual(mockResponse.data);
+      expect(result).toEqual(responseData);
     });
 
     it("should encode special characters in search parameter", async () => {

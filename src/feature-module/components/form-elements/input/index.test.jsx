@@ -5,19 +5,24 @@
 
 import { describe, it, expect, beforeEach, vi } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
-import { FormProvider, useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
+import FormProvider from "../../rhf/FormProvider";
 import Input from "./index";
 
 // Helper component to wrap Input with FormProvider
 const FormWrapper = ({ children, schema, defaultValues = {} }) => {
-  const methods = useForm({
-    resolver: schema ? yupResolver(schema) : undefined,
-    defaultValues,
-  });
+  const handleSubmit = vi.fn();
 
-  return <FormProvider {...methods}>{children}</FormProvider>;
+  return (
+    <FormProvider
+      schema={schema}
+      defaultValues={defaultValues}
+      onSubmit={handleSubmit}
+      mode="onSubmit"
+    >
+      {children}
+    </FormProvider>
+  );
 };
 
 describe("Input Component", () => {
