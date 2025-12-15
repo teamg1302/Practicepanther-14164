@@ -34,16 +34,17 @@ import {
   clearStates,
 } from "@/core/redux/mastersReducer";
 import { useDispatch } from "react-redux";
+import PageLayout from "@/feature-module/components/list-page-layout";
 
 /**
  * Account Owner options.
  * @type {Array<{value: string, label: string}>}
  */
-const accountOwnerOptions = [
-  { value: "man-singh", label: "Man Singh" },
-  { value: "john-doe", label: "John Doe" },
-  { value: "jane-smith", label: "Jane Smith" },
-];
+// const accountOwnerOptions = [
+//   { value: "man-singh", label: "Man Singh" },
+//   { value: "john-doe", label: "John Doe" },
+//   { value: "jane-smith", label: "Jane Smith" },
+// ];
 
 /**
  * Primary Practice Area options.
@@ -102,8 +103,57 @@ const FirmLogoInfo = () => {
   const firmInfoSchema = React.useMemo(
     () =>
       yup.object({
-        file: yup.string().trim().optional(),
-        accountOwner: yup.string().trim().optional(),
+        firmLogo: yup
+          .mixed()
+          .nullable()
+          .transform((value) => {
+            // Convert null/undefined to empty string for string validation
+            if (value === null || value === undefined) {
+              return "";
+            }
+            // If it's a File object, return as is
+            if (value instanceof File) {
+              return value;
+            }
+            // If it's a string (URL), return trimmed
+            return typeof value === "string" ? value.trim() : value;
+          })
+          .test("is-string-or-file", (value) => {
+            // Allow empty string, File objects, or valid string URLs
+            return (
+              value === "" || value instanceof File || typeof value === "string"
+            );
+          })
+          .optional(),
+        portalLogo: yup
+          .mixed()
+          .nullable()
+          .transform((value) => {
+            // Convert null/undefined to empty string for string validation
+            if (value === null || value === undefined) {
+              return "";
+            }
+            // If it's a File object, return as is
+            if (value instanceof File) {
+              return value;
+            }
+            // If it's a string (URL), return trimmed
+            return typeof value === "string" ? value.trim() : value;
+          })
+          .test("is-string-or-file", (value) => {
+            // Allow empty string, File objects, or valid string URLs
+            return (
+              value === "" || value instanceof File || typeof value === "string"
+            );
+          })
+          .optional(),
+        colorScheme: yup
+          .object()
+          .shape({
+            headerColor: yup.string().trim().optional(),
+          })
+          .optional(),
+        //  accountOwner: yup.string().trim().optional(),
         name: yup.string().trim().optional(),
         countryId: yup.string().trim().optional(),
         stateId: yup.string().trim().optional(),
@@ -121,7 +171,11 @@ const FirmLogoInfo = () => {
         website: yup
           .string()
           .trim()
-          .url(t("firmLogoInfo.validation.websiteInvalid"))
+          .test(
+            "url",
+            t("firmLogoInfo.validation.websiteInvalid"),
+            (value) => !value || yup.string().url().isValidSync(value)
+          )
           .optional(),
         taxId: yup.string().trim().optional(),
         primaryPracticeArea: yup.string().trim().optional(),
@@ -154,11 +208,30 @@ const FirmLogoInfo = () => {
       // Get userFirmId from user object (could be firmId, userFirmId, or id)
       const userFirmId = user?.firmId?._id;
 
+      // Validate userFirmId exists
+      if (!userFirmId) {
+        Swal.fire({
+          icon: "error",
+          title: t("firmLogoInfo.messages.saveFailed"),
+          text: "User firm ID is missing. Please contact support.",
+          showConfirmButton: true,
+        });
+        return;
+      }
+
       // Convert form data to FormData using utility function
       const getValues = formRef.current?.getValues;
-      const formDataToSubmit = convertToFormData(formData, {
+
+      // Clean formData: convert null values to empty strings for file fields
+      const cleanedFormData = {
+        ...formData,
+        firmLogo: formData.firmLogo === null ? "" : formData.firmLogo,
+        portalLogo: formData.portalLogo === null ? "" : formData.portalLogo,
+      };
+
+      const formDataToSubmit = convertToFormData(cleanedFormData, {
         getValues,
-        fileFields: ["file"],
+        fileFields: ["firmLogo", "portalLogo"],
       });
 
       console.log("formDataToSubmit", formDataToSubmit);
@@ -188,46 +261,52 @@ const FirmLogoInfo = () => {
   };
 
   return (
-    <main className="settings-content-main w-100">
-      <div className="settings-page-wrap">
-        <FormProvider
-          schema={firmInfoSchema}
-          defaultValues={{
-            file: null,
-            accountOwner: "",
-            name: "",
-            countryId: "",
-            stateId: "",
-            currencyId: "",
-            address1: "",
-            address2: "",
-            city: "",
-            zipCode: "",
-            phone: "",
-            email: "",
-            website: "",
-            taxId: "",
-            primaryPracticeArea: "",
-            numberOfAttorneys: "",
-            businessStructure: "",
-            formationDate: null,
-            primaryOwnerEmail: "",
-            ownerFirstName: "",
-            ownerLastName: "",
-            ownerPhoneNumber: "",
-            barNumber: "",
-          }}
-          onSubmit={onSubmit}
-        >
-          <FirmLogoInfoContent
-            ref={formRef}
-            userFirmId={user?.firmId?._id}
-            isLoading={isLoading}
-            setIsLoading={setIsLoading}
-          />
-        </FormProvider>
-      </div>
-    </main>
+    <PageLayout
+      isFormLayout={true}
+      isSettingsLayout={true}
+      title={t("firmLogoInfo.title")}
+      subtitle="Manage your firm logo and information"
+    >
+      <FormProvider
+        schema={firmInfoSchema}
+        mode="onSubmit"
+        defaultValues={{
+          firmLogo: "",
+          // accountOwner: "",
+          name: "",
+          countryId: "",
+          stateId: "",
+          currencyId: "",
+          address1: "",
+          address2: "",
+          city: "",
+          zipCode: "",
+          phone: "",
+          email: "",
+          website: "",
+          taxId: "",
+          primaryPracticeArea: "",
+          numberOfAttorneys: "",
+          businessStructure: "",
+          formationDate: null,
+          primaryOwnerEmail: "",
+          ownerFirstName: "",
+          ownerLastName: "",
+          ownerPhoneNumber: "",
+          barNumber: "",
+          portalLogo: "",
+          colorScheme: null,
+        }}
+        onSubmit={onSubmit}
+      >
+        <FirmLogoInfoContent
+          ref={formRef}
+          userFirmId={user?.firmId?._id}
+          isLoading={isLoading}
+          setIsLoading={setIsLoading}
+        />
+      </FormProvider>
+    </PageLayout>
   );
 };
 
@@ -246,10 +325,9 @@ const FirmLogoInfoContent = React.forwardRef(
     const { t } = useTranslation();
     const { reset, watch, getValues, setValue } = useFormContext();
     const dispatch = useDispatch();
-    const logoValue = watch("file");
+    const logoValue = watch("firmLogo");
     const portalLogoValue = watch("portalLogo");
     const countryId = watch("countryId");
-    console.log("portalLogoValue", portalLogoValue, logoValue);
 
     // Get countries, currencies, and states from Redux store
     const countries = useSelector((state) => state.masters?.countries || []);
@@ -276,6 +354,8 @@ const FirmLogoInfoContent = React.forwardRef(
         dispatch(fetchCountries());
       }
     }, [dispatch, countries.length, countriesLoading]);
+
+    // console.log("countries", countries);
 
     React.useEffect(() => {
       if (currencies.length === 0 && !currenciesLoading) {
@@ -309,7 +389,7 @@ const FirmLogoInfoContent = React.forwardRef(
           const firm = firmData?.data?.firm || firmData?.firm || firmData;
 
           const formData = {
-            accountOwner: firm?.accountOwner || "",
+            // accountOwner: firm?.accountOwner || "",
             name: firm?.name || "",
             countryId: firm?.countryId?._id || "",
             stateId: firm?.stateId?._id || "",
@@ -333,8 +413,8 @@ const FirmLogoInfoContent = React.forwardRef(
             ownerLastName: firm?.ownerLastName || "",
             ownerPhoneNumber: firm?.ownerPhoneNumber || "",
             barNumber: firm?.barNumber || "",
-            file: firm?.logo || null,
-            portalLogo: firm?.portalLogo || null,
+            firmLogo: firm?.firmLogo || "",
+            portalLogo: firm?.portalLogo || "",
             colorScheme: firm?.colorScheme,
           };
 
@@ -374,13 +454,9 @@ const FirmLogoInfoContent = React.forwardRef(
 
     return (
       <>
-        <div className="setting-title">
-          <h4>{t("firmLogoInfo.title")}</h4>
-        </div>
-
         {/* Firm Logo Upload */}
         <PhotoUpload
-          name="file"
+          name="firmLogo"
           label={t("firmLogoInfo.firmLogo")}
           changeText={t("changeImage")}
           helpText={t("firmLogoInfo.imageUploadHelp")}
@@ -391,10 +467,10 @@ const FirmLogoInfoContent = React.forwardRef(
         />
 
         {/* Account Owner Section */}
-        <div className="card-title-head">
+        {/* <div className="card-title-head">
           <h6>{t("firmLogoInfo.accountOwner")}</h6>
-        </div>
-        <div className="row">
+        </div> */}
+        {/* <div className="row">
           <div className="col-md-12">
             <Select
               name="accountOwner"
@@ -404,23 +480,39 @@ const FirmLogoInfoContent = React.forwardRef(
               disabled
             />
           </div>
-        </div>
+        </div> */}
 
         {/* Business Information Section */}
         <div className="row">
           <div className="col-md-12">
             <Input name="name" label={t("firmLogoInfo.name")} type="text" />
           </div>
-          <div className="col-md-12">
+          <div className="col-md-6">
+            <Input
+              name="email"
+              label={t("firmLogoInfo.firmEmailAddress")}
+              type="email"
+              required
+            />
+          </div>
+          <div className="col-md-6">
+            <Input
+              id="phone1"
+              name="phone"
+              label={t("firmLogoInfo.phoneNumber")}
+              type="text"
+            />
+          </div>
+
+          <div className="col-md-6">
             <Select
               name="countryId"
               label={t("firmLogoInfo.country")}
               options={countries}
               placeholder={t("firmLogoInfo.selectCountry")}
-              disabled={countriesLoading}
             />
           </div>
-          <div className="col-md-12">
+          <div className="col-md-6">
             <Select
               name="stateId"
               label={t("firmLogoInfo.state")}
@@ -429,7 +521,11 @@ const FirmLogoInfoContent = React.forwardRef(
               disabled={!countryId || statesLoading}
             />
           </div>
-          <div className="col-md-12">
+          <div className="col-md-6">
+            <Input name="city" label={t("firmLogoInfo.city")} type="text" />
+          </div>
+
+          <div className="col-md-6">
             <Select
               name="currencyId"
               label={t("firmLogoInfo.currency")}
@@ -445,47 +541,30 @@ const FirmLogoInfoContent = React.forwardRef(
               type="text"
             />
           </div>
-          <div className="col-md-12">
+          <div className="col-md-6">
             <Input
               name="address2"
               label={t("firmLogoInfo.address2")}
               type="text"
             />
           </div>
-          <div className="col-md-12">
-            <Input name="city" label={t("firmLogoInfo.city")} type="text" />
-          </div>
-          <div className="col-md-12">
+          <div className="col-md-6">
             <Input
               name="zipCode"
               label={t("firmLogoInfo.zipPostalCode")}
               type="text"
             />
           </div>
-          <div className="col-md-12">
-            <Input
-              id="phone1"
-              name="phone"
-              label={t("firmLogoInfo.phoneNumber")}
-              type="text"
-            />
-          </div>
-          <div className="col-md-12">
-            <Input
-              name="email"
-              label={t("firmLogoInfo.firmEmailAddress")}
-              type="email"
-              required
-            />
-          </div>
-          <div className="col-md-12">
+
+          <div className="col-md-6">
             <Input
               name="website"
               label={t("firmLogoInfo.website")}
               type="url"
             />
           </div>
-          <div className="col-md-12">
+
+          <div className="col-md-6">
             <Input name="taxId" label={t("firmLogoInfo.taxId")} type="text" />
           </div>
         </div>
@@ -522,7 +601,8 @@ const FirmLogoInfoContent = React.forwardRef(
         </div>
 
         {/* Business and Business Owner Info Section */}
-        <div className="card-title-head mb-2">
+
+        {/* <div className="card-title-head mb-2">
           <h6>{t("firmLogoInfo.businessAndOwnerInfo")}</h6>
           <p className="text-muted small mt-2">
             {t("firmLogoInfo.businessInfoHelp")}
@@ -598,7 +678,7 @@ const FirmLogoInfoContent = React.forwardRef(
               type="text"
             />
           </div>
-        </div>
+        </div> */}
 
         <FormSubmitButtons />
       </>
@@ -616,8 +696,15 @@ FirmLogoInfoContent.displayName = "FirmLogoInfoContent";
  */
 const FormSubmitButtons = () => {
   const {
-    formState: { isSubmitting },
+    formState: { isSubmitting, errors },
   } = useFormContext();
+
+  // Log validation errors for debugging
+  React.useEffect(() => {
+    if (Object.keys(errors).length > 0) {
+      console.log("Form validation errors:", errors);
+    }
+  }, [errors]);
 
   return (
     <div className="settings-bottom-btn d-flex flex-row gap-2 align-items-center justify-content-end">

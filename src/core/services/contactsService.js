@@ -32,6 +32,8 @@ export const getContacts = async (params = {}) => {
     if (params.search) queryParams.append("search", params.search);
     if (params.sortBy) queryParams.append("sortBy", params.sortBy);
     if (params.order) queryParams.append("order", params.order);
+    if (params.startDate) queryParams.append("startDate", params.startDate);
+    if (params.endDate) queryParams.append("endDate", params.endDate);
 
     const url = queryParams.toString()
       ? `/contacts?${queryParams.toString()}`

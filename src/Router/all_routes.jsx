@@ -294,7 +294,7 @@ export const all_routes = {
     name: "addRolePermission",
     path: "/settings/roles-permissions/add",
     icon: Lock,
-    text: "Add Role & Permission",
+    text: "Add",
     permission: "create",
   },
 

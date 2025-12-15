@@ -1,20 +1,23 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
-import { PlusCircle } from "feather-icons-react/build/IconComponents";
-import { Download } from "react-feather";
-import { Box, StopCircle, GitMerge } from "react-feather";
-import Select from "react-select";
+import { useForm, FormProvider } from "react-hook-form";
+
 import { getContacts, deleteContact } from "@/core/services/contactsService";
 import { all_routes } from "@/Router/all_routes";
 import EntityListView from "@/feature-module/components/entity-list-view";
 import withEntityHandlers from "@/feature-module/hoc/withEntityHandlers";
 import { getTableColumns } from "@/feature-module/components/table-columns";
-import ListPageLayout from "@/feature-module/components/list-page-layout";
+import PageLayout from "@/feature-module/components/list-page-layout";
+import { DateRangePicker } from "@/feature-module/components/form-elements";
+import PropTypes from "prop-types";
 
 const ContactsList = () => {
   const navigate = useNavigate();
-  const [customFilters, setCustomFilters] = useState({});
+  const [customFilters, setCustomFilters] = useState({
+    startDate: null,
+    endDate: null,
+  });
   const route = all_routes;
 
   // Columns definition - Pure JSON configuration (srNo and actions are added by withEntityHandlers)
@@ -68,17 +71,33 @@ const ContactsList = () => {
   };
 
   return (
-    <ListPageLayout
+    <PageLayout
       title="Contacts"
       subtitle="Manage your contacts"
-      addButton={route.addContact}
-      importButton={{
-        modalTarget: "#view-notes",
-        icon: <Download className="me-2" />,
-        text: "Import",
+      toolIcons={{
+        showRefresh: true,
+        showExcel: true,
       }}
-      filterContent={<FilterContent />}
+      actions={{
+        addButton: {
+          text: route.addContact.text,
+          onClick: () => {
+            navigate(route.addContact.path);
+          },
+        },
+        importButton: {
+          onClick: () => {
+            console.log("Import clicked");
+          },
+        },
+      }}
       showFilter={true}
+      filterContent={
+        <FilterContent
+          customFilters={customFilters}
+          onChange={setCustomFilters}
+        />
+      }
       onRefresh={handleRefresh}
     >
       <EnhancedList
@@ -87,7 +106,6 @@ const ContactsList = () => {
         onDelete={handleDelete}
         service={getContacts}
         customFilters={customFilters}
-        edit
         options={{
           customButtons: {
             add: true,
@@ -101,70 +119,50 @@ const ContactsList = () => {
           },
         }}
       />
-    </ListPageLayout>
+    </PageLayout>
   );
 };
 
-const FilterContent = () => {
+const FilterContent = ({ customFilters, onChange }) => {
+  const methods = useForm({
+    defaultValues: {
+      dateRange: [customFilters.startDate, customFilters.endDate],
+    },
+  });
+
+  const { watch } = methods;
+
+  useEffect(() => {
+    const subscription = watch((value) => {
+      onChange({
+        ...customFilters,
+        startDate: value.dateRange?.[0],
+        endDate: value.dateRange?.[1],
+      });
+    });
+    return () => subscription.unsubscribe();
+  }, [watch, onChange, customFilters]);
+
   return (
     <div className="row">
       <div className="col-lg-12 col-sm-12">
         <div className="row mt-3">
-          <div className="col-lg-2 col-sm-6 col-12">
-            <div className="input-blocks">
-              <Box className="info-img" />
-              <Select
-                className="img-select"
-                classNamePrefix="react-select"
-                placeholder="Primary Contact"
-              />
+          <FormProvider {...methods}>
+            <div className="col-lg-3 col-sm-6 col-12">
+              <div className="input-blocks">
+                <DateRangePicker name="dateRange" />
+              </div>
             </div>
-          </div>
-          <div className="col-lg-2 col-sm-6 col-12">
-            <div className="input-blocks">
-              <StopCircle className="info-img" />
-              <Select
-                className="img-select"
-                classNamePrefix="react-select"
-                placeholder="Assign To"
-              />
-            </div>
-          </div>
-          <div className="col-lg-2 col-sm-6 col-12">
-            <div className="input-blocks">
-              <GitMerge className="info-img" />
-              <Select
-                className="img-select"
-                classNamePrefix="react-select"
-                placeholder="Status"
-              />
-            </div>
-          </div>
-          <div className="col-lg-2 col-sm-6 col-12">
-            <div className="input-blocks">
-              <StopCircle className="info-img" />
-              <Select
-                className="img-select"
-                classNamePrefix="react-select"
-                placeholder="Tags"
-              />
-            </div>
-          </div>
-          <div className="col-lg-2 col-sm-6 col-12">
-            <div className="input-blocks">
-              <i className="fas fa-money-bill info-img" />
-
-              <Select
-                className="img-select"
-                classNamePrefix="react-select"
-                placeholder="Created At"
-              />
-            </div>
-          </div>
+          </FormProvider>
         </div>
       </div>
     </div>
   );
+};
+
+FilterContent.propTypes = {
+  customFilters: PropTypes.object.isRequired,
+  onChange: PropTypes.func.isRequired,
 };
 
 const EnhancedList = withEntityHandlers(EntityListView);

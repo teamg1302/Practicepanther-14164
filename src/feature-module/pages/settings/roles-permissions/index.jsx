@@ -7,6 +7,7 @@ import { all_routes } from "@/Router/all_routes";
 import { getRoles, deleteRole } from "@/core/services/roleService";
 import EntityListView from "@/feature-module/components/entity-list-view";
 import withEntityHandlers from "@/feature-module/hoc/withEntityHandlers";
+import ListPageLayout from "@/feature-module/components/list-page-layout";
 
 const RolePermissionList = () => {
   const { t } = useTranslation();
@@ -92,27 +93,56 @@ const RolePermissionList = () => {
     }
   };
 
+  const handleRefresh = () => {
+    setCustomFilters((prev) => ({
+      ...prev,
+      _refresh: Date.now(),
+    }));
+  };
+
   return (
-    <EnhancedList
-      columns={columns}
-      onEdit={handleEdit}
-      customFilters={customFilters}
-      onDelete={handleDelete}
-      addButtonRoute={route.addRolePermission.path}
-      addButtonLabel={t("formButton.addNew")}
-      service={getRoles}
-      options={{
-        customButtons: {
-          add: true,
-          edit: true,
-          delete: true,
+    <ListPageLayout
+      isSettingsLayout={true}
+      title={t("Roles & Permissions")}
+      subtitle="Manage your roles and permissions"
+      toolIcons={{
+        showRefresh: true,
+        showExcel: true,
+      }}
+      actions={{
+        addButton: {
+          text: route.addRolePermission.text,
+          onClick: () => {
+            navigate(route.addRolePermission.path);
+          },
         },
-        tableSetting: {
-          srNo: true,
-          selectRow: true,
+        importButton: {
+          onClick: () => {
+            console.log("Import clicked");
+          },
         },
       }}
-    />
+      onRefresh={handleRefresh}
+    >
+      <EnhancedList
+        columns={columns}
+        onEdit={handleEdit}
+        customFilters={customFilters}
+        onDelete={handleDelete}
+        addButtonLabel={t("formButton.addNew")}
+        service={getRoles}
+        options={{
+          customButtons: {
+            edit: true,
+            delete: true,
+          },
+          tableSetting: {
+            srNo: true,
+            selectRow: true,
+          },
+        }}
+      />
+    </ListPageLayout>
   );
 };
 

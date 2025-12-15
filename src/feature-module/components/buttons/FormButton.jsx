@@ -12,6 +12,8 @@ const FormButton = ({ type, isSubmitting, ...props }) => {
         return isSubmitting
           ? t("formButton.submitting")
           : t("formButton.submit");
+      case "save":
+        return isSubmitting ? t("formButton.saving") : t("formButton.save");
       case "cancel":
         return isSubmitting
           ? t("formButton.cancelling")

@@ -8,6 +8,7 @@ import { FormButton } from "@/feature-module/components/buttons";
 import { getValidationRules } from "@/core/validation-rules";
 import { changePassword } from "@/core/services/userService";
 import EntityFormView from "@/feature-module/components/entity-form-view";
+import PageLayout from "@/feature-module/components/list-page-layout";
 
 const SecuritySettings = () => {
   const { t } = useTranslation();
@@ -121,23 +122,20 @@ const SecuritySettings = () => {
 
   return (
     <>
-      <main className="settings-content-main w-100">
-        <div className="settings-page-wrap">
-          <div className="setting-title">
-            <h4>{t("changePasswordSetting.title")}</h4>
-          </div>
-          <div className="setting-description mb-4">
-            <span>{t("changePasswordSetting.subtitle")}</span>
-          </div>
-          <FormProvider
-            schema={securitySettingsSchema}
-            defaultValues={defaultValues}
-            onSubmit={onSubmit}
-          >
-            <SecurityForm fields={fields} />
-          </FormProvider>
-        </div>
-      </main>
+      <PageLayout
+        isFormLayout={true}
+        isSettingsLayout={true}
+        title={t("securitySettings.title")}
+        subtitle="Manage your security settings"
+      >
+        <FormProvider
+          schema={securitySettingsSchema}
+          defaultValues={defaultValues}
+          onSubmit={onSubmit}
+        >
+          <SecurityForm fields={fields} />
+        </FormProvider>
+      </PageLayout>
     </>
   );
 };

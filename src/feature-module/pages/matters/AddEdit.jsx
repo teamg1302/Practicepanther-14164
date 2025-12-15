@@ -1,41 +1,31 @@
 import React, { useState, useMemo, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 import { useTranslation } from "react-i18next";
 import * as yup from "yup";
-import { Link, useParams } from "react-router-dom";
-import Swal from "sweetalert2";
+import { useParams } from "react-router-dom";
 import PropTypes from "prop-types";
-import { ArrowLeft, ChevronUp } from "feather-icons-react/build/IconComponents";
-import { useDispatch, useSelector } from "react-redux";
-import { OverlayTrigger, Tooltip } from "react-bootstrap";
-import { convertToFormData } from "@/core/utilities/formDataConverter";
+
+import { all_routes } from "@/Router/all_routes";
+import PageLayout from "@/feature-module/components/list-page-layout";
 import { getUsers } from "@/core/services/userService";
 import { getTags } from "@/core/services/tagService";
 import { getContacts } from "@/core/services/contactsService";
+import { FromButtonGroup } from "@/feature-module/components/buttons";
+import { FormProvider, useFormContext } from "@/feature-module/components/rhf";
+import { getValidationRules } from "@/core/validation-rules";
+import EntityFormView from "@/feature-module/components/entity-form-view";
 import {
   getMatterById,
   createMatter,
   updateMatter,
 } from "@/core/services/mattersService";
-import { FormButton } from "@/feature-module/components/buttons";
-import { FormProvider, useFormContext } from "@/feature-module/components/rhf";
-import { getValidationRules } from "@/core/validation-rules";
-import { all_routes } from "@/Router/all_routes";
-
-import { setToogleHeader } from "@/core/redux/action";
-
-import EntityFormView from "@/feature-module/components/entity-form-view";
 
 const MattersAddEdit = () => {
+  const navigate = useNavigate();
   const route = all_routes;
-  const dispatch = useDispatch();
   const { matterId } = useParams();
-  const data = useSelector((state) => state.toggle_header);
 
-  const renderCollapseTooltip = (props) => (
-    <Tooltip id="refresh-tooltip" {...props}>
-      Collapse
-    </Tooltip>
-  );
   const { t } = useTranslation();
 
   const securitySettingsSchema = useMemo(
@@ -338,56 +328,25 @@ const MattersAddEdit = () => {
   };
 
   return (
-    <div className="page-wrapper">
-      <div className="content">
-        <div className="page-header">
-          <div className="add-item d-flex">
-            <div className="page-title">
-              <h4>{matterId ? "Edit Matter" : "New Matter"}</h4>
-              <h6>
-                {matterId ? "Update matter details" : "Create new matter"}
-              </h6>
-            </div>
-          </div>
-          <ul className="table-top-head">
-            <li>
-              <div className="page-btn">
-                <Link to={route.headers[2].path} className="btn btn-secondary">
-                  <ArrowLeft className="me-2" />
-                  Back to Matters
-                </Link>
-              </div>
-            </li>
-            <li>
-              <OverlayTrigger placement="top" overlay={renderCollapseTooltip}>
-                <Link
-                  data-bs-toggle="tooltip"
-                  data-bs-placement="top"
-                  title="Collapse"
-                  id="collapse-header"
-                  className={data ? "active" : ""}
-                  onClick={() => {
-                    dispatch(setToogleHeader(!data));
-                  }}
-                >
-                  <ChevronUp className="feather-chevron-up" />
-                </Link>
-              </OverlayTrigger>
-            </li>
-          </ul>
-        </div>
-
-        <FormProvider
-          schema={securitySettingsSchema}
-          defaultValues={defaultValues}
-          onSubmit={onSubmit}
-        >
-          <MattersForm fields={fields} matterId={matterId || false} t={t} />
-        </FormProvider>
-
-        {/* /add */}
-      </div>
-    </div>
+    <PageLayout
+      isFormLayout={true}
+      title={matterId ? "Edit Matter" : "Add Matter"}
+      subtitle={matterId ? "Modify matter details" : "Create a new matter"}
+      actions={{
+        onPrevious: {
+          text: "Back to Matters",
+          onClick: () => navigate(route.headers[2].path),
+        },
+      }}
+    >
+      <FormProvider
+        schema={securitySettingsSchema}
+        defaultValues={defaultValues}
+        onSubmit={onSubmit}
+      >
+        <MattersForm fields={fields} matterId={matterId || false} t={t} />
+      </FormProvider>
+    </PageLayout>
   );
 };
 
@@ -464,21 +423,12 @@ const MattersForm = ({ fields, matterId, t }) => {
 
   return (
     <>
-      <div className="card">
-        <div className="card-body add-product pb-0">
-          <EntityFormView fields={fields} />
-        </div>
-      </div>
-      <div className="col-lg-12">
-        <div className="mb-4 d-flex justify-content-end gap-2">
-          <FormButton type="submit" isSubmitting={isSubmitting} />
-          <FormButton
-            type="cancel"
-            isSubmitting={isSubmitting}
-            onClick={() => reset()}
-          />
-        </div>
-      </div>
+      <EntityFormView fields={fields} />
+      <FromButtonGroup
+        isSubmitting={isSubmitting}
+        reset={reset}
+        onClick={(e) => console.log("e", e)}
+      />
     </>
   );
 };

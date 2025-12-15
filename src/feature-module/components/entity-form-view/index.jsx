@@ -120,7 +120,7 @@ const EntityFormView = ({ fields }) => {
 
   return (
     <>
-      <div className="row">{formFields}</div>
+      <div className="row my-3">{formFields}</div>
     </>
   );
 };

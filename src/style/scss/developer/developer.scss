@@ -7,3 +7,13 @@
 .react-select__menu {
   z-index: 3 !important;
 }
+
+.form-layout-card {
+  border: 0 !important;
+  border-top: 1px solid #cccccc !important;
+  border-radius: 0 !important;
+}
+
+.MuiDateRangeCalendar-root div:first-child {
+  font-size: 0px !important;
+}

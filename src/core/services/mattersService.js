@@ -32,6 +32,9 @@ export const getMatters = async (params = {}) => {
     if (params.search) queryParams.append("search", params.search);
     if (params.sortBy) queryParams.append("sortBy", params.sortBy);
     if (params.order) queryParams.append("order", params.order);
+    if (params.startDate) queryParams.append("startDate", params.startDate);
+    if (params.endDate) queryParams.append("endDate", params.endDate);
+    if (params.contactIds) queryParams.append("contactIds", params.contactIds);
 
     const url = queryParams.toString()
       ? `/matters?${queryParams.toString()}`
@@ -150,7 +153,7 @@ export const getActivitiesLogByMatterId = async (params = {}) => {
   try {
     // Extract matterId from params
     const { matterId, ...queryParams } = params;
-    
+
     if (!matterId) {
       throw new Error("matterId is required");
     }
@@ -158,7 +161,8 @@ export const getActivitiesLogByMatterId = async (params = {}) => {
     // Build query string if params are provided
     const urlParams = new URLSearchParams();
 
-    if (queryParams.limit) urlParams.append("limit", queryParams.limit.toString());
+    if (queryParams.limit)
+      urlParams.append("limit", queryParams.limit.toString());
     if (queryParams.page) urlParams.append("page", queryParams.page.toString());
     if (queryParams.search) urlParams.append("search", queryParams.search);
     if (queryParams.sortBy) urlParams.append("sortBy", queryParams.sortBy);

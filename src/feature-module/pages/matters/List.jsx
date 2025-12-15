@@ -1,21 +1,20 @@
-import {
-  Box,
-  GitMerge,
-  PlusCircle,
-  StopCircle,
-} from "feather-icons-react/build/IconComponents";
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import Select from "react-select";
 import Swal from "sweetalert2";
-import { Download } from "react-feather";
+import PropTypes from "prop-types";
+import { useForm, FormProvider } from "react-hook-form";
 
+import { getContacts } from "@/core/services/contactsService";
 import { getMatters, deleteMatter } from "@/core/services/mattersService";
 import { all_routes } from "@/Router/all_routes";
 import EntityListView from "@/feature-module/components/entity-list-view";
 import withEntityHandlers from "@/feature-module/hoc/withEntityHandlers";
 import { getTableColumns } from "@/feature-module/components/table-columns";
 import ListPageLayout from "@/feature-module/components/list-page-layout";
+import {
+  DateRangePicker,
+  AsyncSelectPagination,
+} from "@/feature-module/components/form-elements";
 
 const MattersList = () => {
   const navigate = useNavigate();
@@ -73,88 +72,35 @@ const MattersList = () => {
     }));
   };
 
-  // Filter content
-  const filterContent = (
-    <div className="row">
-      <div className="col-lg-12 col-sm-12">
-        <div className="row mt-3">
-          <div className="col-lg-2 col-sm-6 col-12">
-            <div className="input-blocks">
-              <Box className="info-img" />
-              <Select
-                className="img-select"
-                classNamePrefix="react-select"
-                options={[]}
-                placeholder="Primary Contact"
-              />
-            </div>
-          </div>
-          <div className="col-lg-2 col-sm-6 col-12">
-            <div className="input-blocks">
-              <StopCircle className="info-img" />
-              <Select
-                className="img-select"
-                classNamePrefix="react-select"
-                options={[]}
-                placeholder="Assign To"
-              />
-            </div>
-          </div>
-          <div className="col-lg-2 col-sm-6 col-12">
-            <div className="input-blocks">
-              <GitMerge className="info-img" />
-              <Select
-                className="img-select"
-                classNamePrefix="react-select"
-                options={[]}
-                placeholder="Status"
-              />
-            </div>
-          </div>
-          <div className="col-lg-2 col-sm-6 col-12">
-            <div className="input-blocks">
-              <StopCircle className="info-img" />
-              <Select
-                className="img-select"
-                classNamePrefix="react-select"
-                options={[]}
-                placeholder="Tags"
-              />
-            </div>
-          </div>
-          <div className="col-lg-2 col-sm-6 col-12">
-            <div className="input-blocks">
-              <i className="fas fa-money-bill info-img" />
-              <Select
-                className="img-select"
-                classNamePrefix="react-select"
-                options={[]}
-                placeholder="Created At"
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-
   return (
     <ListPageLayout
       title="Matters"
       subtitle="Manage your matters"
-      addButton={{
-        path: route.addMatter.path,
-        text: route.addMatter.text,
-        icon: <PlusCircle className="me-2 iconsize" />,
+      toolIcons={{
+        showRefresh: true,
+        showExcel: true,
       }}
-      importButton={{
-        modalTarget: "#view-notes",
-        icon: <Download className="me-2" />,
-        text: "Import",
+      actions={{
+        addButton: {
+          text: route.addMatter.text,
+          onClick: () => {
+            navigate(route.addMatter.path);
+          },
+        },
+        importButton: {
+          onClick: () => {
+            console.log("Import clicked");
+          },
+        },
       }}
-      onRefresh={handleRefresh}
       showFilter={true}
-      filterContent={filterContent}
+      filterContent={
+        <FilterContent
+          customFilters={customFilters}
+          onChange={setCustomFilters}
+        />
+      }
+      onRefresh={handleRefresh}
     >
       <EnhancedList
         columns={columns}
@@ -179,5 +125,56 @@ const MattersList = () => {
   );
 };
 
+const FilterContent = ({ customFilters, onChange }) => {
+  const methods = useForm({
+    defaultValues: {
+      dateRange: [customFilters.startDate, customFilters.endDate],
+    },
+  });
+
+  const { watch } = methods;
+
+  useEffect(() => {
+    const subscription = watch((value) => {
+      onChange({
+        ...customFilters,
+        startDate: value.dateRange?.[0],
+        endDate: value.dateRange?.[1],
+        contactIds: value.contactIds,
+      });
+    });
+    return () => subscription.unsubscribe();
+  }, [watch, onChange, customFilters]);
+
+  return (
+    <div className="row">
+      <div className="col-lg-12 col-sm-12">
+        <div className="row mt-3">
+          <FormProvider {...methods}>
+            <div className="col-lg-3 col-sm-6 col-12">
+              <div className="input-blocks">
+                <DateRangePicker name="dateRange" />
+              </div>
+            </div>
+            <div className="col-lg-3 col-sm-6 col-12">
+              <div className="input-blocks">
+                <AsyncSelectPagination
+                  name="contactIds"
+                  placeholder="Select Contacts"
+                  api={getContacts}
+                />
+              </div>
+            </div>
+          </FormProvider>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+FilterContent.propTypes = {
+  customFilters: PropTypes.object.isRequired,
+  onChange: PropTypes.func.isRequired,
+};
 const EnhancedList = withEntityHandlers(EntityListView);
 export default MattersList;

@@ -6,10 +6,12 @@ import { all_routes } from "@/Router/all_routes";
 import {
   getRecyclebin,
   deleteRecycleBin,
+  restoreRecycleBin,
 } from "@/core/services/recyclebinService";
 import EntityListView from "@/feature-module/components/entity-list-view";
 import withEntityHandlers from "@/feature-module/hoc/withEntityHandlers";
 import { getTableColumns } from "@/feature-module/components/table-columns";
+import ListPageLayout from "@/feature-module/components/list-page-layout";
 
 // Columns definition - Pure JSON configuration (srNo and actions are added by withEntityHandlers)
 const COLUMNS_CONFIG = [
@@ -22,16 +24,10 @@ const COLUMNS_CONFIG = [
 
 const RecycleBin = () => {
   const { t } = useTranslation();
-  const navigate = useNavigate();
-  const route = all_routes;
   const [customFilters, setCustomFilters] = useState({});
 
   // Generate columns from JSON config
   const columns = useMemo(() => getTableColumns(COLUMNS_CONFIG), []);
-
-  const handleEdit = (row) => {
-    navigate(route.editUser.replace(":userId", row._id));
-  };
 
   const handleDelete = async (row) => {
     try {
@@ -56,30 +52,64 @@ const RecycleBin = () => {
     }
   };
 
+  const handleRefresh = () => {
+    setCustomFilters((prev) => ({
+      ...prev,
+      _refresh: Date.now(),
+    }));
+  };
+
+  const handleRestore = async (row) => {
+    try {
+      await restoreRecycleBin(row._id);
+      Swal.fire({
+        title: "Success",
+        text: "Row restored successfully",
+        icon: "success",
+      });
+      handleRefresh();
+    } catch (error) {
+      console.log("Error restoring row:", error);
+      Swal.fire({
+        title: "Error",
+        text: error?.message || "Failed to restore item",
+        icon: "error",
+      });
+    }
+  };
   return (
-    <EnhancedList
-      columns={columns}
-      customFilters={customFilters}
-      onEdit={handleEdit}
-      onDelete={handleDelete}
-      addButtonRoute={route.addUser}
-      addButtonLabel={t("Add")}
-      service={getRecyclebin}
-      options={{
-        customButtons: {
-          add: false,
-          edit: false,
-          delete: true,
-          restore: true,
-          restoreLabel: "Restore",
-          deleteLabel: "Delete Permanently",
-        },
-        tableSetting: {
-          srNo: true,
-          selectRow: true,
-        },
+    <ListPageLayout
+      isSettingsLayout={true}
+      title={t("Recycle Bin")}
+      subtitle="Manage your deleted items"
+      toolIcons={{
+        showRefresh: true,
+        showExcel: true,
       }}
-    />
+      onRefresh={handleRefresh}
+    >
+      <EnhancedList
+        columns={columns}
+        customFilters={customFilters}
+        onDelete={handleDelete}
+        onRestore={handleRestore}
+        service={getRecyclebin}
+        options={{
+          customButtons: {
+            add: false,
+            edit: false,
+            delete: true,
+            restore: true,
+            restoreLabel: "Restore",
+            deleteLabel: "Delete Permanently",
+          },
+          tableSetting: {
+            srNo: true,
+            selectRow: true,
+          },
+        }}
+      />
+    </ListPageLayout>
   );
 };
 

@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { FormProvider } from "@/feature-module/components/rhf";
-import { Link, useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { useFormContext } from "react-hook-form";
 import { useSelector } from "react-redux";
 import PropTypes from "prop-types";
 import * as yup from "yup";
 import Swal from "sweetalert2";
+import { useTranslation } from "react-i18next";
 import { all_routes } from "@/Router/all_routes";
 import {
   getRoleModules,
@@ -17,6 +18,7 @@ import { getUserDetails, updateUserDetails } from "@/core/services/userService";
 import { formatToTitleCase } from "@/core/utilities/stringFormatter";
 import { FormButton } from "@/feature-module/components/buttons";
 import Input from "@/feature-module/components/form-elements/input";
+import PageLayout from "@/feature-module/components/list-page-layout";
 
 /**
  * Yup validation schema for role permissions form
@@ -43,15 +45,7 @@ const rolePermissionSchema = yup.object({
     .trim()
     .optional()
     .max(500, "Description must not exceed 500 characters"),
-  firmId: yup
-    .string()
-    .nullable()
-    .transform((value) => {
-      if (value === null || value === undefined) return "";
-      return String(value);
-    })
-    .trim()
-    .optional(),
+
   isActive: yup
     .boolean()
     .nullable()
@@ -107,6 +101,7 @@ const rolePermissionSchema = yup.object({
 });
 
 const RolePermissionAddEdit = () => {
+  const { t } = useTranslation();
   const route = all_routes;
   const navigate = useNavigate();
   const { roleId, userId } = useParams();
@@ -119,10 +114,14 @@ const RolePermissionAddEdit = () => {
   useEffect(() => {
     const fetchModules = async () => {
       try {
+        setLoading(true);
         const modulesData = await getRoleModules();
         setModules(modulesData || []);
       } catch (error) {
+        setLoading(false);
         console.error("Error fetching modules:", error);
+      } finally {
+        setLoading(false);
       }
     };
     fetchModules();
@@ -130,12 +129,12 @@ const RolePermissionAddEdit = () => {
     const fetchData = async () => {
       try {
         setLoading(true);
-
         // Fetch role details if roleId exists (edit mode)
         if (roleId) {
           const roleData = await getRoleDetails(roleId);
           setRoleDetails(roleData.data);
         }
+        setLoading(false);
       } catch (error) {
         console.error("Error fetching data:", error);
         setModules([]);
@@ -171,38 +170,46 @@ const RolePermissionAddEdit = () => {
    * Transform roleDetails into defaultValues format
    */
   const defaultValues = useMemo(() => {
-    if (roleDetails) {
+    if (roleId && roleDetails) {
       return {
-        userName: userDetails?.name || "",
         name: roleDetails.name || "",
         description: roleDetails.description || "",
-        firmId: user?.firmId?._id || "",
         isActive:
           roleDetails.isActive !== undefined ? roleDetails.isActive : true,
-        permissions: userDetails.permissions || [],
+        permissions: roleDetails.permissions,
+      };
+    } else if (userId && userDetails) {
+      return {
+        userName: userDetails?.name || "",
+        name: userDetails.roleId?.name || "",
+        description: userDetails.roleId?.description || "",
+        isActive:
+          userDetails.roleId?.isActive !== undefined
+            ? userDetails.roleId?.isActive
+            : true,
+        permissions: userDetails.permissions,
+      };
+    } else if (!roleId && !userId) {
+      // Default values for new role
+      const initialPermissions = modules.map((module) => ({
+        moduleName: module,
+        actions: {
+          create: false,
+          read: false,
+          update: false,
+          delete: false,
+        },
+      }));
+
+      return {
+        userName: "",
+        name: "",
+        description: "",
+        isActive: true,
+        permissions: initialPermissions,
       };
     }
-
-    // Default values for new role
-    const initialPermissions = modules.map((module) => ({
-      moduleName: module,
-      actions: {
-        create: false,
-        read: false,
-        update: false,
-        delete: false,
-      },
-    }));
-
-    return {
-      userName: userDetails?.name || "",
-      name: "",
-      description: "",
-      firmId: user?.firmId || "",
-      isActive: true,
-      permissions: initialPermissions,
-    };
-  }, [roleDetails, modules, user?.firmId, userDetails]);
+  }, [roleDetails, modules, userDetails, roleId, userId]);
 
   /**
    * Handles form submission
@@ -215,7 +222,6 @@ const RolePermissionAddEdit = () => {
         description: formData.description
           ? String(formData.description).trim()
           : "",
-        firmId: formData.firmId ? String(formData.firmId).trim() : "",
         isActive:
           formData.isActive !== undefined ? Boolean(formData.isActive) : true,
         permissions: (formData.permissions || []).map((perm) => ({
@@ -292,8 +298,25 @@ const RolePermissionAddEdit = () => {
   }
 
   return (
-    <main className="settings-content-main w-100">
-      <div className="settings-page-wrap">
+    <PageLayout
+      isFormLayout={true}
+      isSettingsLayout={true}
+      title={
+        roleId
+          ? t("Edit Role")
+          : userId
+          ? t("Edit Role Permissions")
+          : t("Add Role")
+      }
+      subtitle={
+        roleId
+          ? "Edit role and permissions"
+          : userId
+          ? "Edit user's role permissions"
+          : "Add a new role and assign permissions"
+      }
+    >
+      {defaultValues && (
         <FormProvider
           schema={rolePermissionSchema}
           defaultValues={defaultValues}
@@ -305,8 +328,8 @@ const RolePermissionAddEdit = () => {
             loading={loading}
           />
         </FormProvider>
-      </div>
-    </main>
+      )}
+    </PageLayout>
   );
 };
 
@@ -321,7 +344,6 @@ const RolePermissionContent = ({ modules, userDetails, loading }) => {
     formState: { isSubmitting },
   } = useFormContext();
   const navigate = useNavigate();
-  const route = all_routes;
 
   const permissions = watch("permissions") || [];
 
@@ -481,15 +503,17 @@ const RolePermissionContent = ({ modules, userDetails, loading }) => {
   return (
     <div className="security-settings">
       <div className="row">
-        <div className="col-md-12">
-          <Input
-            name="userName"
-            label="User Name"
-            type="text"
-            inputProps={{ disabled: !!userDetails }}
-            required
-          />
-        </div>
+        {userDetails && (
+          <div className="col-md-12">
+            <Input
+              name="userName"
+              label="User Name"
+              type="text"
+              inputProps={{ disabled: !!userDetails }}
+              required
+            />
+          </div>
+        )}
         <div className="col-md-12">
           <Input
             name="name"

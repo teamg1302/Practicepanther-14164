@@ -246,7 +246,8 @@
   },
   "formButton": {
     "addNew": "Add New",
-    "submit": "Save Changes",
+    "submit": "Save",
+    "save": "Save & Add",
     "submitting": "Saving...",
     "cancel": "Cancel",
     "cancelling": "Cancelling...",
@@ -255,7 +256,7 @@
     "update": "Update",
     "updating": "Updating...",
     "ariaLabel": {
-      "save": "Save changes",
+      "save": "Save",
       "saving": "Saving settings"
     }
   },
@@ -295,6 +296,9 @@
     "passwordUpdateFailedMessage": "Password Update Failed",
     "passwordUpdatedSuccessfully": "Password has been changed successfully"
   },
+  "contacts": "Contacts",
+  "add": "Add",
+  "edit": "Edit",
   "common": {
     "required": "required",
     "example": "example",

@@ -1,5 +1,6 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useState } from "react";
+
+import { Link, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { OverlayTrigger, Tooltip } from "react-bootstrap";
 import PropTypes from "prop-types";
@@ -8,10 +9,15 @@ import {
   PlusCircle,
   RotateCcw,
   Download,
+  ArrowLeft,
+  Menu,
 } from "feather-icons-react/build/IconComponents";
+import { Button } from "@mui/material";
 import { setToogleHeader } from "@/core/redux/action";
 import ImageWithBasePath from "@/core/img/imagewithbasebath";
 import { checkPermission } from "@/Router/PermissionRoute";
+import { t } from "i18next";
+import SettingsSidebar from "@/InitialPage/SettingsLayout/sidebar";
 
 /**
  * Reusable List Page Layout Component
@@ -29,37 +35,53 @@ import { checkPermission } from "@/Router/PermissionRoute";
  * @param {boolean} [props.showFilter] - Whether to show the filter section (default: false)
  */
 const ListPageLayout = ({
+  isSettingsLayout = false,
+  isFormLayout = false,
   title,
   subtitle,
+  actions,
   children,
-  addButton,
-  importButton,
   toolIcons = {
-    showPdf: true,
-    showExcel: true,
-    showPrinter: true,
-    showRefresh: true,
-    showCollapse: true,
+    showPdf: false,
+    showExcel: false,
+    showPrinter: false,
+    showRefresh: false,
+    showCollapse: false,
   },
   onRefresh,
   filterContent,
   showFilter = false,
 }) => {
+  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
+  const location = useLocation();
   const dispatch = useDispatch();
   const data = useSelector((state) => state.toggle_header);
   const permissions = useSelector((state) => state.auth?.permissions || []);
 
   // Check if addButton should be shown based on permissions
   const shouldShowAddButton = () => {
-    if (!addButton) return false;
+    if (!actions?.addButton) return false;
 
     // If no module or permission specified, show the button
-    if (!addButton.module || !addButton.permission) {
+    if (!actions?.addButton.module || !actions?.addButton.permission) {
       return true;
     }
 
     // Check if user has permission
-    return checkPermission(permissions, addButton.module, addButton.permission);
+    return checkPermission(
+      permissions,
+      actions?.addButton.module,
+      actions?.addButton.permission
+    );
+  };
+
+  const breadcrumbs = () => {
+    const pathnames = location.pathname.split("/").filter((x) => x);
+    const breadcrumbs = pathnames.map((_, index) => {
+      const url = `/${pathnames.slice(0, index + 1).join("/")}`;
+      return url;
+    });
+    return breadcrumbs;
   };
 
   // Tooltip renderers
@@ -91,15 +113,58 @@ const ListPageLayout = ({
 
   return (
     <div className="page-wrapper">
-      <div className="content">
+      <div className={`content ${isSettingsLayout ? "settings-content" : ""}`}>
         <div className="page-header">
           <div className="add-item d-flex">
             <div className="page-title">
-              <h4>{title}</h4>
-              {subtitle && <h6>{subtitle}</h6>}
+              <div className="d-flex gap-2 align-items-center">
+                <h4>{title}</h4>
+                {subtitle && <h6>({subtitle})</h6>}
+              </div>
+              <nav aria-label="breadcrumb">
+                <ol className="breadcrumb breadcrumb-arrow mb-0">
+                  <li className="breadcrumb-item active">
+                    <Link to="/">
+                      <i className="fas fa-home"></i>
+                    </Link>
+                  </li>
+                  {breadcrumbs().map((url, index) => (
+                    <li
+                      key={index}
+                      className={`breadcrumb-item ${
+                        index === breadcrumbs().length - 1 ? "active" : ""
+                      }`}
+                    >
+                      <Link to={index === breadcrumbs().length - 1 ? "" : url}>
+                        {t(url.replace("/", ""))}
+                      </Link>
+                    </li>
+                  ))}
+                </ol>
+              </nav>
             </div>
           </div>
           <ul className="table-top-head">
+            {/* Mobile Menu Toggle Button */}
+            <button
+              type="button"
+              className="btn btn-sm settings-mobile-toggle d-lg-none"
+              onClick={() => setIsMobileSidebarOpen(!isMobileSidebarOpen)}
+              aria-label="Toggle settings sidebar"
+              aria-expanded={isMobileSidebarOpen}
+              aria-controls="settings-sidebar"
+              style={{
+                marginLeft: "auto",
+                marginRight: "15px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                minWidth: "44px",
+                minHeight: "44px",
+              }}
+            >
+              <Menu size={20} aria-hidden="true" />
+            </button>
             {toolIcons.showPdf && (
               <li>
                 <OverlayTrigger placement="top" overlay={renderTooltip}>
@@ -164,68 +229,98 @@ const ListPageLayout = ({
                 </OverlayTrigger>
               </li>
             )}
+            {isFormLayout && actions?.onPrevious && (
+              <li>
+                <div className="page-btn">
+                  <Button
+                    onClick={actions?.onPrevious.onClick}
+                    className="btn btn-secondary"
+                  >
+                    <ArrowLeft className="me-2" />
+                    {actions?.onPrevious.text}
+                  </Button>
+                </div>
+              </li>
+            )}
           </ul>
           {shouldShowAddButton() && (
             <div className="page-btn">
-              <Link to={addButton.path} className="btn btn-added">
+              <Button
+                className="btn btn-added btn-md"
+                onClick={actions?.addButton.onClick}
+              >
                 <PlusCircle className="me-2 iconsize" />
-                {addButton.text}
-              </Link>
+                {actions?.addButton.text}
+              </Button>
             </div>
           )}
-          {importButton && (
+          {actions?.importButton && (
             <div className="page-btn import">
-              <Link
-                to={importButton.path || "#"}
-                className="btn btn-added color"
-                data-bs-toggle={importButton.modalTarget ? "modal" : undefined}
-                data-bs-target={importButton.modalTarget}
-                onClick={importButton.onClick}
+              <Button
+                className="btn btn-added color btn-md"
+                data-bs-toggle={
+                  actions?.importButton.modalTarget ? "modal" : undefined
+                }
+                data-bs-target={actions?.importButton.modalTarget}
+                onClick={actions?.importButton.onClick}
               >
-                {importButton.icon || <Download className="me-2" />}
-                {importButton.text || "Import"}
-              </Link>
+                <Download className="me-2" />
+                {"Import"}
+              </Button>
             </div>
           )}
         </div>
 
-        <div className="card table-list-card">
-          <div className="card-body">
-            {showFilter && filterContent && (
-              <div
-                className="card visible"
-                id="filter_inputs"
-                style={{ display: "block" }}
-              >
-                <div className="card-body p-0 px-3">{filterContent}</div>
-              </div>
-            )}
-            {children}
+        {isSettingsLayout ? (
+          <div className="col-xl-12">
+            <div className="settings-wrapper d-flex gap-4">
+              <SettingsSidebar
+                id="settings-sidebar"
+                isMobileOpen={isMobileSidebarOpen}
+                onClose={() => setIsMobileSidebarOpen(false)}
+              />
+              {isFormLayout ? (
+                <main className="settings-content-main w-100">
+                  <div className="settings-page-wrap w-100">{children}</div>
+                </main>
+              ) : (
+                children
+              )}
+            </div>
           </div>
-        </div>
+        ) : (
+          <div
+            className={
+              "card table-list-card " +
+              (isFormLayout ? " form-layout-card" : "")
+            }
+          >
+            <div className="card-body">
+              {showFilter && filterContent && (
+                <div
+                  className="card visible"
+                  id="filter_inputs"
+                  style={{ display: "block" }}
+                >
+                  <div className="card-body p-0 px-3">{filterContent}</div>
+                </div>
+              )}
+              {children}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
 };
 
 ListPageLayout.propTypes = {
+  isSettingsLayout: PropTypes.bool,
+  isFormLayout: PropTypes.bool,
   title: PropTypes.string.isRequired,
   subtitle: PropTypes.string,
+  actions: PropTypes.object,
   children: PropTypes.node.isRequired,
-  addButton: PropTypes.shape({
-    path: PropTypes.string.isRequired,
-    text: PropTypes.string.isRequired,
-    icon: PropTypes.node,
-    module: PropTypes.string,
-    permission: PropTypes.string,
-  }),
-  importButton: PropTypes.shape({
-    path: PropTypes.string,
-    text: PropTypes.string,
-    icon: PropTypes.node,
-    modalTarget: PropTypes.string,
-    onClick: PropTypes.func,
-  }),
   toolIcons: PropTypes.shape({
     showPdf: PropTypes.bool,
     showExcel: PropTypes.bool,

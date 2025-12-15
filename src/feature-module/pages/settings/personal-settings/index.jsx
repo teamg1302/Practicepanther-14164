@@ -15,13 +15,12 @@ import React from "react";
 import { useFormContext, useWatch } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { useSelector, useDispatch } from "react-redux";
-import { useLocation, useParams } from "react-router-dom";
+import { useLocation, useParams, useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
 import * as yup from "yup";
 import Swal from "sweetalert2";
 import { FormProvider } from "@/feature-module/components/rhf";
 import Input from "@/feature-module/components/form-elements/input";
-import Switch from "@/feature-module/components/form-elements/switch";
 import Select from "@/feature-module/components/form-elements/select";
 import { PhotoUpload } from "@/feature-module/components/form-elements/file-upload";
 import { FormButton } from "@/feature-module/components/buttons";
@@ -34,8 +33,10 @@ import { getRoles } from "@/core/services/roleService";
 import { fetchTimezones, fetchJobTitles } from "@/core/redux/mastersReducer";
 import { convertToFormData } from "@/core/utilities/formDataConverter";
 import { all_routes } from "@/Router/all_routes";
+import PageLayout from "@/feature-module/components/list-page-layout";
 
 const PersonalSettings = () => {
+  const navigate = useNavigate();
   const { userId } = useParams();
   const location = useLocation();
   const { t } = useTranslation();
@@ -45,7 +46,7 @@ const PersonalSettings = () => {
 
   // Determine if we're in create mode (add user) or edit mode
   const isCreateMode = React.useMemo(() => {
-    return location.pathname === all_routes.addUser;
+    return location.pathname === all_routes.addUser.path;
   }, [location.pathname]);
 
   const personalSettingsSchema = React.useMemo(
@@ -149,6 +150,7 @@ const PersonalSettings = () => {
           showConfirmButton: true,
           timer: 2000,
         });
+        navigate(all_routes.settings[1].children[0].path); // Navigate to users list after creation
       } else {
         // Update existing user
         const targetUserId = userId || user?.id;
@@ -160,6 +162,9 @@ const PersonalSettings = () => {
           showConfirmButton: true,
           timer: 2000,
         });
+        if (userId) {
+          navigate(all_routes.settings[1].children[0].path); // Navigate to users list after editing another user
+        }
       }
 
       //  navigate(route.settings[0].path);
@@ -183,41 +188,56 @@ const PersonalSettings = () => {
   };
 
   return (
-    <main className="settings-content-main w-100">
-      <div className="settings-page-wrap">
-        <FormProvider
-          schema={personalSettingsSchema}
-          defaultValues={{
-            name: "",
-            // middleName: "",
-            // lastName: "",
-            jobTitleId: "",
-            mobile: "",
-            email: "",
-            password: "",
-            timezoneId: "",
-            roleId: "",
-            home: "",
-            office: "",
-            hourlyRate: "",
-            roundTimeEntries: false,
-            roundTimeEntryType: "",
-            dailyAgendaEmail: false,
-            profileImage: null,
-          }}
-          onSubmit={onSubmit}
-        >
-          <PersonalSettingsContent
-            ref={formRef}
-            userId={isCreateMode ? null : userId || user?.id}
-            userIdFromParams={userId}
-            isLoading={isLoading}
-            setIsLoading={setIsLoading}
-            isCreateMode={isCreateMode}
-          />
-        </FormProvider>
-      </div>
-    </main>
+    <PageLayout
+      isFormLayout={true}
+      isSettingsLayout={true}
+      title={
+        isCreateMode
+          ? t("Add User")
+          : userId
+          ? t("Edit User")
+          : t("personalSettings.title")
+      }
+      subtitle={
+        isCreateMode
+          ? "Add new user to the system"
+          : userId
+          ? "Edit user details"
+          : "Manage your personal profile settings"
+      }
+    >
+      <FormProvider
+        schema={personalSettingsSchema}
+        defaultValues={{
+          name: "",
+          // middleName: "",
+          // lastName: "",
+          jobTitleId: "",
+          mobile: "",
+          email: "",
+          password: "",
+          timezoneId: "",
+          roleId: "",
+          home: "",
+          office: "",
+          hourlyRate: "",
+          roundTimeEntries: false,
+          roundTimeEntryType: "",
+          dailyAgendaEmail: false,
+          profileImage: null,
+        }}
+        onSubmit={onSubmit}
+      >
+        <PersonalSettingsContent
+          ref={formRef}
+          userId={isCreateMode ? null : userId || user?.id}
+          userIdFromParams={userId}
+          isLoading={isLoading}
+          setIsLoading={setIsLoading}
+          isCreateMode={isCreateMode}
+        />
+      </FormProvider>
+    </PageLayout>
   );
 };
 
@@ -505,7 +525,7 @@ const PersonalSettingsContent = React.forwardRef(
             </div>
           )}
         </div>
-        <div className="card-title-head">
+        {/* <div className="card-title-head">
           <h6>
             <span>
               <i data-feather="map-pin" className="feather-chevron-up" />
@@ -569,7 +589,7 @@ const PersonalSettingsContent = React.forwardRef(
               label={t("personalSettings.dailyAgendaEmail")}
             />
           </div>
-        </div>
+        </div> */}
         <FormSubmitButtons />
       </>
     );

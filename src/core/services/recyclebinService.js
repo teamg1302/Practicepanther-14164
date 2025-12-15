@@ -127,3 +127,31 @@ export const deleteRecycleBin = async (id) => {
     throw error.response?.data || error.message;
   }
 };
+
+/**
+ * Restore an item from the recycle bin.
+ *
+ * Restores a specific item from the recycle bin by its ID. This operation will bring the item back to its original location.
+ *
+ * @param {string|number} id - The unique identifier of the recycle bin item to restore
+ * @returns {Promise<Object>} API response confirming the restoration
+ * @returns {Array} returns.data - Array of restored items
+ *
+ * @throws {Object|string} Throws error response data from API or error message
+ *
+ * @example
+ * // Restore a recycle bin item by ID
+ * await restoreRecyclebin("123");
+ *
+ * @example
+ * // Restore with numeric ID
+ * await restoreRecyclebin(456);
+ */
+export const restoreRecycleBin = async (id) => {
+  try {
+    const response = await api.post(`/recycle-bin/${id}/restore`);
+    return response.data?.data || response.data;
+  } catch (error) {
+    throw error.response?.data || error.message;
+  }
+};

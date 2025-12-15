@@ -8,6 +8,7 @@ import { getUsers, deleteUser } from "@/core/services/userService";
 import EntityListView from "@/feature-module/components/entity-list-view";
 import withEntityHandlers from "@/feature-module/hoc/withEntityHandlers";
 import { getTableColumns } from "@/feature-module/components/table-columns";
+import ListPageLayout from "@/feature-module/components/list-page-layout";
 
 // Columns definition - Pure JSON configuration (srNo and actions are added by withEntityHandlers)
 const COLUMNS_CONFIG = [
@@ -79,29 +80,57 @@ const Users = () => {
     navigate(route.editUserPermissions.path.replace(":userId", row._id));
   };
 
+  const handleRefresh = () => {
+    setCustomFilters((prev) => ({
+      ...prev,
+      _refresh: Date.now(),
+    }));
+  };
+
   return (
-    <EnhancedList
-      columns={columns}
-      customFilters={customFilters}
-      onDelete={handleDelete}
-      onPermissions={onPermissions}
-      onEdit={onEdit}
-      addButtonRoute={route.addUser.path}
-      addButtonLabel={t("Add")}
-      service={getUsers}
-      options={{
-        customButtons: {
-          permissions: true,
-          add: true,
-          edit: true,
-          delete: true,
+    <ListPageLayout
+      isSettingsLayout={true}
+      title={t("Users")}
+      subtitle="Manage your users"
+      toolIcons={{
+        showRefresh: true,
+        showExcel: true,
+      }}
+      actions={{
+        addButton: {
+          text: route.addUser.text,
+          onClick: () => {
+            navigate(route.addUser.path);
+          },
         },
-        tableSetting: {
-          srNo: true,
-          selectRow: true,
+        importButton: {
+          onClick: () => {
+            console.log("Import clicked");
+          },
         },
       }}
-    />
+      onRefresh={handleRefresh}
+    >
+      <EnhancedList
+        columns={columns}
+        customFilters={customFilters}
+        onDelete={handleDelete}
+        onPermissions={onPermissions}
+        onEdit={onEdit}
+        service={getUsers}
+        options={{
+          customButtons: {
+            permissions: true,
+            edit: true,
+            delete: true,
+          },
+          tableSetting: {
+            srNo: true,
+            selectRow: true,
+          },
+        }}
+      />
+    </ListPageLayout>
   );
 };
 
