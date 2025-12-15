@@ -188,7 +188,7 @@ describe("PermissionRoute", () => {
 
       render(
         <Provider store={store}>
-          <MemoryRouter>
+          <MemoryRouter initialEntries={["/"]}>
             <Routes>
               <Route
                 path="/"
@@ -242,7 +242,7 @@ describe("PermissionRoute", () => {
 
       render(
         <Provider store={store}>
-          <MemoryRouter>
+          <MemoryRouter initialEntries={["/"]}>
             <Routes>
               <Route
                 path="/"
@@ -259,6 +259,7 @@ describe("PermissionRoute", () => {
       );
 
       expect(screen.getByTestId("error-404")).toBeInTheDocument();
+      expect(screen.queryByText("Test Content")).not.toBeInTheDocument();
     });
 
     it("should handle different action types", () => {
@@ -279,7 +280,7 @@ describe("PermissionRoute", () => {
       // Test create permission
       const { rerender } = render(
         <Provider store={store}>
-          <MemoryRouter>
+          <MemoryRouter initialEntries={["/"]}>
             <Routes>
               <Route
                 path="/"
@@ -299,7 +300,7 @@ describe("PermissionRoute", () => {
       // Test update permission (should be denied)
       rerender(
         <Provider store={store}>
-          <MemoryRouter>
+          <MemoryRouter initialEntries={["/"]}>
             <Routes>
               <Route
                 path="/"
@@ -315,6 +316,7 @@ describe("PermissionRoute", () => {
         </Provider>
       );
       expect(screen.getByTestId("error-404")).toBeInTheDocument();
+      expect(screen.queryByText("Test Content")).not.toBeInTheDocument();
     });
   });
 });

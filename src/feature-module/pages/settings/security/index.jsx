@@ -9,6 +9,7 @@ import { getValidationRules } from "@/core/validation-rules";
 import { changePassword } from "@/core/services/userService";
 import EntityFormView from "@/feature-module/components/entity-form-view";
 import PageLayout from "@/feature-module/components/list-page-layout";
+import { all_routes } from "@/Router/all_routes";
 
 const SecuritySettings = () => {
   const { t } = useTranslation();
@@ -123,9 +124,19 @@ const SecuritySettings = () => {
   return (
     <>
       <PageLayout
+        breadcrumbs={[
+          {
+            label: "Settings",
+            redirect: all_routes.settings[0].path,
+          },
+          {
+            label: "Security & Password",
+            redirect: "#",
+          },
+        ]}
         isFormLayout={true}
         isSettingsLayout={true}
-        title={t("securitySettings.title")}
+        title={"Security & Password"}
         subtitle="Manage your security settings"
       >
         <FormProvider

@@ -35,152 +35,137 @@ const EntityDetailsTab = ({ pageTitle, analytics = [], tabs = [] }) => {
   };
 
   return (
-    <div>
-      <div className="page-wrapper">
-        <div className="content">
-          <div className="page-header">
-            <div className="page-title">
-              <h4>{pageTitle || t("pageTitle") || "Entity Details"}</h4>
-            </div>
-          </div>
-
-          <div className="row">
-            <div className="col-xl-12">
-              <div className="card">
-                {/* Always show card structure, even if empty */}
-                {analyticsArray.length > 0 && (
-                  <div className="card-header">
-                    <div className="card-title">
-                      <div className="row">
-                        {analyticsArray.map((item, index) => {
-                          const colClass = getAnalyticsColClass(
-                            analyticsArray.length
-                          );
-                          const widgetClass = item.widgetClass
-                            ? `dash-widget ${item.widgetClass}`
-                            : "dash-widget";
-                          return (
-                            <div key={index} className={`${colClass} d-flex`}>
-                              <div className={`${widgetClass} w-100 p-2 mb-0`}>
-                                <div className="dash-widgetimg">
-                                  <span>
-                                    <ImageWithBasePath
-                                      src={item.icon}
-                                      alt={item.label || "analytics"}
-                                    />
-                                  </span>
-                                </div>
-                                <div className="dash-widgetcontent">
-                                  <h5>
-                                    {item.prefix &&
-                                      !item.prefix.includes("$") && (
-                                        <span>{item.prefix}</span>
-                                      )}
-                                    <CountUp
-                                      start={0}
-                                      end={item.value || 0}
-                                      duration={item.duration || 3}
-                                      prefix={item.prefix === "$" ? "$" : ""}
-                                      decimals={item.decimals || 0}
-                                    />
-                                  </h5>
-                                  <h6>
-                                    {item.labelKey
-                                      ? t(item.labelKey)
-                                      : item.label || ""}
-                                  </h6>
-                                </div>
-                              </div>
-                            </div>
-                          );
-                        })}
-                      </div>
-                    </div>
-                  </div>
-                )}
-                {tabsArray.length > 0 ? (
-                  <div className="card-body d-flex align-items-start">
-                    <div className="row w-100">
-                      <div
-                        className="col-md-2"
-                        style={{ borderRight: "1px solid #e0e0e0" }}
-                      >
-                        <div
-                          className="nav flex-column nav-pills me-3 tab-style-7"
-                          id="v-pills-tab"
-                          role="tablist"
-                          aria-orientation="vertical"
-                        >
-                          {tabsArray.map((tab, index) => {
-                            const tabId = tab.id || `tab-${index}`;
-                            // Show first tab as active if activeTab is null or doesn't match
-                            const isActive =
-                              activeTab === tabId ||
-                              (index === 0 && !activeTab);
-                            return (
-                              <button
-                                key={tabId}
-                                className={`nav-link text-start ${
-                                  isActive ? "active" : ""
-                                }`}
-                                id={`${tabId}-tab`}
-                                type="button"
-                                role="tab"
-                                aria-controls={tabId}
-                                aria-selected={isActive}
-                                onClick={() => setActiveTab(tabId)}
-                              >
-                                {tab.icon && (
-                                  <i
-                                    className={`${tab.icon} me-1 align-middle d-inline-block`}
-                                  />
-                                )}
-                                {tab.label}
-                              </button>
-                            );
-                          })}
+    <div className="row">
+      <div className="col-xl-12">
+        <div className="card">
+          {/* Always show card structure, even if empty */}
+          {analyticsArray.length > 0 && (
+            <div className="card-header">
+              <div className="card-title">
+                <div className="row">
+                  {analyticsArray.map((item, index) => {
+                    const colClass = getAnalyticsColClass(
+                      analyticsArray.length
+                    );
+                    const widgetClass = item.widgetClass
+                      ? `dash-widget ${item.widgetClass}`
+                      : "dash-widget";
+                    return (
+                      <div key={index} className={`${colClass} d-flex`}>
+                        <div className={`${widgetClass} w-100 p-2 mb-0`}>
+                          <div className="dash-widgetimg">
+                            <span>
+                              <ImageWithBasePath
+                                src={item.icon}
+                                alt={item.label || "analytics"}
+                              />
+                            </span>
+                          </div>
+                          <div className="dash-widgetcontent">
+                            <h5>
+                              {item.prefix && !item.prefix.includes("$") && (
+                                <span>{item.prefix}</span>
+                              )}
+                              <CountUp
+                                start={0}
+                                end={item.value || 0}
+                                duration={item.duration || 3}
+                                prefix={item.prefix === "$" ? "$" : ""}
+                                decimals={item.decimals || 0}
+                              />
+                            </h5>
+                            <h6>
+                              {item.labelKey
+                                ? t(item.labelKey)
+                                : item.label || ""}
+                            </h6>
+                          </div>
                         </div>
                       </div>
-                      <div className="col-md-10">
-                        <div className="tab-content" id="v-pills-tabContent">
-                          {tabsArray.map((tab, index) => {
-                            const tabId = tab.id || `tab-${index}`;
-                            // Show first tab if activeTab is null or doesn't match
-                            const isActive =
-                              activeTab === tabId ||
-                              (index === 0 && !activeTab);
-                            return (
-                              <div
-                                key={tabId}
-                                className={`tab-pane ${
-                                  isActive ? "show active" : ""
-                                }`}
-                                id={tabId}
-                                role="tabpanel"
-                                aria-labelledby={`${tabId}-tab`}
-                                tabIndex={0}
-                                style={{
-                                  display: isActive ? "block" : "none",
-                                }}
-                              >
-                                {typeof tab.content === "function"
-                                  ? tab.content()
-                                  : tab.content}
-                              </div>
-                            );
-                          })}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="card-body">
-                    <p className="text-muted">No tabs available</p>
-                  </div>
-                )}
+                    );
+                  })}
+                </div>
               </div>
             </div>
-          </div>
+          )}
+          {tabsArray.length > 0 ? (
+            <div className="card-body d-flex align-items-start">
+              <div className="row w-100">
+                <div
+                  className="col-md-2"
+                  style={{ borderRight: "1px solid #e0e0e0" }}
+                >
+                  <div
+                    className="nav flex-column nav-pills me-3 tab-style-7 mt-3"
+                    id="v-pills-tab"
+                    role="tablist"
+                    aria-orientation="vertical"
+                  >
+                    {tabsArray.map((tab, index) => {
+                      const tabId = tab.id || `tab-${index}`;
+                      // Show first tab as active if activeTab is null or doesn't match
+                      const isActive =
+                        activeTab === tabId || (index === 0 && !activeTab);
+                      return (
+                        <button
+                          key={tabId}
+                          className={`nav-link text-start ${
+                            isActive ? "active" : ""
+                          }`}
+                          id={`${tabId}-tab`}
+                          type="button"
+                          role="tab"
+                          aria-controls={tabId}
+                          aria-selected={isActive}
+                          onClick={() => setActiveTab(tabId)}
+                        >
+                          {tab.icon && (
+                            <i
+                              className={`${tab.icon} me-1 align-middle d-inline-block`}
+                            />
+                          )}
+                          {tab.label}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+                <div className="col-md-10">
+                  <div className="tab-content" id="v-pills-tabContent">
+                    {tabsArray.map((tab, index) => {
+                      const tabId = tab.id || `tab-${index}`;
+                      // Show first tab if activeTab is null or doesn't match
+                      const isActive =
+                        activeTab === tabId || (index === 0 && !activeTab);
+                      return (
+                        <div
+                          key={tabId}
+                          className={`tab-pane mt-3 ${
+                            isActive ? "show active" : ""
+                          }`}
+                          id={tabId}
+                          role="tabpanel"
+                          aria-labelledby={`${tabId}-tab`}
+                          tabIndex={0}
+                          style={{
+                            display: isActive ? "block" : "none",
+                          }}
+                        >
+                          {typeof tab.content === "function"
+                            ? tab.content()
+                            : tab.content}
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div className="card-body">
+              <p className="text-muted">No tabs available</p>
+            </div>
+          )}
         </div>
       </div>
     </div>

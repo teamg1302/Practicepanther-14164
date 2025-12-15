@@ -35,7 +35,7 @@ import {
 } from "@/core/redux/mastersReducer";
 import { useDispatch } from "react-redux";
 import PageLayout from "@/feature-module/components/list-page-layout";
-
+import { all_routes } from "@/Router/all_routes";
 /**
  * Account Owner options.
  * @type {Array<{value: string, label: string}>}
@@ -262,6 +262,16 @@ const FirmLogoInfo = () => {
 
   return (
     <PageLayout
+      breadcrumbs={[
+        {
+          label: "Settings",
+          redirect: all_routes.settings[0].path,
+        },
+        {
+          label: "Firm Logo & Info",
+          redirect: "#",
+        },
+      ]}
       isFormLayout={true}
       isSettingsLayout={true}
       title={t("firmLogoInfo.title")}

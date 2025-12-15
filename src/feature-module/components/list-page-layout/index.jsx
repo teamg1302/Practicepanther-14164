@@ -35,6 +35,7 @@ import SettingsSidebar from "@/InitialPage/SettingsLayout/sidebar";
  * @param {boolean} [props.showFilter] - Whether to show the filter section (default: false)
  */
 const ListPageLayout = ({
+  breadcrumbs = [],
   isSettingsLayout = false,
   isFormLayout = false,
   title,
@@ -73,15 +74,6 @@ const ListPageLayout = ({
       actions?.addButton.module,
       actions?.addButton.permission
     );
-  };
-
-  const breadcrumbs = () => {
-    const pathnames = location.pathname.split("/").filter((x) => x);
-    const breadcrumbs = pathnames.map((_, index) => {
-      const url = `/${pathnames.slice(0, index + 1).join("/")}`;
-      return url;
-    });
-    return breadcrumbs;
   };
 
   // Tooltip renderers
@@ -123,20 +115,20 @@ const ListPageLayout = ({
               </div>
               <nav aria-label="breadcrumb">
                 <ol className="breadcrumb breadcrumb-arrow mb-0">
-                  <li className="breadcrumb-item active">
-                    <Link to="/">
+                  <li className="breadcrumb-item">
+                    <Link to="/" className="breadcrumb-item active">
                       <i className="fas fa-home"></i>
                     </Link>
                   </li>
-                  {breadcrumbs().map((url, index) => (
-                    <li
-                      key={index}
-                      className={`breadcrumb-item ${
-                        index === breadcrumbs().length - 1 ? "active" : ""
-                      }`}
-                    >
-                      <Link to={index === breadcrumbs().length - 1 ? "" : url}>
-                        {t(url.replace("/", ""))}
+                  {breadcrumbs.map((url, index) => (
+                    <li key={index} className="breadcrumb-item">
+                      <Link
+                        to={url.redirect}
+                        className={`text-decoration-none breadcrumb-item ${
+                          index === breadcrumbs.length - 1 ? "active" : ""
+                        }`}
+                      >
+                        {t(url.label)}
                       </Link>
                     </li>
                   ))}
@@ -315,6 +307,7 @@ const ListPageLayout = ({
 };
 
 ListPageLayout.propTypes = {
+  breadcrumbs: PropTypes.array,
   isSettingsLayout: PropTypes.bool,
   isFormLayout: PropTypes.bool,
   title: PropTypes.string.isRequired,

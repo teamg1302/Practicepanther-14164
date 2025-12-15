@@ -77,8 +77,19 @@ const RecycleBin = () => {
       });
     }
   };
+
   return (
     <ListPageLayout
+      breadcrumbs={[
+        {
+          label: "Settings",
+          redirect: all_routes.settings[0].path,
+        },
+        {
+          label: "Recycle Bin",
+          redirect: "#",
+        },
+      ]}
       isSettingsLayout={true}
       title={t("Recycle Bin")}
       subtitle="Manage your deleted items"

@@ -89,6 +89,16 @@ const Users = () => {
 
   return (
     <ListPageLayout
+      breadcrumbs={[
+        {
+          label: "Settings",
+          redirect: all_routes.settings[0].path,
+        },
+        {
+          label: "Users",
+          redirect: "#",
+        },
+      ]}
       isSettingsLayout={true}
       title={t("Users")}
       subtitle="Manage your users"

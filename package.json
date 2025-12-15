@@ -1,7 +1,7 @@
 {
   "name": "PMP",
   "version": "0.1.0",
-  "homepage": "/",
+  "homepage": "/company/",
   "private": true,
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.7.2",

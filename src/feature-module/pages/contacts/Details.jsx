@@ -9,8 +9,11 @@ import { EntityDetailsTab } from "@/feature-module/components/tabs";
 import BasicDetails from "@/feature-module/components/basic-details";
 import ContactMatters from "./Matters";
 import { setPageLoader } from "@/core/redux/action";
+import PageLayout from "@/feature-module/components/list-page-layout";
+import { all_routes } from "@/Router/all_routes";
 
 const ContactDetails = () => {
+  const route = all_routes;
   const dispatch = useDispatch();
   const { contactId } = useParams();
   const [contactDetails, setContactDetails] = useState([]);
@@ -40,7 +43,7 @@ const ContactDetails = () => {
       fetchContactDetails();
       fetchActivitiesLog();
     }
-  }, [contactId]);
+  }, [contactId, dispatch]);
 
   // Transform contact details to BasicDetails format
   const transformContactDetails = (contact) => {
@@ -439,13 +442,25 @@ const ContactDetails = () => {
   ];
 
   return (
-    <div>
+    <PageLayout
+      title="Contact Details"
+      breadcrumbs={[
+        {
+          label: "Contacts",
+          redirect: route.headers[1].path,
+        },
+        {
+          label: "Contact Details",
+          redirect: "#",
+        },
+      ]}
+    >
       <EntityDetailsTab
         pageTitle="Contact Details"
         analytics={analytics}
         tabs={tabs}
       />
-    </div>
+    </PageLayout>
   );
 };
 

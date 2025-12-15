@@ -329,6 +329,16 @@ const MattersAddEdit = () => {
 
   return (
     <PageLayout
+      breadcrumbs={[
+        {
+          label: "Matters",
+          redirect: route.headers[2].path,
+        },
+        {
+          label: matterId ? "Edit Matter" : "Add Matter",
+          redirect: "#",
+        },
+      ]}
       isFormLayout={true}
       title={matterId ? "Edit Matter" : "Add Matter"}
       subtitle={matterId ? "Modify matter details" : "Create a new matter"}

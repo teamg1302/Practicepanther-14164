@@ -102,6 +102,16 @@ const RolePermissionList = () => {
 
   return (
     <ListPageLayout
+      breadcrumbs={[
+        {
+          label: "Settings",
+          redirect: all_routes.settings[0].path,
+        },
+        {
+          label: "Roles & Permissions",
+          redirect: "#",
+        },
+      ]}
       isSettingsLayout={true}
       title={t("Roles & Permissions")}
       subtitle="Manage your roles and permissions"

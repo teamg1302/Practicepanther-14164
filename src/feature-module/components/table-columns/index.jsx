@@ -100,6 +100,35 @@ export const getTableColumns = (columnConfig = [], options = {}) => {
         const fallbackObj = row.original?.[fallbackKey];
         return fallbackObj?.name || fallbackObj?.title || fallback;
       };
+    } else if (type === "tags") {
+      // Tags renderer - expects array of objects with { _id, name, color }
+      baseColumn.Cell = ({ cell }) => {
+        const value = cell.getValue();
+        if (!value || !Array.isArray(value) || value.length === 0) {
+          return fallback;
+        }
+        return (
+          <div style={{ display: "flex", flexWrap: "wrap", gap: "4px" }}>
+            {value.map((tag) => {
+              if (!tag || typeof tag !== "object") return null;
+              const tagName = tag.name || tag.label || String(tag);
+              const tagColor = tag.color || "#6c757d";
+              return (
+                <span
+                  key={tag._id || tag.id || tagName}
+                  className="badge badge-sm"
+                  style={{
+                    backgroundColor: tagColor,
+                    color: "#ffffff",
+                  }}
+                >
+                  {tagName}
+                </span>
+              );
+            })}
+          </div>
+        );
+      };
     } else {
       // Default renderer - show value or fallback
       baseColumn.Cell = ({ cell }) => {

@@ -33,7 +33,7 @@ const MattersList = () => {
       { header: "Assigned To", accessorKey: "assignedTo.name" },
       { header: "Rate", accessorKey: "matterRate" },
       { header: "Open Date", accessorKey: "openDate", type: "date" },
-      { header: "Tags", accessorKey: "tags" },
+      { header: "Tags", accessorKey: "tags", type: "tags" },
       { header: "Status", accessorKey: "status" },
       { header: "Created At", accessorKey: "createdAt", type: "date" },
       { header: "Updated At", accessorKey: "updatedAt", type: "date" },
@@ -74,6 +74,12 @@ const MattersList = () => {
 
   return (
     <ListPageLayout
+      breadcrumbs={[
+        {
+          label: "Matters",
+          redirect: "#",
+        },
+      ]}
       title="Matters"
       subtitle="Manage your matters"
       toolIcons={{

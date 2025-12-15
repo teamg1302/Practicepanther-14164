@@ -9,9 +9,12 @@ import { getContactById } from "@/core/services/contactsService";
 import { EntityDetailsTab } from "@/feature-module/components/tabs";
 import BasicDetails from "@/feature-module/components/basic-details";
 import { setPageLoader } from "@/core/redux/action";
+import PageLayout from "@/feature-module/components/list-page-layout";
+import { all_routes } from "@/Router/all_routes";
 
 const MatterDetails = () => {
   const dispatch = useDispatch();
+  const route = all_routes;
   const { matterId } = useParams();
   const [matterDetails, setMatterDetails] = useState(null);
   const [contactDetails, setContactDetails] = useState(null);
@@ -55,7 +58,7 @@ const MatterDetails = () => {
       fetchMatterDetails();
       fetchActivitiesLog();
     }
-  }, [matterId]);
+  }, [matterId, dispatch]);
 
   // Transform matter details to BasicDetails format
   const transformMatterDetails = (matter) => {
@@ -233,14 +236,14 @@ const MatterDetails = () => {
     if (matter.tags && matter.tags.length > 0) {
       details.push({
         label: "Tags",
-        value: matter.tags.join(", "),
-        type: "text",
+        value: matter.tags,
+        type: "tags",
       });
     } else {
       details.push({
         label: "Tags",
-        value: "No tags",
-        type: "text",
+        value: [],
+        type: "tags",
       });
     }
 
@@ -431,14 +434,14 @@ const MatterDetails = () => {
     if (contact.tags && contact.tags.length > 0) {
       details.push({
         label: "Tags",
-        value: contact.tags.join(", "),
-        type: "text",
+        value: contact.tags,
+        type: "tags",
       });
     } else {
       details.push({
         label: "Tags",
-        value: "No tags",
-        type: "text",
+        value: [],
+        type: "tags",
       });
     }
 
@@ -644,13 +647,25 @@ const MatterDetails = () => {
   ];
 
   return (
-    <div>
+    <PageLayout
+      title="Matter Details"
+      breadcrumbs={[
+        {
+          label: "Matters",
+          redirect: route.headers[2].path,
+        },
+        {
+          label: "Matter Details",
+          redirect: "#",
+        },
+      ]}
+    >
       <EntityDetailsTab
         pageTitle="Matter Details"
         analytics={analytics}
         tabs={tabs}
       />
-    </div>
+    </PageLayout>
   );
 };
 

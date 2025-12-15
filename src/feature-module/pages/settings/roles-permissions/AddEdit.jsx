@@ -299,6 +299,20 @@ const RolePermissionAddEdit = () => {
 
   return (
     <PageLayout
+      breadcrumbs={[
+        {
+          label: "Settings",
+          redirect: all_routes.settings[0].path,
+        },
+        {
+          label: roleId
+            ? "Edit Role"
+            : userId
+            ? "Edit Role Permissions"
+            : "Add Role",
+          redirect: "#",
+        },
+      ]}
       isFormLayout={true}
       isSettingsLayout={true}
       title={

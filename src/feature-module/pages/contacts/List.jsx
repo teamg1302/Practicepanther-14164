@@ -73,6 +73,12 @@ const ContactsList = () => {
   return (
     <PageLayout
       title="Contacts"
+      breadcrumbs={[
+        {
+          label: "Contacts",
+          redirect: "#",
+        },
+      ]}
       subtitle="Manage your contacts"
       toolIcons={{
         showRefresh: true,

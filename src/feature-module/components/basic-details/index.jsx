@@ -76,6 +76,34 @@ const BasicDetails = ({
         );
       }
 
+      case "tags": {
+        // Tags renderer - expects array of objects with { _id, name, color }
+        if (!value || !Array.isArray(value) || value.length === 0) {
+          return <span className="text-muted">No tags</span>;
+        }
+        return (
+          <div style={{ display: "flex", flexWrap: "wrap", gap: "4px" }}>
+            {value.map((tag) => {
+              if (!tag || typeof tag !== "object") return null;
+              const tagName = tag.name || tag.label || String(tag);
+              const tagColor = tag.color || "#6c757d";
+              return (
+                <span
+                  key={tag._id || tag.id || tagName}
+                  className="badge badge-sm"
+                  style={{
+                    backgroundColor: tagColor,
+                    color: "#ffffff",
+                  }}
+                >
+                  {tagName}
+                </span>
+              );
+            })}
+          </div>
+        );
+      }
+
       case "custom": {
         // If customComponent is a function, call it; otherwise render it directly
         if (typeof customComponent === "function") {
@@ -168,7 +196,7 @@ BasicDetails.propTypes = {
         PropTypes.number,
         PropTypes.node,
       ]),
-      type: PropTypes.oneOf(["text", "image", "badge", "custom"]),
+      type: PropTypes.oneOf(["text", "image", "badge", "tags", "custom"]),
       badgeVariant: PropTypes.string, // For badge type: primary, success, danger, warning, info, etc.
       badgeClass: PropTypes.string, // Custom badge class
       imageAlt: PropTypes.string, // Alt text for image type

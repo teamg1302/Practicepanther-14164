@@ -4,7 +4,7 @@ import react from "@vitejs/plugin-react";
 import { resolve } from "path";
 
 export default defineConfig({
-  base: process.env.VITE_BASE_PATH ?? "/",
+  base: "/company/",
   define: {
     global: "globalThis",
   },

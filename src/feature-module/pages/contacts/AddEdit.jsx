@@ -389,6 +389,16 @@ const ContactsAddEdit = () => {
 
   return (
     <PageLayout
+      breadcrumbs={[
+        {
+          label: "Contacts",
+          redirect: route.headers[1].path,
+        },
+        {
+          label: contactId ? "Edit Contact" : "Add Contact",
+          redirect: "#",
+        },
+      ]}
       isFormLayout={true}
       title={contactId ? "Edit Contact" : "Add Contact"}
       subtitle={contactId ? "Modify contact details" : "Create a new contact"}

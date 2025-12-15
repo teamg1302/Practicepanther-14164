@@ -706,9 +706,9 @@ const Header = () => {
             >
               <span className="user-info">
                 <span className="user-letter">
-                  <ImageWithBasePath
-                    src="assets/img/profiles/avator1.jpg"
-                    alt="img"
+                  <img
+                    src={auth?.user.profileImage}
+                    alt={auth?.user?.name}
                     className="img-fluid"
                   />
                 </span>

@@ -63,7 +63,11 @@ const PersonalSettings = () => {
         //   .required(t("personalSettings.validation.lastNameRequired")),
         // middleName: yup.string().trim().optional(),
         jobTitleId: yup.string().trim().optional(),
-        mobile: yup.string().trim().optional(),
+        phone: yup
+          .string()
+          .trim()
+          .matches(/^\d*$/, "Phone number must only contain numbers")
+          .optional(),
         email: yup
           .string()
           .trim()
@@ -189,6 +193,20 @@ const PersonalSettings = () => {
 
   return (
     <PageLayout
+      breadcrumbs={[
+        {
+          label: "Settings",
+          redirect: all_routes.settings[0].path,
+        },
+        {
+          label: isCreateMode
+            ? "Add User"
+            : userId
+            ? "Edit User"
+            : "Personal Settings",
+          redirect: "#",
+        },
+      ]}
       isFormLayout={true}
       isSettingsLayout={true}
       title={
@@ -213,7 +231,7 @@ const PersonalSettings = () => {
           // middleName: "",
           // lastName: "",
           jobTitleId: "",
-          mobile: "",
+          phone: "",
           email: "",
           password: "",
           timezoneId: "",
@@ -356,7 +374,7 @@ const PersonalSettingsContent = React.forwardRef(
             // middleName: userData?.middleName || userData?.middle_name || "",
             // lastName: userData?.lastName || userData?.last_name || "",
             jobTitleId: userData?.jobTitleId?._id || "",
-            mobile: userData?.mobile || userData?.phone || "",
+            phone: userData?.phone || "",
             email: userData?.email || "",
             timezoneId: userData?.timezoneId?._id || "",
             roleId: userData?.roleId?._id || userData?.role?._id || "",
@@ -472,8 +490,9 @@ const PersonalSettingsContent = React.forwardRef(
           </div>
           <div className="col-md-12">
             <Input
-              name="mobile"
-              label={t("personalSettings.mobile")}
+              id="phone1"
+              name="phone"
+              label={t("personalSettings.phone")}
               type="text"
             />
           </div>
