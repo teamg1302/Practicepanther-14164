@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Settings } from "react-feather";
+import { Timer as TimerIcon } from "@mui/icons-material";
 import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import { setLayoutChange } from "../core/redux/action";
@@ -121,7 +121,7 @@ const ThemeSettings = () => {
               data-bs-placement="left"
               data-bs-original-title="Theme"
             >
-              <Settings className="feather-five" />
+              <TimerIcon fontSize="large" />
             </Link>
           </li>
         </ul>
@@ -139,8 +139,8 @@ const ThemeSettings = () => {
         <div className="sidebar-content sticky-sidebar-one">
           <div className="sidebar-header">
             <div className="sidebar-theme-title">
-              <h5>Theme Customizer</h5>
-              <p>Customize &amp; Preview in Real Time</p>
+              <h5>Timer</h5>
+              <p>Timer Settings</p>
             </div>
             <div className="close-sidebar-icon d-flex">
               {/* <Link className="sidebar-refresh me-2" onclick="resetData()"> */}
@@ -156,7 +156,7 @@ const ThemeSettings = () => {
             <form id="theme_color" method="post">
               <div className="theme-mode mb-0">
                 <div className="theme-body-main">
-                  <div className="theme-head">
+                  {/* <div className="theme-head">
                     <h6>Theme Mode</h6>
                     <p>Enjoy Dark &amp; Light modes.</p>
                   </div>
@@ -215,7 +215,7 @@ const ThemeSettings = () => {
                         </div>
                       </div>
                     </div>
-                  </div>
+                  </div> */}
                   <div className="theme-mode border-0">
                     {/* <div className="theme-head">
                       <h6>Direction</h6>
@@ -276,10 +276,10 @@ const ThemeSettings = () => {
                       </div>
                     </div> */}
                     <div className="theme-mode border-0 mb-0">
-                      <div className="theme-head">
+                      {/* <div className="theme-head">
                         <h6>Layout Mode</h6>
                         <p>Select the primary layout style for your app.</p>
-                      </div>
+                      </div> */}
                       <div className="row">
                         {/* <div className="col-xl-6 ere">
                           <div className="layout-wrap">
@@ -365,7 +365,7 @@ const ThemeSettings = () => {
                             </div>
                           </div>
                         </div> */}
-                        <div className="col-xl-6 ere">
+                        {/* <div className="col-xl-6 ere">
                           <div className="layout-wrap">
                             <div className="d-flex align-items-center">
                               <div
@@ -420,10 +420,10 @@ const ThemeSettings = () => {
                               </div>
                             </div>
                           </div>
-                        </div>
+                        </div> */}
                       </div>
                     </div>
-                    <div id="nav_color" method="post">
+                    {/* <div id="nav_color" method="post">
                       <div className="theme-mode">
                         <div className="theme-head">
                           <h6>Navigation Colors</h6>
@@ -510,7 +510,7 @@ const ThemeSettings = () => {
                           </div>
                         </div>
                       </div>
-                    </div>
+                    </div> */}
                   </div>
                 </div>
                 {/* <div className="sidebar-footer">

@@ -49,8 +49,8 @@ export const publicRoutes = [
   },
   {
     id: 3,
-    path: routes.headers[1].path,
-    name: routes.headers[1].name,
+    path: routes.headers?.[1]?.path,
+    name: routes.headers?.[1]?.name,
     element: <ContactsList />,
     route: Route,
   },
@@ -84,8 +84,8 @@ export const publicRoutes = [
   },
   {
     id: 6,
-    path: routes.headers[2].path,
-    name: routes.headers[2].name,
+    path: routes.headers?.[2]?.path,
+    name: routes.headers?.[2]?.name,
     element: <MattersList />,
     route: Route,
   },

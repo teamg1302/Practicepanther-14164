@@ -19,7 +19,7 @@ const Resetpassword = () => {
   const [isNewPasswordVisible, setIsNewPasswordVisible] = useState(false);
   const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] =
     useState(false);
-  
+
   const resetPasswordSchema = yup.object({
     newPassword: yup
       .string()
@@ -29,7 +29,10 @@ const Resetpassword = () => {
       .string()
       .trim()
       .required(t("resetPassword.validation.confirmPasswordRequired"))
-      .oneOf([yup.ref("newPassword")], t("resetPassword.validation.passwordsMustMatch")),
+      .oneOf(
+        [yup.ref("newPassword")],
+        t("resetPassword.validation.passwordsMustMatch")
+      ),
   });
 
   const {
@@ -105,7 +108,10 @@ const Resetpassword = () => {
             <form noValidate onSubmit={handleSubmit(onSubmit)}>
               <div className="login-userset">
                 <div className="login-logo logo-normal">
-                  <ImageWithBasePath src="assets/img/logo.png" alt="img" />
+                  <ImageWithBasePath
+                    src="assets/img/Jurisoft-logo-hr.png"
+                    alt="img"
+                  />
                 </div>
                 <Link to={route.dashboard} className="login-logo logo-white">
                   <ImageWithBasePath src="assets/img/logo-white.png" alt />
@@ -116,7 +122,9 @@ const Resetpassword = () => {
                 </div>
 
                 <div className="form-login mb-3">
-                  <label className="form-label">{t("resetPassword.newPasswordLabel")}</label>
+                  <label className="form-label">
+                    {t("resetPassword.newPasswordLabel")}
+                  </label>
                   <div className="pass-group" style={{ position: "relative" }}>
                     <Lock
                       style={{
@@ -156,7 +164,9 @@ const Resetpassword = () => {
                   )}
                 </div>
                 <div className="form-login mb-3">
-                  <label className="form-label">{t("resetPassword.confirmPasswordLabel")}</label>
+                  <label className="form-label">
+                    {t("resetPassword.confirmPasswordLabel")}
+                  </label>
                   <div className="pass-group" style={{ position: "relative" }}>
                     <Lock
                       style={{
@@ -175,7 +185,9 @@ const Resetpassword = () => {
                       className={`pass-input form-control ${
                         errors.confirmPassword ? "is-invalid" : ""
                       }`}
-                      placeholder={t("resetPassword.confirmPasswordPlaceholder")}
+                      placeholder={t(
+                        "resetPassword.confirmPasswordPlaceholder"
+                      )}
                       {...register("confirmPassword")}
                       style={{ paddingLeft: "40px" }}
                     />
@@ -201,7 +213,9 @@ const Resetpassword = () => {
                     className="btn btn-login w-100"
                     disabled={isSubmitting}
                   >
-                    {isSubmitting ? t("resetPassword.resetting") : t("resetPassword.changePasswordButton")}
+                    {isSubmitting
+                      ? t("resetPassword.resetting")
+                      : t("resetPassword.changePasswordButton")}
                   </button>
                 </div>
                 <div className="signinform text-center">
@@ -221,7 +235,7 @@ const Resetpassword = () => {
           </div>
           <div className="login-img">
             <ImageWithBasePath
-              src="assets/img/authentication/login02.png"
+              src="assets/img/authentication/reset.png"
               alt="img"
             />
           </div>

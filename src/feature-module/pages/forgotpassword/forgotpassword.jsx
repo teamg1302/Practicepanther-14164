@@ -19,7 +19,7 @@ const Forgotpassword = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const route = all_routes;
-  
+
   const forgotPasswordSchema = yup.object({
     email: yup
       .string()
@@ -27,7 +27,7 @@ const Forgotpassword = () => {
       .email(t("forgotPassword.validation.emailInvalid"))
       .required(t("forgotPassword.validation.emailRequired")),
   });
-  
+
   const {
     register,
     handleSubmit,
@@ -79,7 +79,10 @@ const Forgotpassword = () => {
             <form noValidate onSubmit={handleSubmit(onSubmit)}>
               <div className="login-userset">
                 <div className="login-logo logo-normal">
-                  <ImageWithBasePath src="assets/img/logo.png" alt="img" />
+                  <ImageWithBasePath
+                    src="assets/img/Jurisoft-logo-hr.png"
+                    alt="img"
+                  />
                 </div>
                 <Link to={route.dashboard} className="login-logo logo-white">
                   <ImageWithBasePath src="assets/img/logo-white.png" alt />
@@ -89,7 +92,9 @@ const Forgotpassword = () => {
                   <h4>{t("forgotPassword.subtitle")}</h4>
                 </div>
                 <div className="form-login mb-3">
-                  <label className="form-label">{t("forgotPassword.emailLabel")}</label>
+                  <label className="form-label">
+                    {t("forgotPassword.emailLabel")}
+                  </label>
                   <div className="form-addons" style={{ position: "relative" }}>
                     <Mail
                       style={{
@@ -129,7 +134,9 @@ const Forgotpassword = () => {
                     className="btn btn-login w-100"
                     disabled={isSubmitting}
                   >
-                    {isSubmitting ? t("forgotPassword.sending") : t("forgotPassword.sendResetLink")}
+                    {isSubmitting
+                      ? t("forgotPassword.sending")
+                      : t("forgotPassword.sendResetLink")}
                   </button>
                 </div>
                 <div className="signinform text-center">
@@ -180,7 +187,7 @@ const Forgotpassword = () => {
           </div>
           <div className="login-img">
             <ImageWithBasePath
-              src="assets/img/authentication/login02.png"
+              src="assets/img/authentication/forgot-setp-1.png"
               alt="img"
             />
           </div>

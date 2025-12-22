@@ -329,6 +329,21 @@ const RolePermissionAddEdit = () => {
           ? "Edit user's role permissions"
           : "Add a new role and assign permissions"
       }
+      actions={{
+        onPrevious: {
+          text: roleId
+            ? "Back to Roles & Permissions"
+            : userId
+            ? "Back to Users"
+            : "Back to Roles & Permissions",
+          onClick: () =>
+            roleId
+              ? navigate(all_routes.settings[1].children[1].path)
+              : userId
+              ? navigate(all_routes.settings[1].children[0].path)
+              : navigate(all_routes.settings[1].children[1].path),
+        },
+      }}
     >
       {defaultValues && (
         <FormProvider

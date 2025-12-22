@@ -89,7 +89,10 @@ const Signin = () => {
             <form noValidate onSubmit={handleSubmit(onSubmit)}>
               <div className="login-userset">
                 <div className="login-logo logo-normal">
-                  <ImageWithBasePath src="assets/img/logo.png" alt="img" />
+                  <ImageWithBasePath
+                    src="assets/img/Jurisoft-logo-hr.png"
+                    alt="img"
+                  />
                 </div>
                 <Link to={route.dashboard} className="login-logo logo-white">
                   <ImageWithBasePath src="assets/img/logo-white.png" alt />
@@ -263,7 +266,7 @@ const Signin = () => {
           </div>
           <div className="login-img">
             <ImageWithBasePath
-              src="assets/img/authentication/login02.png"
+              src="assets/img/authentication/step-one.png"
               alt="img"
             />
           </div>

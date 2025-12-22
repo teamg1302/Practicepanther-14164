@@ -34,6 +34,7 @@ import { fetchTimezones, fetchJobTitles } from "@/core/redux/mastersReducer";
 import { convertToFormData } from "@/core/utilities/formDataConverter";
 import { all_routes } from "@/Router/all_routes";
 import PageLayout from "@/feature-module/components/list-page-layout";
+import { setAuthUser } from "@/core/redux/action";
 
 const PersonalSettings = () => {
   const navigate = useNavigate();
@@ -42,6 +43,7 @@ const PersonalSettings = () => {
   const { t } = useTranslation();
   const user = useSelector((state) => state.auth?.user);
   const [isLoading, setIsLoading] = React.useState(false);
+  const [refreshTrigger, setRefreshTrigger] = React.useState(0);
   const formRef = React.useRef(null);
 
   // Determine if we're in create mode (add user) or edit mode
@@ -166,6 +168,10 @@ const PersonalSettings = () => {
           showConfirmButton: true,
           timer: 2000,
         });
+
+        // Trigger rerender of PersonalSettingsContent to refetch user details
+        setRefreshTrigger((prev) => prev + 1);
+
         if (userId) {
           navigate(all_routes.settings[1].children[0].path); // Navigate to users list after editing another user
         }
@@ -223,6 +229,21 @@ const PersonalSettings = () => {
           ? "Edit user details"
           : "Manage your personal profile settings"
       }
+      actions={{
+        onPrevious: {
+          text: isCreateMode
+            ? "Back to Users"
+            : userId
+            ? "Back to Users"
+            : "Back to Home",
+          onClick: () =>
+            isCreateMode
+              ? navigate(all_routes.settings[1].children[0].path)
+              : userId
+              ? navigate(all_routes.settings[1].children[0].path)
+              : navigate(all_routes.base_path),
+        },
+      }}
     >
       <FormProvider
         schema={personalSettingsSchema}
@@ -253,6 +274,7 @@ const PersonalSettings = () => {
           isLoading={isLoading}
           setIsLoading={setIsLoading}
           isCreateMode={isCreateMode}
+          refreshTrigger={refreshTrigger}
         />
       </FormProvider>
     </PageLayout>
@@ -269,18 +291,26 @@ const PersonalSettings = () => {
  * @param {boolean} props.isLoading - Loading state
  * @param {Function} props.setIsLoading - Function to set loading state
  * @param {boolean} props.isCreateMode - Whether we're in create mode
+ * @param {number} props.refreshTrigger - Trigger value to force refetch of user details
  * @returns {JSX.Element} Form content
  */
 
 const PersonalSettingsContent = React.forwardRef(
   (
-    { userId, userIdFromParams, isLoading, setIsLoading, isCreateMode },
+    {
+      userId,
+      userIdFromParams,
+      isLoading,
+      setIsLoading,
+      isCreateMode,
+      refreshTrigger,
+    },
     ref
   ) => {
     const { t } = useTranslation();
     const { reset, watch, getValues } = useFormContext();
     const dispatch = useDispatch();
-
+    const auth = useSelector((state) => state.auth);
     // Expose getValues to parent component via ref
     React.useImperativeHandle(ref, () => ({
       getValues,
@@ -401,7 +431,16 @@ const PersonalSettingsContent = React.forwardRef(
             ),
           };
 
-          // console.log("formData", formData);
+          // Update only profileImage, preserve all other user properties including nested objects
+          if (auth?.user) {
+            dispatch(
+              setAuthUser({
+                ...auth.user,
+                profileImage:
+                  formData?.profileImage || auth?.user?.profileImage || null,
+              })
+            );
+          }
 
           // Reset form with fetched data - this will populate all form fields
           reset(formData, {
@@ -422,7 +461,7 @@ const PersonalSettingsContent = React.forwardRef(
       };
 
       fetchUserDetails();
-    }, [userId, reset, setIsLoading, t, isCreateMode]);
+    }, [userId, reset, setIsLoading, t, isCreateMode, refreshTrigger]);
 
     if (isLoading) {
       return (
@@ -700,6 +739,7 @@ PersonalSettingsContent.propTypes = {
   isLoading: PropTypes.bool.isRequired,
   setIsLoading: PropTypes.func.isRequired,
   isCreateMode: PropTypes.bool,
+  refreshTrigger: PropTypes.number,
 };
 
 export default PersonalSettings;

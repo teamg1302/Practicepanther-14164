@@ -3,6 +3,8 @@ import { useTranslation } from "react-i18next";
 import * as yup from "yup";
 import Swal from "sweetalert2";
 import PropTypes from "prop-types";
+import { useNavigate } from "react-router-dom";
+
 import { FormProvider, useFormContext } from "@/feature-module/components/rhf";
 import { FormButton } from "@/feature-module/components/buttons";
 import { getValidationRules } from "@/core/validation-rules";
@@ -12,6 +14,7 @@ import PageLayout from "@/feature-module/components/list-page-layout";
 import { all_routes } from "@/Router/all_routes";
 
 const SecuritySettings = () => {
+  const navigate = useNavigate();
   const { t } = useTranslation();
 
   const securitySettingsSchema = useMemo(
@@ -138,6 +141,12 @@ const SecuritySettings = () => {
         isSettingsLayout={true}
         title={"Security & Password"}
         subtitle="Manage your security settings"
+        actions={{
+          onPrevious: {
+            text: "Back to Home",
+            onClick: () => navigate(all_routes.base_path),
+          },
+        }}
       >
         <FormProvider
           schema={securitySettingsSchema}

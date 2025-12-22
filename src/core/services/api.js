@@ -11,6 +11,7 @@
 import axios from "axios";
 
 import { api_base_url } from "@/environment";
+import { all_routes } from "@/Router/all_routes";
 import store from "@/core/redux/store";
 import { clearAuth } from "@/core/redux/action";
 
@@ -88,8 +89,8 @@ api.interceptors.response.use(
       store.dispatch(clearAuth());
 
       // Redirect to login if not already there
-      if (window.location.pathname !== "/signin") {
-        window.location.href = "/signin";
+      if (window.location.pathname !== all_routes.signin) {
+        window.location.href = all_routes.signin;
       }
     }
     return Promise.reject(error);

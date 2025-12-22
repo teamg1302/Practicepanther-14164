@@ -1,3 +1,5 @@
+@use "../utils/variables" as *;
+
 .table-wrapper {
   // flex: 1;
   min-width: 0 !important;
@@ -16,4 +18,26 @@
 
 .MuiDateRangeCalendar-root div:first-child {
   font-size: 0px !important;
+}
+
+// SweetAlert2 button styling
+.swal2-confirm {
+  background-color: $primary !important;
+  border-color: $primary !important;
+
+  &:hover {
+    background-color: $primary-hover !important;
+    border-color: $primary-hover !important;
+  }
+
+  &:focus {
+    box-shadow: 0 0 0 0.2rem rgba($primary, 0.5) !important;
+  }
+}
+
+.portal-logo-upload {
+  .profile-pic {
+    width: 168px;
+    height: 66px;
+  }
 }

@@ -215,24 +215,66 @@ const Header = () => {
     }
   };
 
+  const getTextColor = (bgColor) => {
+    console.log(bgColor);
+    if (!bgColor) {
+      return "#000000";
+    }
+    // Remove '#' if present
+    const color = bgColor.replace("#", "");
+
+    const r = parseInt(color.substring(0, 2), 16);
+    const g = parseInt(color.substring(2, 4), 16);
+    const b = parseInt(color.substring(4, 6), 16);
+
+    // Calculate luminance
+    const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+
+    // Light background → black text
+    return luminance > 0.5 ? "#000000" : "#FFFFFF";
+  };
+
   return (
     <>
-      <div className="header">
+      <div
+        className={`header`}
+        style={{
+          backgroundColor: auth?.user?.firmId?.colorScheme?.headerColor,
+          position: "sticky",
+          top: 0,
+          zIndex: 1000,
+          width: "100%",
+        }}
+      >
         {/* Logo */}
         <div
           className={`header-left ${toggle ? "" : "active"}`}
           onMouseLeave={expandMenu}
           onMouseOver={expandMenuOpen}
         >
-          <Link to="/dashboard" className="logo logo-normal">
-            <ImageWithBasePath src="assets/img/logo.png" alt="img" />
+          <Link to="/" className="logo logo-normal">
+            <img
+              src={
+                auth?.user?.firmId?.portalLogo ||
+                "/assets/img/Jurisoft-logo-sq.png"
+              }
+              alt={auth?.user?.firmId?.name || "Jurisoft"}
+              style={{
+                objectFit: "cover",
+                maxWidth: "260px",
+                maxHeight: "66px",
+                width: "auto",
+                height: "auto",
+                display: "block",
+              }}
+            />
           </Link>
-          <Link to="/dashboard" className="logo logo-white">
+          {/* <Link to="/dashboard" className="logo logo-white">
             <ImageWithBasePath src="assets/img/logo-white.png" alt="img" />
           </Link>
           <Link to="/dashboard" className="logo-small">
             <ImageWithBasePath src="assets/img/logo-small.png" alt="img" />
-          </Link>
+          </Link> */}
           <Link
             id="toggle_btn"
             to="#"
@@ -704,7 +746,14 @@ const Header = () => {
               aria-expanded="false"
               aria-haspopup="true"
             >
-              <span className="user-info">
+              <span
+                className="user-info"
+                style={{
+                  "--user-info-after-color": getTextColor(
+                    auth?.user?.firmId?.colorScheme?.headerColor
+                  ),
+                }}
+              >
                 <span className="user-letter">
                   <img
                     src={auth?.user.profileImage}
@@ -713,8 +762,26 @@ const Header = () => {
                   />
                 </span>
                 <span className="user-detail">
-                  <span className="user-name">{auth?.user.name}</span>
-                  <span className="user-role">{auth?.role}</span>
+                  <span
+                    className="user-name"
+                    style={{
+                      color: getTextColor(
+                        auth?.user?.firmId?.colorScheme?.headerColor
+                      ),
+                    }}
+                  >
+                    {auth?.user.name}
+                  </span>
+                  <span
+                    className="user-role"
+                    style={{
+                      color: getTextColor(
+                        auth?.user?.firmId?.colorScheme?.headerColor
+                      ),
+                    }}
+                  >
+                    {auth?.role}
+                  </span>
                 </span>
               </span>
             </Link>

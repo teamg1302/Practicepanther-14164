@@ -15,14 +15,15 @@
 import React from "react";
 import { useFormContext } from "react-hook-form";
 import { useTranslation } from "react-i18next";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import PropTypes from "prop-types";
 import * as yup from "yup";
 import Swal from "sweetalert2";
+import { useNavigate } from "react-router-dom";
+
 import { FormProvider } from "@/feature-module/components/rhf";
 import Input from "@/feature-module/components/form-elements/input";
 import Select from "@/feature-module/components/form-elements/select";
-import DatePicker from "@/feature-module/components/form-elements/datepicker";
 import { PhotoUpload } from "@/feature-module/components/form-elements/file-upload";
 import { FormButton } from "@/feature-module/components/buttons";
 import { getFirmDetails, updateFirmDetails } from "@/core/services/firmService";
@@ -33,9 +34,10 @@ import {
   fetchStatesByCountry,
   clearStates,
 } from "@/core/redux/mastersReducer";
-import { useDispatch } from "react-redux";
+
 import PageLayout from "@/feature-module/components/list-page-layout";
 import { all_routes } from "@/Router/all_routes";
+import { setAuthUser } from "@/core/redux/action";
 /**
  * Account Owner options.
  * @type {Array<{value: string, label: string}>}
@@ -92,9 +94,12 @@ const businessStructureOptions = [
 ];
 
 const FirmLogoInfo = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { t } = useTranslation();
   const user = useSelector((state) => state.auth?.user);
   const [isLoading, setIsLoading] = React.useState(false);
+  const [refreshTrigger, setRefreshTrigger] = React.useState(0);
   const formRef = React.useRef(null);
 
   /**
@@ -234,7 +239,7 @@ const FirmLogoInfo = () => {
         fileFields: ["firmLogo", "portalLogo"],
       });
 
-      console.log("formDataToSubmit", formDataToSubmit);
+      // console.log("formDataToSubmit", formDataToSubmit);
       await updateFirmDetails(userFirmId, formDataToSubmit);
 
       Swal.fire({
@@ -244,6 +249,9 @@ const FirmLogoInfo = () => {
         showConfirmButton: true,
         timer: 2000,
       });
+
+      // Trigger rerender of FirmLogoInfoContent to refetch firm details
+      setRefreshTrigger((prev) => prev + 1);
 
       //  navigate(route.settings[0].children[3].path);
     } catch (error) {
@@ -276,6 +284,12 @@ const FirmLogoInfo = () => {
       isSettingsLayout={true}
       title={t("firmLogoInfo.title")}
       subtitle="Manage your firm logo and information"
+      actions={{
+        onPrevious: {
+          text: "Back to Home",
+          onClick: () => navigate(all_routes.base_path),
+        },
+      }}
     >
       <FormProvider
         schema={firmInfoSchema}
@@ -314,6 +328,7 @@ const FirmLogoInfo = () => {
           userFirmId={user?.firmId?._id}
           isLoading={isLoading}
           setIsLoading={setIsLoading}
+          refreshTrigger={refreshTrigger}
         />
       </FormProvider>
     </PageLayout>
@@ -328,10 +343,12 @@ const FirmLogoInfo = () => {
  * @param {string|number} props.userFirmId - User Firm ID to fetch details for
  * @param {boolean} props.isLoading - Loading state
  * @param {Function} props.setIsLoading - Function to set loading state
+ * @param {number} props.refreshTrigger - Trigger value to force refetch of firm details
  * @returns {JSX.Element} Form content
  */
 const FirmLogoInfoContent = React.forwardRef(
-  ({ userFirmId, isLoading, setIsLoading }, ref) => {
+  ({ userFirmId, isLoading, setIsLoading, refreshTrigger }, ref) => {
+    const auth = useSelector((state) => state.auth);
     const { t } = useTranslation();
     const { reset, watch, getValues, setValue } = useFormContext();
     const dispatch = useDispatch();
@@ -428,6 +445,19 @@ const FirmLogoInfoContent = React.forwardRef(
             colorScheme: firm?.colorScheme,
           };
 
+          dispatch(
+            setAuthUser({
+              ...auth?.user,
+              firmId: {
+                ...auth?.user?.firmId,
+                colorScheme: formData?.colorScheme || {
+                  headerColor: "#ffffff",
+                },
+                portalLogo: formData?.portalLogo || "",
+              },
+            })
+          );
+
           // Reset form with fetched data - this will populate all form fields
           reset(formData, {
             keepDefaultValues: false,
@@ -447,7 +477,7 @@ const FirmLogoInfoContent = React.forwardRef(
       };
 
       fetchFirmDetails();
-    }, [userFirmId, reset, setIsLoading, t]);
+    }, [userFirmId, refreshTrigger]);
 
     if (isLoading) {
       return (
@@ -590,6 +620,7 @@ const FirmLogoInfoContent = React.forwardRef(
           <div className="col-md-6">
             <PhotoUpload
               name="portalLogo"
+              className="portal-logo-upload"
               label={"Portal Logo"}
               changeText={t("changeImage")}
               helpText={t("firmLogoInfo.imageUploadHelp")}
@@ -728,6 +759,7 @@ FirmLogoInfoContent.propTypes = {
   userFirmId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   isLoading: PropTypes.bool.isRequired,
   setIsLoading: PropTypes.func.isRequired,
+  refreshTrigger: PropTypes.number,
 };
 
 export default FirmLogoInfo;
