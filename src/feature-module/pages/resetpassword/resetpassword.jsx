@@ -103,7 +103,7 @@ const Resetpassword = () => {
   return (
     <div className="main-wrapper">
       <div className="account-content">
-        <div className="login-wrapper reset-pass-wrap bg-img">
+        <div className="login-wrapper bg-img">
           <div className="login-content">
             <form noValidate onSubmit={handleSubmit(onSubmit)}>
               <div className="login-userset">
@@ -233,12 +233,12 @@ const Resetpassword = () => {
               </div>
             </form>
           </div>
-          <div className="login-img">
+          {/* <div className="login-img">
             <ImageWithBasePath
-              src="assets/img/authentication/reset.png"
+              src="assets/img/authentication/login_law.png"
               alt="img"
             />
-          </div>
+          </div> */}
         </div>
       </div>
     </div>

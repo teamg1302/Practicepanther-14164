@@ -74,7 +74,7 @@ const Forgotpassword = () => {
   return (
     <div className="main-wrapper">
       <div className="account-content">
-        <div className="login-wrapper forgot-pass-wrap bg-img">
+        <div className="login-wrapper bg-img">
           <div className="login-content">
             <form noValidate onSubmit={handleSubmit(onSubmit)}>
               <div className="login-userset">
@@ -117,10 +117,10 @@ const Forgotpassword = () => {
                       {...register("email")}
                       style={{ paddingLeft: "40px" }}
                     />
-                    <ImageWithBasePath
+                    {/* <ImageWithBasePath
                       src="assets/img/icons/mail.svg"
                       alt="img"
-                    />
+                    /> */}
                   </div>
                   {errors.email && (
                     <p className="text-danger mt-2 mb-0">
@@ -185,12 +185,12 @@ const Forgotpassword = () => {
               </div>
             </form>
           </div>
-          <div className="login-img">
+          {/* <div className="login-img">
             <ImageWithBasePath
-              src="assets/img/authentication/forgot-setp-1.png"
+              src="assets/img/authentication/login_law.png"
               alt="img"
             />
-          </div>
+          </div> */}
         </div>
       </div>
     </div>

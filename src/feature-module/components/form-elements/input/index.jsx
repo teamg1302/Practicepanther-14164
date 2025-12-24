@@ -103,9 +103,10 @@ const Input = ({
 
   // Extract className from inputProps to merge with form-control
   const { className: inputPropsClassName, ...restInputProps } = inputProps;
-  const inputClassName = `form-control ${hasError ? "is-invalid" : ""} ${
-    inputPropsClassName || ""
-  }`.trim();
+
+  const inputClassName = `form-control ${
+    hasError && type !== "password" ? "is-invalid" : ""
+  } ${inputPropsClassName || ""}`.trim();
 
   return (
     <div className={`mb-3 ${className}`}>
@@ -141,7 +142,7 @@ const Input = ({
           })}
           {...restInputProps}
         />
-        {!hasError && type === "password" && (
+        {type === "password" && (
           <span
             className={`fas toggle-password ${
               showPassword ? "fa-eye" : "fa-eye-slash"

@@ -54,11 +54,11 @@ const PersonalSettings = () => {
   const personalSettingsSchema = React.useMemo(
     () =>
       yup.object({
-        profileImage: yup.string().trim().optional(),
+        profileImage: yup.string().trim().optional().nullable(),
         name: yup
           .string()
           .trim()
-          .required(t("personalSettings.validation.firstNameRequired")),
+          .required(t("formElements.validation.required")),
         // lastName: yup
         //   .string()
         //   .trim()
@@ -68,37 +68,52 @@ const PersonalSettings = () => {
         phone: yup
           .string()
           .trim()
-          .matches(/^\d*$/, "Phone number must only contain numbers")
+          .matches(/^\d*$/, t("formElements.validation.phoneNumberOnly"))
           .optional(),
         email: yup
           .string()
           .trim()
-          .email(t("personalSettings.validation.emailInvalid"))
-          .required(t("personalSettings.validation.emailRequired")),
+          .email(t("formElements.validation.invalid"))
+          .required(t("formElements.validation.required")),
         password: isCreateMode
           ? yup
               .string()
+              .required(t("formElements.validation.required"))
               .trim()
-              .required(
-                t("personalSettings.validation.passwordRequired") ||
-                  "Password is required"
-              )
-              .min(
-                6,
-                t("personalSettings.validation.passwordMinLength") ||
-                  "Password must be at least 6 characters"
+              .min(8, () => "Password must be at least 8 characters")
+              .max(16, () => "Password must be less than 16 characters")
+              .matches(
+                /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+                "Password must contain at least one lowercase letter, one uppercase letter, one number, and one special character"
               )
           : yup
               .string()
               .trim()
               .optional()
-              .min(
-                6,
-                t("personalSettings.validation.passwordMinLength") ||
-                  "Password must be at least 6 characters"
+              .test(
+                "password-validation",
+                "Password must be at least 8 characters",
+                (value) => !value || value.length >= 8
+              )
+              .test(
+                "password-max",
+                "Password must be less than 16 characters",
+                (value) => !value || value.length <= 16
+              )
+              .test(
+                "password-pattern",
+                "Password must contain at least one lowercase letter, one uppercase letter, one number, and one special character",
+                (value) =>
+                  !value ||
+                  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(
+                    value
+                  )
               ),
         timezoneId: yup.string().trim().optional(),
-        roleId: yup.string().trim().optional(),
+        roleId: yup
+          .string()
+          .trim()
+          .required(t("formElements.validation.required")),
         home: yup.string().trim().optional(),
         office: yup.string().trim().optional(),
         hourlyRate: yup.string().trim().optional(),
@@ -129,7 +144,7 @@ const PersonalSettings = () => {
   const onSubmit = async (formData) => {
     try {
       // For edit mode, remove password from formData if it's empty (not changed)
-      let dataToSubmit = { ...formData };
+      let dataToSubmit = { ...formData, status: "active" };
       if (
         !isCreateMode &&
         (!formData.password || formData.password.trim() === "")
@@ -149,10 +164,8 @@ const PersonalSettings = () => {
         await createUser(formDataToSubmit);
         Swal.fire({
           icon: "success",
-          title: t("personalSettings.messages.userCreated") || "User Created",
-          text:
-            t("personalSettings.messages.userCreatedMessage") ||
-            "User has been created successfully.",
+          title: "User Created",
+          text: "User has been created successfully.",
           showConfirmButton: true,
           timer: 2000,
         });
@@ -163,8 +176,8 @@ const PersonalSettings = () => {
         await updateUserDetails(targetUserId, formDataToSubmit);
         Swal.fire({
           icon: "success",
-          title: t("personalSettings.messages.settingsSaved"),
-          text: t("personalSettings.messages.settingsSavedMessage"),
+          title: "Settings Saved",
+          text: "Settings have been saved successfully.",
           showConfirmButton: true,
           timer: 2000,
         });
@@ -249,8 +262,6 @@ const PersonalSettings = () => {
         schema={personalSettingsSchema}
         defaultValues={{
           name: "",
-          // middleName: "",
-          // lastName: "",
           jobTitleId: "",
           phone: "",
           email: "",
@@ -263,7 +274,7 @@ const PersonalSettings = () => {
           roundTimeEntries: false,
           roundTimeEntryType: "",
           dailyAgendaEmail: false,
-          profileImage: null,
+          profileImage: "",
         }}
         onSubmit={onSubmit}
       >
@@ -308,7 +319,13 @@ const PersonalSettingsContent = React.forwardRef(
     ref
   ) => {
     const { t } = useTranslation();
-    const { reset, watch, getValues } = useFormContext();
+    const {
+      reset,
+      watch,
+      getValues,
+      formState: { errors },
+    } = useFormContext();
+    console.log("errors", errors);
     const dispatch = useDispatch();
     const auth = useSelector((state) => state.auth);
     // Expose getValues to parent component via ref
@@ -437,7 +454,7 @@ const PersonalSettingsContent = React.forwardRef(
               setAuthUser({
                 ...auth.user,
                 profileImage:
-                  formData?.profileImage || auth?.user?.profileImage || null,
+                  formData?.profileImage || auth?.user?.profileImage || "",
               })
             );
           }
@@ -485,6 +502,9 @@ const PersonalSettingsContent = React.forwardRef(
               : t("personalSettings.title")}
           </h4>
         </div> */}
+        <div className="card-title-head">
+          <h6>{t("personalSettings.profilePhoto")}</h6>
+        </div>
         <PhotoUpload
           name="profileImage"
           label={t("personalSettings.profilePhoto")}
@@ -528,12 +548,7 @@ const PersonalSettingsContent = React.forwardRef(
             />
           </div>
           <div className="col-md-12">
-            <Input
-              id="phone1"
-              name="phone"
-              label={t("personalSettings.phone")}
-              type="text"
-            />
+            <Input id="phone1" name="phone" label={"Phone"} type="text" />
           </div>
           <div className="col-md-12">
             <Input
@@ -544,7 +559,7 @@ const PersonalSettingsContent = React.forwardRef(
               helpText={t("personalSettings.emailHelpText")}
             />
           </div>
-          {shouldShowRoleField && (
+          {isCreateMode && (
             <div className="col-md-12">
               <Input
                 name="password"
@@ -565,9 +580,9 @@ const PersonalSettingsContent = React.forwardRef(
           <div className="col-md-12">
             <Select
               name="timezoneId"
-              label={t("personalSettings.timezone")}
+              label={"Timezone"}
               options={timezones}
-              placeholder={t("personalSettings.selectTimezone")}
+              placeholder={"Select Timezone"}
               disabled={timezonesLoading}
             />
           </div>
@@ -575,9 +590,10 @@ const PersonalSettingsContent = React.forwardRef(
             <div className="col-md-12">
               <Select
                 name="roleId"
-                label={t("personalSettings.role") || "Role"}
+                required
+                label={"Role"}
                 options={roles}
-                placeholder={t("personalSettings.selectRole") || "Select Role"}
+                placeholder={"Select Role"}
                 disabled={rolesLoading}
               />
             </div>
@@ -721,12 +737,18 @@ RoundTimeEntryTypeSelect.propTypes = {
 const FormSubmitButtons = () => {
   const {
     formState: { isSubmitting },
+    reset,
   } = useFormContext();
 
   return (
     <div className="settings-bottom-btn d-flex flex-row gap-2 align-items-center justify-content-end">
       <FormButton type="submit" isSubmitting={isSubmitting} />
-      <FormButton type="cancel" isSubmitting={isSubmitting} />
+      <FormButton
+        type="reset"
+        isSubmitting={isSubmitting}
+        onClick={() => reset()}
+      />
+      {/* <FormButton type="cancel" isSubmitting={isSubmitting} /> */}
     </div>
   );
 };

@@ -14,7 +14,7 @@ import ListPageLayout from "@/feature-module/components/list-page-layout";
 const COLUMNS_CONFIG = [
   { header: "Name", accessorKey: "name" },
   { header: "Email", accessorKey: "email" },
-  { header: "Phone", accessorKey: "mobile" },
+  { header: "Phone", accessorKey: "phone" },
   { header: "Role", accessorKey: "roleId", type: "nested" },
   { header: "Timezone", accessorKey: "timezoneId", type: "nested" },
   {

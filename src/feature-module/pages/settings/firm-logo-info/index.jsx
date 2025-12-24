@@ -159,7 +159,10 @@ const FirmLogoInfo = () => {
           })
           .optional(),
         //  accountOwner: yup.string().trim().optional(),
-        name: yup.string().trim().optional(),
+        name: yup
+          .string()
+          .trim()
+          .required(t("formElements.validation.required")),
         countryId: yup.string().trim().optional(),
         stateId: yup.string().trim().optional(),
         currencyId: yup.string().trim().optional(),
@@ -495,16 +498,31 @@ const FirmLogoInfoContent = React.forwardRef(
     return (
       <>
         {/* Firm Logo Upload */}
-        <PhotoUpload
-          name="firmLogo"
-          label={t("firmLogoInfo.firmLogo")}
-          changeText={t("changeImage")}
-          helpText={t("firmLogoInfo.imageUploadHelp")}
-          accept="image/*"
-          previewImageUrl={
-            typeof logoValue === "string" ? logoValue : undefined
-          }
-        />
+        <div className="card-title-head mb-3">
+          <h4 className="border-bottom-0 mb-0 pb-0">
+            {t("firmLogoInfo.title")}
+          </h4>
+          <p className="text-muted mt-2">
+            Make sure your firm details are correct and up to date. Your firm
+            logo, legal name, address, phone number, and firm email will appear
+            on your invoice.
+          </p>
+        </div>
+        <div className="row">
+          <label htmlFor="firmLogo" className="form-label">
+            {t("firmLogoInfo.firmLogo")}
+          </label>
+          <PhotoUpload
+            name="firmLogo"
+            label={t("firmLogoInfo.firmLogo")}
+            changeText={t("changeImage")}
+            helpText={t("firmLogoInfo.imageUploadHelp")}
+            accept="image/*"
+            previewImageUrl={
+              typeof logoValue === "string" ? logoValue : undefined
+            }
+          />
+        </div>
 
         {/* Account Owner Section */}
         {/* <div className="card-title-head">
@@ -525,7 +543,12 @@ const FirmLogoInfoContent = React.forwardRef(
         {/* Business Information Section */}
         <div className="row">
           <div className="col-md-12">
-            <Input name="name" label={t("firmLogoInfo.name")} type="text" />
+            <Input
+              name="name"
+              label={t("firmLogoInfo.name")}
+              type="text"
+              required
+            />
           </div>
           <div className="col-md-6">
             <Input
@@ -617,13 +640,15 @@ const FirmLogoInfoContent = React.forwardRef(
           </p>
         </div>
         <div className="row mt-2">
-          <div className="col-md-6">
+          <div className="col-md-12">
             <PhotoUpload
               name="portalLogo"
               className="portal-logo-upload"
               label={"Portal Logo"}
               changeText={t("changeImage")}
-              helpText={t("firmLogoInfo.imageUploadHelp")}
+              helpText={
+                "For better preview recommended size is 260px x 66px. Max size 1MB."
+              }
               accept="image/*"
               previewImageUrl={
                 typeof portalLogoValue === "string"
@@ -738,6 +763,7 @@ FirmLogoInfoContent.displayName = "FirmLogoInfoContent";
 const FormSubmitButtons = () => {
   const {
     formState: { isSubmitting, errors },
+    reset,
   } = useFormContext();
 
   // Log validation errors for debugging
@@ -750,7 +776,12 @@ const FormSubmitButtons = () => {
   return (
     <div className="settings-bottom-btn d-flex flex-row gap-2 align-items-center justify-content-end">
       <FormButton type="submit" isSubmitting={isSubmitting} />
-      <FormButton type="cancel" isSubmitting={isSubmitting} />
+      <FormButton
+        type="reset"
+        isSubmitting={isSubmitting}
+        onClick={() => reset()}
+      />
+      {/* <FormButton type="cancel" isSubmitting={isSubmitting} /> */}
     </div>
   );
 };

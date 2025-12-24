@@ -19,8 +19,8 @@ export const getTimezone = async (params = {}) => {
     // Build query string if params are provided
     const queryParams = new URLSearchParams(params).toString();
     const url = queryParams
-      ? `/masters/search/timezone?${queryParams}`
-      : "/masters/search/timezone";
+      ? `/masters/search/timezone/?${queryParams}&limit=200`
+      : "/masters/search/timezone/?limit=200";
 
     const response = await api.get(url);
     // Handle nested response structure if needed
@@ -49,18 +49,19 @@ export const getTimezone = async (params = {}) => {
  */
 export const getTitles = async (params = {}) => {
   try {
-    const { limit = 100, pageSize = 60, page = 1, ...otherParams } = params;
+    const { limit = 100, ...otherParams } = params;
 
     // Build query string
     const queryParams = new URLSearchParams({
+      search: "",
       limit: limit.toString(),
-      pageSize: pageSize.toString(),
-      page: page.toString(),
+      // pageSize: pageSize.toString(),
+      // page: page.toString(),
       ...otherParams, // Allow additional params to be passed
     });
 
     const response = await api.get(
-      `/masters/job-title?${queryParams.toString()}`
+      `/masters/search/job-title?${queryParams.toString()}`
     );
 
     // Handle nested response structure if needed
@@ -91,12 +92,13 @@ export const getCountries = async (params = {}) => {
 
     // Build query string
     const queryParams = new URLSearchParams({
+      search: "",
       limit: limit.toString(),
       ...otherParams, // Allow additional params to be passed
     });
 
     const response = await api.get(
-      `/masters/country?${queryParams.toString()}`
+      `/masters/search/country?${queryParams.toString()}`
     );
 
     // Handle nested response structure if needed
@@ -127,12 +129,13 @@ export const getCurrencies = async (params = {}) => {
 
     // Build query string
     const queryParams = new URLSearchParams({
+      search: "",
       limit: limit.toString(),
       ...otherParams, // Allow additional params to be passed
     });
 
     const response = await api.get(
-      `/masters/currency?${queryParams.toString()}`
+      `/masters/search/currency?${queryParams.toString()}`
     );
 
     // Handle nested response structure if needed
@@ -164,12 +167,15 @@ export const getStatesByCountry = async (params) => {
 
     // Build query string
     const queryParams = new URLSearchParams({
+      search: "",
       countryId: countryId.toString(),
       limit: limit.toString(),
       ...otherParams, // Allow additional params to be passed
     });
 
-    const response = await api.get(`/masters/state?${queryParams.toString()}`);
+    const response = await api.get(
+      `/masters/search/state?${queryParams.toString()}`
+    );
 
     // Handle nested response structure if needed
     return response.data?.data || response.data;

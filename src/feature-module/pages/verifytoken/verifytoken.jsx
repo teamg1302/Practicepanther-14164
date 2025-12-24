@@ -123,13 +123,13 @@ const Verifytoken = () => {
 
       if (type === "forgot-password") {
         // Show success message
-        Swal.fire({
-          icon: "success",
-          title: t("verifyToken.messages.otpVerified"),
-          text: t("verifyToken.messages.otpVerifiedMessage"),
-          showConfirmButton: true,
-          timer: 2000,
-        });
+        // Swal.fire({
+        //   icon: "success",
+        //   title: t("verifyToken.messages.otpVerified"),
+        //   text: t("verifyToken.messages.otpVerifiedMessage"),
+        //   showConfirmButton: true,
+        //   timer: 2000,
+        // });
         navigate(route.resetpassword.replace(":token", responseData?.token));
       } else {
         // Extract data from response (service already extracts response.data.data)
@@ -151,13 +151,13 @@ const Verifytoken = () => {
         }
 
         // Show success message
-        Swal.fire({
-          icon: "success",
-          title: t("verifyToken.messages.otpVerified"),
-          text: t("verifyToken.messages.otpVerifiedMessage"),
-          showConfirmButton: true,
-          timer: 2000,
-        });
+        // Swal.fire({
+        //   icon: "success",
+        //   title: t("verifyToken.messages.otpVerified"),
+        //   text: t("verifyToken.messages.otpVerifiedMessage"),
+        //   showConfirmButton: true,
+        //   timer: 2000,
+        // });
 
         // Navigate to dashboard
         navigate(route.headers[0].path);
@@ -190,7 +190,7 @@ const Verifytoken = () => {
   return (
     <div className="main-wrapper">
       <div className="account-content">
-        <div className="login-wrapper forgot-pass-wrap bg-img">
+        <div className="login-wrapper bg-img">
           <div className="login-content">
             <form noValidate onSubmit={onSubmit}>
               <div className="login-userset">
@@ -279,12 +279,12 @@ const Verifytoken = () => {
               </div>
             </form>
           </div>
-          <div className="login-img">
+          {/* <div className="login-img">
             <ImageWithBasePath
-              src="assets/img/authentication/step-two.png"
+              src="assets/img/authentication/login_law.png"
               alt="img"
             />
-          </div>
+          </div> */}
         </div>
       </div>
     </div>

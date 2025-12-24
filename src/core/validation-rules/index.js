@@ -33,8 +33,8 @@ export const getValidationRules = (t, passwordField = "") => {
     password: yup
       .string()
       .trim()
-      .min(8, () => t("formElements.validation.minLength", { min: 8 }))
-      .max(16, () => t("formElements.validation.maxLength", { max: 16 }))
+      .min(8, () => t("formElements.validation.invalid"))
+      .max(16, () => t("formElements.validation.invalid"))
       .matches(
         /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
         t("formElements.validation.invalid")

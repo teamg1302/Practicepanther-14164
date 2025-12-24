@@ -1,7 +1,11 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { useTranslation } from "react-i18next";
-import { faClose, faCheck } from "@fortawesome/free-solid-svg-icons";
+import {
+  faClose,
+  faCheck,
+  faRotateLeft,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const FormButton = ({ type, isSubmitting, ...props }) => {
@@ -49,6 +53,9 @@ const FormButton = ({ type, isSubmitting, ...props }) => {
           <FontAwesomeIcon icon={faClose} className="icon" />
         )}
       </span>
+      {type === "reset" && (
+        <FontAwesomeIcon icon={faRotateLeft} className="icon" />
+      )}
       <span className="label-container">{buttonLabel}</span>
     </button>
   );

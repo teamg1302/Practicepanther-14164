@@ -9,14 +9,20 @@ import Chart from "react-apexcharts";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import ImageWithBasePath from "../../core/img/imagewithbasebath";
-import { ArrowRight } from "react-feather";
-import { all_routes } from "../../Router/all_routes";
+import {
+  ArrowRight,
+  UserPlus,
+  Briefcase,
+  FileText,
+  Clock,
+  CreditCard,
+} from "react-feather";
+import { Receipt, AttachMoney, Phone } from "@mui/icons-material";
 import withReactContent from "sweetalert2-react-content";
 import Swal from "sweetalert2";
 
 const Dashboard = () => {
   const { t } = useTranslation();
-  const route = all_routes;
   const [chartOptions] = useState({
     series: [
       {
@@ -253,11 +259,95 @@ const Dashboard = () => {
           </div>
           {/* Button trigger modal */}
 
+          {/* Quick Create Section */}
+          <div className="row">
+            <div className="col-12">
+              <div className="card">
+                <div className="card-header">
+                  <h5 className="card-title mb-0">Quick Create</h5>
+                </div>
+                <div className="card-body">
+                  <div className="quick-create-grid">
+                    {/* Row 1 */}
+                    <div className="quick-create-item">
+                      <Link to="#" className="quick-create-btn">
+                        <div className="quick-create-icon">
+                          <UserPlus />
+                        </div>
+                        <span className="quick-create-label">New Contact</span>
+                      </Link>
+                    </div>
+                    <div className="quick-create-item">
+                      <Link to="#" className="quick-create-btn">
+                        <div className="quick-create-icon">
+                          <Briefcase />
+                        </div>
+                        <span className="quick-create-label">New Matter</span>
+                      </Link>
+                    </div>
+
+                    <div className="quick-create-item">
+                      <Link to="#" className="quick-create-btn">
+                        <div className="quick-create-icon">
+                          <Clock />
+                        </div>
+                        <span className="quick-create-label">Track Time</span>
+                      </Link>
+                    </div>
+
+                    <div className="quick-create-item">
+                      <Link to="#" className="quick-create-btn">
+                        <div className="quick-create-icon">
+                          <FileText />
+                        </div>
+                        <span className="quick-create-label">New Note</span>
+                      </Link>
+                    </div>
+
+                    <div className="quick-create-item">
+                      <Link to="#" className="quick-create-btn">
+                        <div className="quick-create-icon">
+                          <Phone />
+                        </div>
+                        <span className="quick-create-label">New Call</span>
+                      </Link>
+                    </div>
+
+                    <div className="quick-create-item">
+                      <Link to="#" className="quick-create-btn">
+                        <div className="quick-create-icon">
+                          <Receipt />
+                        </div>
+                        <span className="quick-create-label">New Invoice</span>
+                      </Link>
+                    </div>
+                    <div className="quick-create-item">
+                      <Link to="#" className="quick-create-btn">
+                        <div className="quick-create-icon">
+                          <CreditCard />
+                        </div>
+                        <span className="quick-create-label">New Payment</span>
+                      </Link>
+                    </div>
+                    <div className="quick-create-item">
+                      <Link to="#" className="quick-create-btn">
+                        <div className="quick-create-icon">
+                          <AttachMoney />
+                        </div>
+                        <span className="quick-create-label">New Flat Fee</span>
+                      </Link>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
           <div className="row">
             <div className="col-xl-7 col-sm-12 col-12 d-flex">
               <div className="card flex-fill">
                 <div className="card-header d-flex justify-content-between align-items-center">
-                  <h5 className="card-title mb-0">Revenue</h5>
+                  <h5 className="card-title">Revenue</h5>
                   <div className="graph-sets">
                     <ul className="mb-0">
                       <li>
@@ -398,6 +488,61 @@ const Dashboard = () => {
               </div>
             </div>
           </div>
+
+          <div className="row">
+            <div className="col-12">
+              <div className="card">
+                <div className="card-header">
+                  <h5 className="card-title mb-0">Your Hours</h5>
+                </div>
+                <div className="card-body">
+                  <div className="row">
+                    <div className="col-xl-3 col-sm-6 col-12 d-flex">
+                      <div className="dash-widget w-100 mb-0">
+                        <div className="w-100 dash-widgetcontent d-flex justify-content-between align-items-center">
+                          <h6>{t("Hours Today")}</h6>
+                          <strong className="text-label text-primary">
+                            0.00
+                          </strong>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="col-xl-3 col-sm-6 col-12 d-flex">
+                      <div className="dash-widget dash1 w-100 mb-0">
+                        <div className="w-100 dash-widgetcontent d-flex justify-content-between align-items-center">
+                          <h6>{t("Hours This Week")}</h6>
+                          <strong className="text-label text-primary">
+                            0.00
+                          </strong>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="col-xl-3 col-sm-6 col-12 d-flex">
+                      <div className="dash-widget dash2 w-100 mb-0">
+                        <div className="w-100 dash-widgetcontent d-flex justify-content-between align-items-center">
+                          <h6>{t("Hours This Month")}</h6>
+                          <strong className="text-label text-primary">
+                            0.00
+                          </strong>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="col-xl-3 col-sm-6 col-12 d-flex">
+                      <div className="dash-widget dash3 w-100 mb-0">
+                        <div className="w-100 dash-widgetcontent d-flex justify-content-between align-items-center">
+                          <h6>{t("Hours This Year")}</h6>
+                          <strong className="text-label text-primary">
+                            0.00
+                          </strong>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
           <div className="card">
             <div className="card-header">
               <h4 className="card-title">Recent Matters </h4>

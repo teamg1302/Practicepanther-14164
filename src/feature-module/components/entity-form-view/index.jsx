@@ -8,12 +8,31 @@ import MasterPicker from "@/feature-module/components/form-elements/master-picke
 import ApiSelect from "@/feature-module/components/form-elements/api-select";
 import AsyncSelectPagination from "@/feature-module/components/form-elements/async-select-pagination";
 import AsyncMultiSelectPagination from "@/feature-module/components/form-elements/async-multi-select-pagination";
+import Switch from "@/feature-module/components/form-elements/switch";
 
 const EntityFormView = ({ fields }) => {
   const formFields = useMemo(() => {
     return fields && fields.length > 0
       ? fields.map((field) => {
-          const { id, name, label, type, col, element, ...rest } = field;
+          const {
+            id,
+            name,
+            label,
+            type,
+            col,
+            element,
+            className = "",
+            ...rest
+          } = field;
+          // Check for switch first (before input types)
+          if (type === "switch") {
+            return (
+              <div key={id} className={`col-md-${col || 12} ${className}`}>
+                <Switch name={name} label={label} {...rest} />
+              </div>
+            );
+          }
+
           // Check if type is one of the input types
           const isInputType = [
             "text",
@@ -27,7 +46,7 @@ const EntityFormView = ({ fields }) => {
 
           if (isInputType) {
             return (
-              <div key={id} className={`col-md-${col || 12}`}>
+              <div key={id} className={`col-md-${col || 12} ${className}`}>
                 <Input
                   id={id}
                   name={name}
@@ -41,7 +60,7 @@ const EntityFormView = ({ fields }) => {
 
           if (type === "textarea") {
             return (
-              <div key={id} className={`col-md-${col || 12}`}>
+              <div key={id} className={`col-md-${col || 12} ${className}`}>
                 <Textarea name={name} label={label} {...rest} />
               </div>
             );
@@ -49,7 +68,7 @@ const EntityFormView = ({ fields }) => {
 
           if (type === "select") {
             return (
-              <div key={id} className={`col-md-${col || 12}`}>
+              <div key={id} className={`col-md-${col || 12} ${className}`}>
                 <Select name={name} label={label} {...rest} />
               </div>
             );
@@ -57,7 +76,7 @@ const EntityFormView = ({ fields }) => {
 
           if (type === "master") {
             return (
-              <div key={id} className={`col-md-${col || 12}`}>
+              <div key={id} className={`col-md-${col || 12} ${className}`}>
                 <MasterPicker name={name} label={label} {...rest} />
               </div>
             );
@@ -65,7 +84,7 @@ const EntityFormView = ({ fields }) => {
 
           if (type === "userImage") {
             return (
-              <div key={id} className={`col-md-${col || 12}`}>
+              <div key={id} className={`col-md-${col || 12} ${className}`}>
                 <PhotoUpload name={name} label={label} {...rest} />
               </div>
             );
@@ -73,7 +92,7 @@ const EntityFormView = ({ fields }) => {
 
           if (type === "datepicker") {
             return (
-              <div key={id} className={`col-md-${col || 12}`}>
+              <div key={id} className={`col-md-${col || 12} ${className}`}>
                 <DatePicker name={name} label={label} {...rest} />
               </div>
             );
@@ -81,7 +100,7 @@ const EntityFormView = ({ fields }) => {
 
           if (type === "api") {
             return (
-              <div key={id} className={`col-md-${col || 12}`}>
+              <div key={id} className={`col-md-${col || 12} ${className}`}>
                 <ApiSelect name={name} label={label} {...rest} />
               </div>
             );
@@ -89,7 +108,7 @@ const EntityFormView = ({ fields }) => {
 
           if (type === "async-select-pagination") {
             return (
-              <div key={id} className={`col-md-${col || 12}`}>
+              <div key={id} className={`col-md-${col || 12} ${className}`}>
                 <AsyncSelectPagination name={name} label={label} {...rest} />
               </div>
             );
@@ -97,7 +116,7 @@ const EntityFormView = ({ fields }) => {
 
           if (type === "async-multi-select-pagination") {
             return (
-              <div key={id} className={`col-md-${col || 12}`}>
+              <div key={id} className={`col-md-${col || 12} ${className}`}>
                 <AsyncMultiSelectPagination
                   name={name}
                   label={label}
@@ -108,7 +127,11 @@ const EntityFormView = ({ fields }) => {
           }
 
           if (type === "ui") {
-            return element;
+            return (
+              <div key={id} className={`col-md-${col || 12} ${className}`}>
+                {element}
+              </div>
+            );
           }
         })
       : [

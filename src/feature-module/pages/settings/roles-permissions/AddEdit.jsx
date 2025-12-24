@@ -371,9 +371,9 @@ const RolePermissionContent = ({ modules, userDetails, loading }) => {
     watch,
     setValue,
     formState: { isSubmitting },
+    reset,
   } = useFormContext();
   const navigate = useNavigate();
-
   const permissions = watch("permissions") || [];
 
   /**
@@ -704,10 +704,15 @@ const RolePermissionContent = ({ modules, userDetails, loading }) => {
         <div className="settings-bottom-btn d-flex flex-row gap-2 align-items-center justify-content-end">
           <FormButton type="submit" isSubmitting={isSubmitting} />
           <FormButton
+            type="reset"
+            isSubmitting={isSubmitting}
+            onClick={() => reset()}
+          />
+          {/* <FormButton
             type="cancel"
             isSubmitting={isSubmitting}
             onClick={() => navigate("/settings/roles-permissions")}
-          />
+          /> */}
         </div>
       </div>
     </div>

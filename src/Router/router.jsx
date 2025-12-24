@@ -43,7 +43,7 @@ const Authpages = () => {
     <div className={data ? "header-collapse" : ""}>
       <Outlet />
       {/* <Loader /> */}
-      <ThemeSettings />
+      {/* <ThemeSettings /> */}
     </div>
   );
 };

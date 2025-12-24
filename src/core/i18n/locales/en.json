@@ -133,7 +133,7 @@
     "addUserTitle": "Add New User",
     "title": "Personal Settings",
     "profilePhoto": "Profile Photo",
-    "imageUploadHelp": "For better preview recommended size is 450px x 450px. Max size 5MB.",
+    "imageUploadHelp": "For better preview recommended size is 450px x 450px.",
     "name": "Name",
     "firstName": "First Name",
     "middleName": "Middle Name",
@@ -187,7 +187,7 @@
     "title": "FIRM INFORMATION",
     "firmLogo": "Firm Logo",
     "remove": "Remove",
-    "imageUploadHelp": "For better preview recommended size is 450px x 450px. Max size 5MB.",
+    "imageUploadHelp": "For better preview recommended size is 450px x 450px.",
     "accountOwner": "Account Owner",
     "selectAccountOwner": "Select account owner",
     "legalBusinessName": "Legal Business Name",
@@ -282,6 +282,7 @@
       "required": "This field is required."
     },
     "validation": {
+      "phoneNumberOnly": "Phone number must be a valid number.",
       "required": "This field is required.",
       "invalid": "This fields is invalid.",
       "match": "This fields is not match.",

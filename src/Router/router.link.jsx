@@ -28,6 +28,12 @@ import {
   MattersList,
   MatterDetails,
 } from "@/feature-module/pages/matters";
+import {
+  TimeEntriesList,
+  AddEditTimeEntry,
+  MultipleTimeEntries,
+} from "@/feature-module/pages/time-entries";
+
 import { all_routes } from "./all_routes";
 
 const routes = all_routes;
@@ -108,6 +114,27 @@ export const publicRoutes = [
     path: routes.matterDetails.path,
     name: routes.matterDetails.name,
     element: <MatterDetails />,
+    route: Route,
+  },
+  {
+    id: 9,
+    path: routes.headers?.[3]?.path,
+    name: routes.headers?.[3]?.name,
+    element: <TimeEntriesList />,
+    route: Route,
+  },
+  {
+    id: 10,
+    path: routes.addTimeEntry.path,
+    name: routes.addTimeEntry.name,
+    element: <AddEditTimeEntry />,
+    route: Route,
+  },
+  {
+    id: 11,
+    path: routes.multipleTimeEntries.path,
+    name: routes.multipleTimeEntries.name,
+    element: <MultipleTimeEntries />,
     route: Route,
   },
 ];

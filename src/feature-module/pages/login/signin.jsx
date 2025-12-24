@@ -56,13 +56,13 @@ const Signin = () => {
       dispatch(setLoginEmail(formData.email));
 
       // Show success message
-      Swal.fire({
-        icon: "success",
-        title: t("signin.messages.loginSuccess"),
-        text: t("signin.messages.loginSuccessMessage"),
-        showConfirmButton: true,
-        timer: 2000,
-      });
+      // Swal.fire({
+      //   icon: "success",
+      //   title: t("signin.messages.loginSuccess"),
+      //   text: t("signin.messages.loginSuccessMessage"),
+      //   showConfirmButton: true,
+      //   timer: 2000,
+      // });
 
       // Navigate to verify token screen
       navigate(route.verifyToken);
@@ -264,12 +264,12 @@ const Signin = () => {
               </div>
             </form>
           </div>
-          <div className="login-img">
+          {/* <div className="login-img">
             <ImageWithBasePath
-              src="assets/img/authentication/step-one.png"
+              src="assets/img/authentication/login_law.png"
               alt="img"
             />
-          </div>
+          </div> */}
         </div>
       </div>
     </div>

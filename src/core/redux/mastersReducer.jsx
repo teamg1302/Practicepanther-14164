@@ -82,10 +82,10 @@ export const fetchJobTitles = createAsyncThunk(
       // Transform API response to match Select component format
       // Adjust transformation based on actual API response structure
 
-      const formattedTitles = Array.isArray(titlesData?.list)
-        ? titlesData.list.map((title) => ({
-            label: title.name,
-            value: title._id,
+      const formattedTitles = Array.isArray(titlesData?.data)
+        ? titlesData.data.map((title) => ({
+            label: title.label,
+            value: title.value,
           }))
         : [];
 
@@ -112,20 +112,20 @@ export const fetchCountries = createAsyncThunk(
       const countriesData = await getCountries(params);
 
       // Transform API response to match Select component format
-      const formattedCountries = Array.isArray(countriesData?.list)
-        ? countriesData.list.map((country) => ({
-            label: country.name,
-            value: country._id,
+      const formattedCountries = Array.isArray(countriesData?.data)
+        ? countriesData.data.map((country) => ({
+            label: country.label,
+            value: country.value,
           }))
         : Array.isArray(countriesData?.data)
         ? countriesData.data.map((country) => ({
-            label: country.name || country.label,
-            value: country._id || country.value,
+            label: country.label,
+            value: country.value,
           }))
         : Array.isArray(countriesData)
         ? countriesData.map((country) => ({
-            label: country.name || country.label,
-            value: country._id || country.value,
+            label: country.label,
+            value: country.value,
           }))
         : [];
 
@@ -152,20 +152,20 @@ export const fetchCurrencies = createAsyncThunk(
       const currenciesData = await getCurrencies(params);
 
       // Transform API response to match Select component format
-      const formattedCurrencies = Array.isArray(currenciesData?.list)
-        ? currenciesData.list.map((currency) => ({
-            label: currency.name || currency.symbol,
-            value: currency._id,
+      const formattedCurrencies = Array.isArray(currenciesData?.data)
+        ? currenciesData.data.map((currency) => ({
+            label: currency.label,
+            value: currency.value,
           }))
         : Array.isArray(currenciesData?.data)
         ? currenciesData.data.map((currency) => ({
-            label: currency.name || currency.symbol || currency.label,
-            value: currency._id || currency.value,
+            label: currency.label,
+            value: currency.value,
           }))
         : Array.isArray(currenciesData)
         ? currenciesData.map((currency) => ({
-            label: currency.name || currency.symbol || currency.label,
-            value: currency._id || currency.value,
+            label: currency.label,
+            value: currency.value,
           }))
         : [];
 
@@ -192,10 +192,10 @@ export const fetchStatesByCountry = createAsyncThunk(
       const statesData = await getStatesByCountry(params);
 
       // Transform API response to match Select component format
-      const formattedStates = Array.isArray(statesData?.list)
-        ? statesData.list.map((state) => ({
-            label: state.name,
-            value: state._id,
+      const formattedStates = Array.isArray(statesData?.data)
+        ? statesData.data.map((state) => ({
+            label: state.label,
+            value: state.value,
           }))
         : [];
 

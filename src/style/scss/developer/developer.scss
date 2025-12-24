@@ -41,3 +41,27 @@
     height: 66px;
   }
 }
+
+// Timer Display Styles
+.timer-display-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 10px;
+}
+
+.timer-display {
+  font-size: 32px;
+  font-weight: $font-weight-bold;
+  color: $primary;
+  background: rgba($primary, 0.1);
+  padding: 15px 25px;
+  border-radius: 8px;
+  border: 2px solid $primary;
+  font-family: "Courier New", monospace;
+  letter-spacing: 2px;
+  min-width: 180px;
+  text-align: center;
+  display: inline-block;
+}

@@ -221,7 +221,7 @@ const ListPageLayout = ({
                 </OverlayTrigger>
               </li>
             )}
-            {isFormLayout && actions?.onPrevious && (
+            {actions?.onPrevious && (
               <li>
                 <div className="page-btn">
                   <Button
@@ -235,6 +235,15 @@ const ListPageLayout = ({
               </li>
             )}
           </ul>
+          {/* append custom buttons here */}
+          {actions?.customButtons &&
+            actions?.customButtons.map((button, index) => (
+              <div className="page-btn" key={index}>
+                <Button className="btn btn-added" onClick={button.onClick}>
+                  {button.icon} {button.text}
+                </Button>
+              </div>
+            ))}
           {shouldShowAddButton() && (
             <div className="page-btn">
               <Button
