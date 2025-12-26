@@ -1,114 +1,34 @@
 import React, { useEffect, useState } from "react";
 import { Timer as TimerIcon } from "@mui/icons-material";
-import { useDispatch } from "react-redux";
-import { Link } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
 import { setLayoutChange } from "../core/redux/action";
-import ImageWithBasePath from "../core/img/imagewithbasebath";
+import {
+  StartTimerButton,
+  TimerDisplay,
+} from "../feature-module/components/timer";
+import { CheckOutlined, CancelOutlined } from "@mui/icons-material";
+import { setTimerDescription, resetTimer } from "../core/redux/action";
+import { all_routes } from "../Router/all_routes";
 
 const ThemeSettings = () => {
+  const timerRunning = useSelector(
+    (state) => state.timer?.timerRunning || false
+  );
+  const totalTime = useSelector(
+    (state) => state.timer?.totalTime || "00:00:00"
+  );
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const timerDescription = useSelector(
+    (state) => state.timer?.description || ""
+  );
 
   const [show, setShow] = useState(false);
-  const [layoutColor, setlayoutColor] = useState(
-    localStorage.getItem("colorschema") || "light_mode"
-  );
-
-  const [layoutView, setLayoutView] = useState(
-    localStorage.getItem("layoutStyling") || "modern"
-  );
-
-  const [layoutTheme, setLayoutTheme] = useState(
-    localStorage.getItem("layoutThemeColors") || "light"
-  );
-
   const showSettings = () => {
     setShow(!show);
   };
 
-  const DarkThemes = () => {
-    localStorage.setItem("colorschema", "dark_mode");
-    setlayoutColor("dark_mode");
-    document.documentElement.setAttribute("data-layout-mode", "dark_mode");
-  };
-
-  const LightThemes = () => {
-    localStorage.setItem("colorschema", "light_mode");
-    setlayoutColor("light_mode");
-    document.documentElement.setAttribute("data-layout-mode", "light_mode");
-  };
-
-  const DefaultStyle = () => {
-    localStorage.setItem("layoutStyling", "default");
-    setLayoutView("default");
-    dispatch(setLayoutChange("default"));
-    document.documentElement.setAttribute("data-layout-style", "default");
-  };
-
-  const LayoutBox = () => {
-    localStorage.setItem("layoutStyling", "box");
-    setLayoutView("box");
-    dispatch(setLayoutChange("box"));
-    document.documentElement.setAttribute("data-layout-style", "box");
-  };
-
-  const collapsedLayout = () => {
-    localStorage.setItem("layoutStyling", "collapsed");
-    setLayoutView("collapsed");
-    dispatch(setLayoutChange("collapsed"));
-    document.documentElement.setAttribute("data-layout-style", "collapsed");
-  };
-
-  const HorizontalLayout = () => {
-    localStorage.setItem("layoutStyling", "horizontal");
-    setLayoutView("horizontal");
-    dispatch(setLayoutChange("horizontal"));
-    document.documentElement.setAttribute("data-layout-style", "horizontal");
-  };
-
-  const modernLayout = () => {
-    localStorage.setItem("layoutStyling", "modern");
-    setLayoutView("modern");
-    dispatch(setLayoutChange("modern"));
-    document.documentElement.setAttribute("data-layout-style", "modern");
-  };
-
-  const LayoutGrey = () => {
-    localStorage.setItem("layoutThemeColors", "grey");
-    setLayoutTheme("grey");
-    document.documentElement.setAttribute("data-nav-color", "grey");
-  };
-
-  const LayoutDark = () => {
-    localStorage.setItem("layoutThemeColors", "dark");
-    setLayoutTheme("dark");
-    document.documentElement.setAttribute("data-nav-color", "dark");
-  };
-
-  const LayoutLight = () => {
-    localStorage.setItem("layoutThemeColors", "light");
-    setLayoutTheme("light");
-    document.documentElement.setAttribute("data-nav-color", "light");
-  };
-
-  const ResetData = () => {
-    localStorage.setItem("colorschema", "light_mode");
-    localStorage.setItem("layoutStyling", "modern");
-    localStorage.setItem("layoutThemeColors", "light");
-
-    setlayoutColor("light_mode");
-    setLayoutView("modern");
-    setLayoutTheme("light");
-
-    document.documentElement.setAttribute("data-layout-mode", "light_mode");
-    document.documentElement.setAttribute("data-layout-style", "default");
-    document.documentElement.setAttribute("data-nav-color", "light");
-  };
-
-  useEffect(() => {
-    document.documentElement.setAttribute("data-layout-mode", layoutColor);
-    document.documentElement.setAttribute("data-layout-style", layoutView);
-    document.documentElement.setAttribute("data-nav-color", layoutTheme);
-  }, [layoutColor, layoutTheme, layoutView]);
   return (
     <>
       <div className="customizer-links" id="setdata">
@@ -155,7 +75,45 @@ const ThemeSettings = () => {
           <div className="sidebar-body p-0">
             <form id="theme_color" method="post">
               <div className="theme-mode mb-0">
-                <div className="theme-body-main">
+                <div className="theme-body-main d-flex flex-column gap-3">
+                  <div className="d-flex align-items-center justify-content-start gap-5">
+                    <StartTimerButton />
+                    <TimerDisplay />
+                  </div>
+                  {(timerRunning || totalTime !== "00:00:00") && (
+                    <div className="d-flex flex-column align-items-center justify-content-start gap-5">
+                      <textarea
+                        rows={3}
+                        cols={3}
+                        value={timerDescription}
+                        onChange={(e) =>
+                          dispatch(setTimerDescription(e.target.value))
+                        }
+                        className="form-control"
+                        placeholder="Description"
+                      />
+                      <div className="d-flex align-items-center justify-content-start gap-2">
+                        <button
+                          type="button"
+                          className="btn btn-primary"
+                          onClick={() => navigate(all_routes.addTimeEntry.path)}
+                        >
+                          <CheckOutlined /> Save
+                        </button>
+                        <button
+                          type="button"
+                          className="btn btn-secondary"
+                          onClick={() => {
+                            // reset timer & description
+                            dispatch(resetTimer());
+                            dispatch(setTimerDescription(""));
+                          }}
+                        >
+                          <CancelOutlined /> Cancel
+                        </button>
+                      </div>
+                    </div>
+                  )}
                   {/* <div className="theme-head">
                     <h6>Theme Mode</h6>
                     <p>Enjoy Dark &amp; Light modes.</p>

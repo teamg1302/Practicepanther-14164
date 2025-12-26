@@ -29,7 +29,7 @@ const Sidebar = () => {
 
   return (
     <div>
-      <div className="sidebar" id="sidebar">
+      {/* <div className="sidebar" id="sidebar">
         <Scrollbars>
           <div className="sidebar-inner slimscroll">
             <div id="sidebar-menu" className="sidebar-menu">
@@ -165,9 +165,9 @@ const Sidebar = () => {
             </div>
           </div>
         </Scrollbars>
-      </div>
+      </div> */}
       <HorizontalSidebar />
-      <CollapsedSidebar />
+      {/* <CollapsedSidebar /> */}
     </div>
   );
 };

@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { all_routes } from "@/Router/all_routes";
@@ -21,6 +21,16 @@ const HorizontalSidebar = () => {
       return checkPermission(permissions, route.module, route.permission);
     });
   }, [headerRoutes, permissions]);
+
+  const [layoutColor] = useState("light_mode");
+  const [layoutView] = useState("modern");
+  const [layoutTheme] = useState("light");
+
+  useEffect(() => {
+    document.documentElement.setAttribute("data-layout-mode", layoutColor);
+    document.documentElement.setAttribute("data-layout-style", layoutView);
+    document.documentElement.setAttribute("data-nav-color", layoutTheme);
+  }, [layoutColor, layoutTheme, layoutView]);
 
   return (
     <div className="sidebar horizontal-sidebar">

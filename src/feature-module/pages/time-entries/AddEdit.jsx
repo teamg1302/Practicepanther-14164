@@ -11,144 +11,16 @@ import PageLayout from "@/feature-module/components/list-page-layout";
 
 import { getContacts } from "@/core/services/contactsService";
 import { getMatters } from "@/core/services/mattersService";
-import {
-  FromButtonGroup,
-  StandardButton,
-} from "@/feature-module/components/buttons";
+import { FromButtonGroup } from "@/feature-module/components/buttons";
 import { FormProvider, useFormContext } from "@/feature-module/components/rhf";
 import { getValidationRules } from "@/core/validation-rules";
 import EntityFormView from "@/feature-module/components/entity-form-view";
 import { getHours, getMinutes } from "@/core/utilities/utility";
-import { PauseOutlined, TimerOutlined } from "@mui/icons-material";
-
-/**
- * Timer Display Component
- * Displays the total time from form context
- */
-const TimerDisplay = () => {
-  const { watch } = useFormContext();
-  const watchTotalTime = watch("totalTime");
-
-  return (
-    <div>
-      <span className="text-dark fs-2">{watchTotalTime || "00:00:00"}</span>
-    </div>
-  );
-};
-
-/**
- * Start Timer Button Component
- * Handles timer start/stop functionality
- */
-const StartTimerButton = () => {
-  const { watch, setValue } = useFormContext();
-  const timerRunning = watch("timerRunning");
-  const totalTime = watch("totalTime");
-  const startTimeRef = React.useRef(null);
-  const intervalRef = React.useRef(null);
-  const pausedElapsedRef = React.useRef(0);
-
-  /**
-   * Formats time in HH:MM:SS format
-   */
-  const formatTime = (totalSeconds) => {
-    const hours = Math.floor(totalSeconds / 3600);
-    const minutes = Math.floor((totalSeconds % 3600) / 60);
-    const seconds = totalSeconds % 60;
-    return `${String(hours).padStart(2, "0")}:${String(minutes).padStart(
-      2,
-      "0"
-    )}:${String(seconds).padStart(2, "0")}`;
-  };
-
-  /**
-   * Parses time string (HH:MM:SS) to total seconds
-   */
-  const parseTimeToSeconds = (timeString) => {
-    if (!timeString || timeString === "00:00:00") return 0;
-    const parts = timeString.split(":");
-    if (parts.length !== 3) return 0;
-    const hours = parseInt(parts[0], 10) || 0;
-    const minutes = parseInt(parts[1], 10) || 0;
-    const seconds = parseInt(parts[2], 10) || 0;
-    return hours * 3600 + minutes * 60 + seconds;
-  };
-
-  /**
-   * Handles timer start/pause
-   */
-  const handleStartTimer = () => {
-    if (timerRunning) {
-      // Timer is running, pause it
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-        intervalRef.current = null;
-      }
-
-      // Calculate elapsed time and add to paused elapsed
-      if (startTimeRef.current) {
-        const now = new Date();
-        const elapsed = Math.floor((now - startTimeRef.current) / 1000);
-        pausedElapsedRef.current += elapsed;
-
-        // Update totalTime with accumulated time
-        const formattedTime = formatTime(pausedElapsedRef.current);
-        setValue("totalTime", formattedTime);
-      }
-
-      setValue("timerRunning", false);
-      startTimeRef.current = null;
-    } else {
-      // Start or resume the timer from last paused time
-      // Get current totalTime and convert to seconds
-      const currentSeconds = parseTimeToSeconds(totalTime);
-      pausedElapsedRef.current = currentSeconds;
-
-      startTimeRef.current = new Date();
-      setValue("timerRunning", true);
-
-      // Start interval to update timer every second
-      intervalRef.current = setInterval(() => {
-        if (startTimeRef.current) {
-          const now = new Date();
-          const elapsed = Math.floor((now - startTimeRef.current) / 1000);
-          const totalElapsed = pausedElapsedRef.current + elapsed;
-          const formattedTime = formatTime(totalElapsed);
-          setValue("totalTime", formattedTime);
-        }
-      }, 1000);
-    }
-  };
-
-  // Cleanup on unmount
-  React.useEffect(() => {
-    return () => {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-      }
-    };
-  }, []);
-
-  return (
-    <div>
-      <StandardButton
-        label={timerRunning ? "Pause Timer" : "Start Timer"}
-        style={{
-          height: "40px !important",
-          marginTop: "10px",
-        }}
-        onClick={handleStartTimer}
-        icon={
-          timerRunning ? (
-            <PauseOutlined fontSize="small" />
-          ) : (
-            <TimerOutlined fontSize="small" />
-          )
-        }
-      />
-    </div>
-  );
-};
+import {
+  TimerDisplay,
+  StartTimerButton,
+} from "@/feature-module/components/timer";
+import { useSelector } from "react-redux";
 
 const AddTimeEntry = () => {
   const navigate = useNavigate();
@@ -157,29 +29,31 @@ const AddTimeEntry = () => {
 
   const { t } = useTranslation();
 
-  const securitySettingsSchema = useMemo(
+  const validationSchema = useMemo(
     () =>
       yup.object({
-        name: getValidationRules(t).textOnlyRequired,
-        registrationNumber: getValidationRules(t).textOnlyRequired,
-        countryId: getValidationRules(t).textOnlyRequired,
-        assignedTo: getValidationRules(t).textOnlyRequired,
+        contact: getValidationRules(t).textOnlyRequired,
+        matter: getValidationRules(t).textOnlyRequired,
+        hours: getValidationRules(t).textOnlyRequired,
+        minutes: getValidationRules(t).textOnlyRequired,
       }),
     [t]
   );
 
+  // Get timer state from Redux
+  const timerTotalTime = useSelector(
+    (state) => state.timer?.totalTime || "00:00:00"
+  );
+  const timerDescription = useSelector((state) => state.timer.description);
   const [defaultValues] = useState({
-    hours: "01",
+    hours: "00",
     minutes: "00",
-    totalTime: "00:00:00",
+    totalTime: timerTotalTime,
     date: "",
-    description: "",
+    description: timerDescription,
     contact: "",
     matter: "",
     item: "",
-    startTimer: false,
-    endTimer: false,
-    timerRunning: false,
   });
 
   const fields = useMemo(
@@ -241,8 +115,15 @@ const AddTimeEntry = () => {
         required: true,
       },
       {
+        id: "date",
+        col: 6,
+        name: "date",
+        label: "Date",
+        type: "date",
+      },
+      {
         id: "hours",
-        col: 1,
+        col: 3,
         name: "hours",
         label: "Hours",
         type: "select",
@@ -251,7 +132,7 @@ const AddTimeEntry = () => {
       },
       {
         id: "minutes",
-        col: 1,
+        col: 3,
         name: "minutes",
         label: "Minutes",
         type: "select",
@@ -261,25 +142,19 @@ const AddTimeEntry = () => {
       {
         type: "ui",
         col: 2,
-        className: "d-flex  align-items-center ",
+        className: "d-flex  align-items-center justify-content-center",
         element: <StartTimerButton />,
       },
       {
         type: "ui",
-        col: 2,
-        className: "d-flex align-items-center justify-content-start",
+        col: 4,
+        className:
+          "d-flex align-items-center justify-content-center justify-content-lg-start",
         element: <TimerDisplay />,
       },
       {
-        id: "date",
-        col: 6,
-        name: "date",
-        label: "Date",
-        type: "date",
-      },
-      {
         id: "description",
-        col: 6,
+        col: 12,
         name: "description",
         label: "Description",
         type: "textarea",
@@ -334,6 +209,7 @@ const AddTimeEntry = () => {
 
   const onSubmit = async (data, event) => {
     try {
+      console.log("data", data);
       //   const formData = convertToFormData(data);
       //   if (timeEntryId) {
       //     // Update existing contact
@@ -377,7 +253,7 @@ const AddTimeEntry = () => {
       breadcrumbs={[
         {
           label: "Time Entries",
-          redirect: route.headers[1].path,
+          redirect: route.headers[3].path,
         },
         {
           label: timeEntryId ? "Edit Time Entry" : "Add Time Entry",
@@ -397,7 +273,7 @@ const AddTimeEntry = () => {
       }}
     >
       <FormProvider
-        schema={securitySettingsSchema}
+        schema={validationSchema}
         defaultValues={defaultValues}
         onSubmit={onSubmit}
       >
@@ -416,6 +292,20 @@ const TimeEntryForm = ({ fields, timeEntryId, t }) => {
     reset,
     setValue,
   } = useFormContext();
+
+  // Sync Redux timer state with form
+  const timerTotalTime = useSelector(
+    (state) => state.timer?.totalTime || "00:00:00"
+  );
+
+  useEffect(() => {
+    // Update form's totalTime when Redux timer state changes
+    setValue("totalTime", timerTotalTime, {
+      shouldValidate: false,
+      shouldDirty: false,
+      shouldTouch: false,
+    });
+  }, [timerTotalTime, setValue]);
 
   useEffect(() => {
     if (timeEntryId) {

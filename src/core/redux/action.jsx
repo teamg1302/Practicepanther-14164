@@ -157,3 +157,73 @@ export const setPageLoader = (payload) => ({
   type: "SET_PAGE_LOADER",
   payload,
 });
+
+/**
+ * Action creator to set timer total time.
+ * @param {string} payload - Time string in HH:MM:SS format
+ * @returns {Object} Redux action object with type "SET_TIMER_TOTAL_TIME" and payload
+ * @example
+ * dispatch(setTimerTotalTime('01:30:45'));
+ */
+export const setTimerTotalTime = (payload) => ({
+  type: "SET_TIMER_TOTAL_TIME",
+  payload,
+});
+
+/**
+ * Action creator to set timer running state.
+ * @param {boolean} payload - Timer running state (true/false)
+ * @returns {Object} Redux action object with type "SET_TIMER_RUNNING" and payload
+ * @example
+ * dispatch(setTimerRunning(true));
+ */
+export const setTimerRunning = (payload) => ({
+  type: "SET_TIMER_RUNNING",
+  payload,
+});
+
+/**
+ * Action creator to set timer start time.
+ * @param {Date|string|null} payload - Start time Date object (will be converted to ISO string), ISO string, or null
+ * @returns {Object} Redux action object with type "SET_TIMER_START_TIME" and payload
+ * @example
+ * dispatch(setTimerStartTime(new Date()));
+ */
+export const setTimerStartTime = (payload) => ({
+  type: "SET_TIMER_START_TIME",
+  payload,
+});
+
+/**
+ * Action creator to set timer paused elapsed time.
+ * @param {number} payload - Elapsed time in seconds
+ * @returns {Object} Redux action object with type "SET_TIMER_PAUSED_ELAPSED" and payload
+ * @example
+ * dispatch(setTimerPausedElapsed(3600));
+ */
+export const setTimerPausedElapsed = (payload) => ({
+  type: "SET_TIMER_PAUSED_ELAPSED",
+  payload,
+});
+
+/**
+ * Action creator to reset timer to initial state.
+ * @returns {Object} Redux action object with type "RESET_TIMER"
+ * @example
+ * dispatch(resetTimer());
+ */
+export const resetTimer = () => ({
+  type: "RESET_TIMER",
+});
+
+/**
+ * Action creator to set timer description.
+ * @param {string} payload - Description string
+ * @returns {Object} Redux action object with type "SET_TIMER_DESCRIPTION" and payload
+ * @example
+ * dispatch(setTimerDescription('This is a description'));
+ */
+export const setTimerDescription = (payload) => ({
+  type: "SET_TIMER_DESCRIPTION",
+  payload,
+});

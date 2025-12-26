@@ -13,8 +13,17 @@ import { all_routes } from "./all_routes";
 import Loader from "@/core/loader";
 
 const HeaderLayout = () => {
+  const location = useLocation();
   const data = useSelector((state) => state.toggle_header);
   const pageLoader = useSelector((state) => state.pageLoader);
+  let showThemeSettings = true;
+  if (
+    location.pathname === "/time-entries/multiple" ||
+    location.pathname === "/time-entries/add" ||
+    location.pathname === "/time-entries/:timeEntryId/edit"
+  ) {
+    showThemeSettings = false;
+  }
   return (
     <ProtectedRoute>
       <div className={`main-wrapper ${data ? "header-collapse" : ""}`}>
@@ -22,7 +31,7 @@ const HeaderLayout = () => {
         <Header />
         <Sidebar />
         <Outlet />
-        <ThemeSettings />
+        {showThemeSettings && <ThemeSettings />}
       </div>
     </ProtectedRoute>
   );

@@ -31,19 +31,18 @@ const MultipleTimeEntries = () => {
 
   const { t } = useTranslation();
 
-  const securitySettingsSchema = useMemo(
+  const validationSchema = useMemo(
     () =>
       yup.object({
         timeEntries: yup.array().of(
           yup.object({
-            hours: getValidationRules(t).textOnlyRequired,
-            minutes: getValidationRules(t).textOnlyRequired,
-            totalTime: getValidationRules(t).textOnlyRequired,
-            date: getValidationRules(t).textOnlyRequired,
-            description: getValidationRules(t).textOnlyRequired,
             contact: getValidationRules(t).textOnlyRequired,
             matter: getValidationRules(t).textOnlyRequired,
-            item: getValidationRules(t).textOnlyRequired,
+            date: getValidationRules(t).textOnlyRequired,
+            billedBy: getValidationRules(t).textOnlyRequired,
+            rate: getValidationRules(t).textOnlyRequired,
+            hours: getValidationRules(t).textOnlyRequired,
+            minutes: getValidationRules(t).textOnlyRequired,
           })
         ),
       }),
@@ -64,9 +63,6 @@ const MultipleTimeEntries = () => {
         isBillable: false,
         billedBy: "",
         rate: "",
-        startTimer: false,
-        endTimer: false,
-        timerRunning: false,
       },
     ],
   });
@@ -95,7 +91,7 @@ const MultipleTimeEntries = () => {
       breadcrumbs={[
         {
           label: "Time Entries",
-          redirect: route.headers[1].path,
+          redirect: route.headers[3].path,
         },
         {
           label: "Multiple Time Entries",
@@ -113,9 +109,13 @@ const MultipleTimeEntries = () => {
       }}
     >
       <FormProvider
-        schema={securitySettingsSchema}
+        schema={validationSchema}
         defaultValues={defaultValues}
         onSubmit={onSubmit}
+        mode="onSubmit"
+        formOptions={{
+          reValidateMode: "onChange",
+        }}
       >
         <TimeEntryForm />
       </FormProvider>
@@ -136,9 +136,8 @@ const TimeEntryForm = () => {
   const handleAddTimeEntry = () => {
     const newIndex = fields.length;
     append({
-      hours: "01",
+      hours: "00",
       minutes: "00",
-      totalTime: "00:00:00",
       date: "",
       description: "",
       contact: "",
@@ -147,9 +146,6 @@ const TimeEntryForm = () => {
       isBillable: false,
       billedBy: "",
       rate: "",
-      startTimer: false,
-      endTimer: false,
-      timerRunning: false,
     });
 
     // Scroll to the newly added entry after DOM update
@@ -216,11 +212,7 @@ const TimeEntryForm = () => {
           />
         </div>
       </div>
-      <FromButtonGroup
-        isSubmitting={isSubmitting}
-        reset={reset}
-        onClick={(e) => console.log("e", e)}
-      />
+      <FromButtonGroup isSubmitting={isSubmitting} reset={reset} />
     </>
   );
 };

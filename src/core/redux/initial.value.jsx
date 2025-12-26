@@ -60,6 +60,13 @@ const initialState = {
     statesLoading: false,
     statesError: null,
   },
+  timer: {
+    description: "",
+    totalTime: "00:00:00",
+    timerRunning: false,
+    startTime: null,
+    pausedElapsed: 0,
+  },
 };
 
 export default initialState;

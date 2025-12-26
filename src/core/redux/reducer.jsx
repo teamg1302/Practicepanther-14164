@@ -99,6 +99,60 @@ const rootReducer = (state = initialState, action) => {
       };
     case "SET_PAGE_LOADER":
       return { ...state, pageLoader: action.payload };
+    case "SET_TIMER_TOTAL_TIME":
+      return {
+        ...state,
+        timer: {
+          ...state.timer,
+          totalTime: action.payload,
+        },
+      };
+    case "SET_TIMER_RUNNING":
+      return {
+        ...state,
+        timer: {
+          ...state.timer,
+          timerRunning: action.payload,
+        },
+      };
+    case "SET_TIMER_START_TIME":
+      return {
+        ...state,
+        timer: {
+          ...state.timer,
+          // Convert Date object to ISO string for serialization
+          startTime:
+            action.payload instanceof Date
+              ? action.payload.toISOString()
+              : action.payload,
+        },
+      };
+    case "SET_TIMER_PAUSED_ELAPSED":
+      return {
+        ...state,
+        timer: {
+          ...state.timer,
+          pausedElapsed: action.payload,
+        },
+      };
+    case "RESET_TIMER":
+      return {
+        ...state,
+        timer: {
+          totalTime: "00:00:00",
+          timerRunning: false,
+          startTime: null,
+          pausedElapsed: 0,
+        },
+      };
+    case "SET_TIMER_DESCRIPTION":
+      return {
+        ...state,
+        timer: {
+          ...state.timer,
+          description: action.payload,
+        },
+      };
     default: {
       // Delegate all actions to mastersReducer (handles its own actions via slice)
       // This allows the slice to handle both sync and async actions

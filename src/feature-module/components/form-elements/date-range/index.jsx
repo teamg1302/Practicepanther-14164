@@ -71,7 +71,39 @@ const DateRangeInput = ({
     formState: { errors },
   } = useFormContext();
 
-  const error = errors[name];
+  // Helper function to get nested errors for array fields
+  const getNestedError = (errorsObj, fieldName) => {
+    if (!errorsObj || !fieldName) return undefined;
+    
+    // If field name contains dots, navigate through nested structure
+    if (fieldName.includes('.')) {
+      const parts = fieldName.split('.');
+      let current = errorsObj;
+      
+      for (const part of parts) {
+        // Handle array indices (numeric strings)
+        const index = parseInt(part, 10);
+        if (!isNaN(index) && Array.isArray(current)) {
+          current = current[index];
+        } else if (current && typeof current === 'object') {
+          current = current[part];
+        } else {
+          return undefined;
+        }
+        
+        if (current === undefined || current === null) {
+          return undefined;
+        }
+      }
+      
+      return current;
+    }
+    
+    // Simple field name, direct access
+    return errorsObj[fieldName];
+  };
+
+  const error = getNestedError(errors, name);
   const hasError = !!error;
 
   return (

@@ -216,7 +216,7 @@ const Header = () => {
   };
 
   const getTextColor = (bgColor) => {
-    console.log(bgColor);
+    // console.log(bgColor);
     if (!bgColor) {
       return "#000000";
     }
