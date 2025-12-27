@@ -33,7 +33,8 @@ import {
   AddEditTimeEntry,
   MultipleTimeEntries,
 } from "@/feature-module/pages/time-entries";
-
+import { CategoryList } from "@/feature-module/pages/categories";
+import { ItemList } from "@/feature-module/pages/items";
 import { all_routes } from "./all_routes";
 
 const routes = all_routes;
@@ -135,6 +136,20 @@ export const publicRoutes = [
     path: routes.multipleTimeEntries.path,
     name: routes.multipleTimeEntries.name,
     element: <MultipleTimeEntries />,
+    route: Route,
+  },
+  {
+    id: 12,
+    path: routes.headers?.[4]?.children?.[0]?.path,
+    name: routes.headers?.[4]?.children?.[0]?.name,
+    element: <CategoryList />,
+    route: Route,
+  },
+  {
+    id: 13,
+    path: routes.headers?.[4]?.children?.[1]?.path,
+    name: routes.headers?.[4]?.children?.[1]?.name,
+    element: <ItemList />,
     route: Route,
   },
 ];

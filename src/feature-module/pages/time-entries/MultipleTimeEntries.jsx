@@ -6,6 +6,7 @@ import * as yup from "yup";
 import PropTypes from "prop-types";
 import { PlusCircle, Trash2 } from "feather-icons-react/build/IconComponents";
 import { useFieldArray } from "react-hook-form";
+import { getItems } from "@/core/services/itemService";
 import { all_routes } from "@/Router/all_routes";
 import PageLayout from "@/feature-module/components/list-page-layout";
 import { getUsers } from "@/core/services/userService";
@@ -258,14 +259,13 @@ const TimeEntryItem = ({ index, onDelete }) => {
         <Switch name={`timeEntries.${index}.isBillable`} label={"Billable"} />
       </div>
       <div className="col-md-3">
-        <Select
+        <AsyncSelectPagination
           name={`timeEntries.${index}.item`}
           label={"Item"}
-          options={[
-            { value: "1", label: "Item 1" },
-            { value: "2", label: "Item 2" },
-            { value: "3", label: "Item 3" },
-          ]}
+          api={getItems}
+          pageSize={50}
+          searchKey={"search"}
+          required={true}
         />
       </div>
       <div className="col-md-3">

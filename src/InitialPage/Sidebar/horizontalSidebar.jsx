@@ -5,6 +5,7 @@ import { all_routes } from "@/Router/all_routes";
 import { checkPermission } from "@/Router/PermissionRoute";
 
 const HorizontalSidebar = () => {
+  const [isOpenChildren, setIsOpenChildren] = useState(false);
   const location = useLocation();
   const permissions = useSelector((state) => state.auth?.permissions || []);
   const headerRoutes = all_routes.headers;
@@ -32,24 +33,65 @@ const HorizontalSidebar = () => {
     document.documentElement.setAttribute("data-nav-color", layoutTheme);
   }, [layoutColor, layoutTheme, layoutView]);
 
+  console.log("isOpenChildren", isOpenChildren);
+
   return (
     <div className="sidebar horizontal-sidebar">
       <div id="sidebar-menu-3" className="sidebar-menu">
         <ul className="nav">
           {filteredRoutes.map((route) => {
-            const isActive =
+            // Check if parent route is active
+            const isParentActive =
               location.pathname === route.path ||
               (route.path !== "/" &&
                 location.pathname.startsWith(route.path + "/"));
+
+            // Check if any child route is active
+            const isChildActive =
+              route?.children &&
+              route.children.some(
+                (child) =>
+                  location.pathname === child.path ||
+                  (child.path !== "/" &&
+                    location.pathname.startsWith(child.path + "/"))
+              );
+
+            // Parent is active if either parent or any child is active
+            const isActive = isParentActive || isChildActive;
+
             return (
               <li className="submenu" key={route.id}>
                 <Link
                   to={route.path}
+                  onClick={() => setIsOpenChildren(!isOpenChildren)}
                   className={`subdrop ${isActive ? "active" : ""}`}
                 >
                   <route.icon />
                   <span>{route.text}</span>
+                  {route.children && <span className="menu-arrow" />}
                 </Link>
+                {route?.children && route?.children?.length > 0 && (
+                  <ul style={{ display: isOpenChildren ? "block" : "none" }}>
+                    {route.children.map((child) => {
+                      // Check if this specific child route is active
+                      const isChildRouteActive =
+                        location.pathname === child.path ||
+                        (child.path !== "/" &&
+                          location.pathname.startsWith(child.path + "/"));
+
+                      return (
+                        <li key={child.id}>
+                          <Link
+                            to={child.path}
+                            className={isChildRouteActive ? "active" : ""}
+                          >
+                            <span>{child.text}</span>
+                          </Link>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                )}
               </li>
             );
           })}

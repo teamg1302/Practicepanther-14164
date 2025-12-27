@@ -11,6 +11,7 @@ import {
   getCountries,
   getCurrencies,
   getStatesByCountry,
+  getTax,
 } from "@/core/services/mastersService";
 
 /**
@@ -33,6 +34,9 @@ const initialState = {
   states: [],
   statesLoading: false,
   statesError: null,
+  taxes: [],
+  taxesLoading: false,
+  taxesError: null,
 };
 
 /**
@@ -209,6 +213,41 @@ export const fetchStatesByCountry = createAsyncThunk(
 );
 
 /**
+ * Async thunk for fetching tax rates from API
+ * @type {Function}
+ * @returns {Promise} Promise that resolves with tax rates data
+ * @example
+ * dispatch(fetchTaxes());
+ * @example
+ * dispatch(fetchTaxes({ search: "VAT", limit: 100 }));
+ */
+export const fetchTaxes = createAsyncThunk(
+  "masters/fetchTaxes",
+  async (params = {}, { rejectWithValue }) => {
+    try {
+      const taxesData = await getTax(params);
+
+      // Transform API response to match AsyncSelectPagination format
+      // Return raw data array for AsyncSelectPagination to handle
+      // It expects the data in the response.data.data or response.data format
+      if (Array.isArray(taxesData?.data)) {
+        return taxesData.data;
+      } else if (Array.isArray(taxesData?.list)) {
+        return taxesData.list;
+      } else if (Array.isArray(taxesData)) {
+        return taxesData;
+      }
+
+      return [];
+    } catch (error) {
+      return rejectWithValue(
+        error?.response?.data || error?.message || "Failed to fetch taxes"
+      );
+    }
+  }
+);
+
+/**
  * Masters slice using Redux Toolkit's createSlice
  * @type {Object}
  */
@@ -252,6 +291,12 @@ const mastersSlice = createSlice({
     clearStates: (state) => {
       state.states = [];
       state.statesError = null;
+    },
+    /**
+     * Clear taxes error
+     */
+    clearTaxesError: (state) => {
+      state.taxesError = null;
     },
     /**
      * Reset masters state to initial
@@ -341,6 +386,22 @@ const mastersSlice = createSlice({
       .addCase(fetchStatesByCountry.rejected, (state, action) => {
         state.statesLoading = false;
         state.statesError = action.payload || action.error.message;
+      })
+      // Fetch taxes - pending
+      .addCase(fetchTaxes.pending, (state) => {
+        state.taxesLoading = true;
+        state.taxesError = null;
+      })
+      // Fetch taxes - fulfilled (success)
+      .addCase(fetchTaxes.fulfilled, (state, action) => {
+        state.taxesLoading = false;
+        state.taxes = action.payload;
+        state.taxesError = null;
+      })
+      // Fetch taxes - rejected (error)
+      .addCase(fetchTaxes.rejected, (state, action) => {
+        state.taxesLoading = false;
+        state.taxesError = action.payload || action.error.message;
       });
   },
 });
@@ -353,6 +414,7 @@ export const {
   clearCurrenciesError,
   clearStatesError,
   clearStates,
+  clearTaxesError,
   resetMasters,
 } = mastersSlice.actions;
 

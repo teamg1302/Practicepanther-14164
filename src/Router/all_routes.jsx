@@ -9,7 +9,10 @@ import {
   Trash2,
   Home,
   Info,
+  FileText,
+  Tag,
   Briefcase,
+  CreditCard,
 } from "react-feather";
 import { Settings } from "feather-icons-react/build/IconComponents";
 
@@ -56,6 +59,35 @@ export const all_routes = {
       icon: Clock,
       text: "Time Entries",
       permission: "read",
+    },
+    {
+      id: 5,
+      module: "manage_billings_and_invoices",
+      name: "Billings and Invoices",
+      path: "#",
+      icon: CreditCard,
+      text: "Billings and Invoices",
+      permission: "read",
+      children: [
+        {
+          id: 1,
+          module: "manage_billings_and_invoices_categories",
+          name: "categories",
+          path: "/billings-and-invoices/categories",
+          icon: FileText,
+          text: "Categories",
+          permission: "read",
+        },
+        {
+          id: 2,
+          module: "manage_billings_and_invoices_items",
+          name: "items",
+          path: "/billings-and-invoices/items",
+          icon: Tag,
+          text: "Items",
+          permission: "read",
+        },
+      ],
     },
   ],
   addContact: {

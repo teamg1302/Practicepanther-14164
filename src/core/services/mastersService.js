@@ -183,3 +183,41 @@ export const getStatesByCountry = async (params) => {
     throw error.response?.data || error.message;
   }
 };
+
+/**
+ * Get tax rates list
+ * Fetches available tax rates from the API
+ * @param {Object} [params={}] - Optional query parameters
+ * @param {string} [params.search=""] - Search query string
+ * @param {number} [params.limit=50] - Number of items to fetch
+ * @returns {Promise} API response with tax rates list
+ *
+ * @example
+ * // Get all tax rates with default limit
+ * await getTax();
+ *
+ * @example
+ * // Get tax rates with search and custom limit
+ * await getTax({ search: "VAT", limit: 100 });
+ */
+export const getTax = async (params = {}) => {
+  try {
+    const { search = "", limit = 50, ...otherParams } = params;
+
+    // Build query string
+    const queryParams = new URLSearchParams({
+      search: search.toString(),
+      limit: limit.toString(),
+      ...otherParams, // Allow additional params to be passed
+    });
+
+    const response = await api.get(
+      `/masters/search/tax?${queryParams.toString()}`
+    );
+
+    // Handle nested response structure if needed
+    return response.data?.data || response.data;
+  } catch (error) {
+    throw error.response?.data || error.message;
+  }
+};

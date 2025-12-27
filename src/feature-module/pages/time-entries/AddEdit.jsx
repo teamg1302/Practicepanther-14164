@@ -8,7 +8,7 @@ import PropTypes from "prop-types";
 
 import { all_routes } from "@/Router/all_routes";
 import PageLayout from "@/feature-module/components/list-page-layout";
-
+import { getItems } from "@/core/services/itemService";
 import { getContacts } from "@/core/services/contactsService";
 import { getMatters } from "@/core/services/mattersService";
 import { FromButtonGroup } from "@/feature-module/components/buttons";
@@ -103,15 +103,14 @@ const AddTimeEntry = () => {
         ),
       },
       {
-        id: "item   ",
+        id: "item",
         col: 6,
         name: "item",
         label: "Item",
-        type: "select",
-        options: [
-          { label: "Time Entry", value: "timeEntry" },
-          { label: "Time Entry", value: "timeEntry" },
-        ],
+        type: "async-select-pagination",
+        api: getItems,
+        pageSize: 50,
+        searchKey: "search",
         required: true,
       },
       {
