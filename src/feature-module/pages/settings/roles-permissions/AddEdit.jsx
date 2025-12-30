@@ -2,7 +2,6 @@ import React, { useState, useEffect, useMemo } from "react";
 import { FormProvider } from "@/feature-module/components/rhf";
 import { useParams, useNavigate } from "react-router-dom";
 import { useFormContext } from "react-hook-form";
-import { useSelector } from "react-redux";
 import PropTypes from "prop-types";
 import * as yup from "yup";
 import Swal from "sweetalert2";
@@ -102,10 +101,8 @@ const rolePermissionSchema = yup.object({
 
 const RolePermissionAddEdit = () => {
   const { t } = useTranslation();
-  const route = all_routes;
   const navigate = useNavigate();
   const { roleId, userId } = useParams();
-  const user = useSelector((state) => state.auth?.user);
   const [modules, setModules] = useState([]);
   const [roleDetails, setRoleDetails] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -373,25 +370,46 @@ const RolePermissionContent = ({ modules, userDetails, loading }) => {
     formState: { isSubmitting },
     reset,
   } = useFormContext();
-  const navigate = useNavigate();
   const permissions = watch("permissions") || [];
 
   /**
    * Handle permission toggle
    */
   const handlePermissionToggle = (moduleName, action, value) => {
-    const updatedPermissions = permissions.map((perm) => {
-      if (perm.moduleName === moduleName) {
-        return {
-          ...perm,
-          actions: {
-            ...perm.actions,
-            [action]: value,
-          },
-        };
-      }
-      return perm;
-    });
+    // Check if permission exists for this module
+    const existingPermissionIndex = permissions.findIndex(
+      (perm) => perm.moduleName === moduleName
+    );
+
+    let updatedPermissions;
+    if (existingPermissionIndex >= 0) {
+      // Update existing permission
+      updatedPermissions = permissions.map((perm) => {
+        if (perm.moduleName === moduleName) {
+          return {
+            ...perm,
+            actions: {
+              ...perm.actions,
+              [action]: value,
+            },
+          };
+        }
+        return perm;
+      });
+    } else {
+      // Create new permission entry for this module
+      const newPermission = {
+        moduleName: moduleName,
+        actions: {
+          create: false,
+          read: false,
+          update: false,
+          delete: false,
+          [action]: value,
+        },
+      };
+      updatedPermissions = [...permissions, newPermission];
+    }
     setValue("permissions", updatedPermissions);
   };
 
@@ -428,21 +446,41 @@ const RolePermissionContent = ({ modules, userDetails, loading }) => {
     const isCurrentlySelected = areAllPermissionsChecked(moduleName);
     const newValue = !isCurrentlySelected;
 
-    // Update all permissions for this module
-    const updatedPermissions = permissions.map((perm) => {
-      if (perm.moduleName === moduleName) {
-        return {
-          ...perm,
-          actions: {
-            create: newValue,
-            read: newValue,
-            update: newValue,
-            delete: newValue,
-          },
-        };
-      }
-      return perm;
-    });
+    // Check if permission exists for this module
+    const existingPermissionIndex = permissions.findIndex(
+      (perm) => perm.moduleName === moduleName
+    );
+
+    let updatedPermissions;
+    if (existingPermissionIndex >= 0) {
+      // Update existing permission
+      updatedPermissions = permissions.map((perm) => {
+        if (perm.moduleName === moduleName) {
+          return {
+            ...perm,
+            actions: {
+              create: newValue,
+              read: newValue,
+              update: newValue,
+              delete: newValue,
+            },
+          };
+        }
+        return perm;
+      });
+    } else {
+      // Create new permission entry for this module
+      const newPermission = {
+        moduleName: moduleName,
+        actions: {
+          create: newValue,
+          read: newValue,
+          update: newValue,
+          delete: newValue,
+        },
+      };
+      updatedPermissions = [...permissions, newPermission];
+    }
 
     setValue("permissions", updatedPermissions);
   };

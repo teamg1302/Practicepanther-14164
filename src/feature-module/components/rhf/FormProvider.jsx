@@ -117,10 +117,4 @@ FormProvider.propTypes = {
   formOptions: PropTypes.object,
 };
 
-FormProvider.defaultProps = {
-  defaultValues: {},
-  mode: "onBlur",
-  formOptions: {},
-};
-
 export default FormProvider;

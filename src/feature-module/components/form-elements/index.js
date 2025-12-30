@@ -5,3 +5,4 @@ export { default as Textarea } from "./textarea";
 export { default as PhotoUpload } from "./file-upload/PhotoUpload";
 export { default as DateRangePicker } from "./date-range";
 export { default as AsyncSelectPagination } from "./async-select-pagination";
+export { default as RichTextEditor } from "./rich-text-editor";

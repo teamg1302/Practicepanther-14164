@@ -325,7 +325,7 @@ const PersonalSettingsContent = React.forwardRef(
       getValues,
       formState: { errors },
     } = useFormContext();
-    console.log("errors", errors);
+    // console.log("errors", errors);
     const dispatch = useDispatch();
     const auth = useSelector((state) => state.auth);
     // Expose getValues to parent component via ref

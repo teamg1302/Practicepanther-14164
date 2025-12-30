@@ -1,6 +1,10 @@
 import React, { useMemo } from "react";
 import PropTypes from "prop-types";
-import { Input, Select } from "@/feature-module/components/form-elements";
+import {
+  Input,
+  Select,
+  RichTextEditor,
+} from "@/feature-module/components/form-elements";
 import { PhotoUpload } from "@/feature-module/components/form-elements/file-upload";
 import DatePicker from "@/feature-module/components/form-elements/datepicker";
 import Textarea from "@/feature-module/components/form-elements/textarea";
@@ -10,10 +14,10 @@ import AsyncSelectPagination from "@/feature-module/components/form-elements/asy
 import AsyncMultiSelectPagination from "@/feature-module/components/form-elements/async-multi-select-pagination";
 import Switch from "@/feature-module/components/form-elements/switch";
 
-const EntityFormView = ({ fields }) => {
+const EntityFormView = ({ fields, rowClassName = "my-3" }) => {
   const formFields = useMemo(() => {
     return fields && fields.length > 0
-      ? fields.map((field) => {
+      ? fields.map((field, index) => {
           const {
             id,
             name,
@@ -24,10 +28,12 @@ const EntityFormView = ({ fields }) => {
             className = "",
             ...rest
           } = field;
+          // Use id, name, or index as key fallback
+          const fieldKey = id || name || `field-${index}`;
           // Check for switch first (before input types)
           if (type === "switch") {
             return (
-              <div key={id} className={`col-md-${col || 12} ${className}`}>
+              <div key={fieldKey} className={`col-md-${col || 12} ${className}`}>
                 <Switch name={name} label={label} {...rest} />
               </div>
             );
@@ -46,7 +52,7 @@ const EntityFormView = ({ fields }) => {
 
           if (isInputType) {
             return (
-              <div key={id} className={`col-md-${col || 12} ${className}`}>
+              <div key={fieldKey} className={`col-md-${col || 12} ${className}`}>
                 <Input
                   id={id}
                   name={name}
@@ -60,7 +66,7 @@ const EntityFormView = ({ fields }) => {
 
           if (type === "textarea") {
             return (
-              <div key={id} className={`col-md-${col || 12} ${className}`}>
+              <div key={fieldKey} className={`col-md-${col || 12} ${className}`}>
                 <Textarea name={name} label={label} {...rest} />
               </div>
             );
@@ -68,7 +74,7 @@ const EntityFormView = ({ fields }) => {
 
           if (type === "select") {
             return (
-              <div key={id} className={`col-md-${col || 12} ${className}`}>
+              <div key={fieldKey} className={`col-md-${col || 12} ${className}`}>
                 <Select name={name} label={label} {...rest} />
               </div>
             );
@@ -76,7 +82,7 @@ const EntityFormView = ({ fields }) => {
 
           if (type === "master") {
             return (
-              <div key={id} className={`col-md-${col || 12} ${className}`}>
+              <div key={fieldKey} className={`col-md-${col || 12} ${className}`}>
                 <MasterPicker name={name} label={label} {...rest} />
               </div>
             );
@@ -84,7 +90,7 @@ const EntityFormView = ({ fields }) => {
 
           if (type === "userImage") {
             return (
-              <div key={id} className={`col-md-${col || 12} ${className}`}>
+              <div key={fieldKey} className={`col-md-${col || 12} ${className}`}>
                 <PhotoUpload name={name} label={label} {...rest} />
               </div>
             );
@@ -92,7 +98,7 @@ const EntityFormView = ({ fields }) => {
 
           if (type === "datepicker") {
             return (
-              <div key={id} className={`col-md-${col || 12} ${className}`}>
+              <div key={fieldKey} className={`col-md-${col || 12} ${className}`}>
                 <DatePicker name={name} label={label} {...rest} />
               </div>
             );
@@ -100,7 +106,7 @@ const EntityFormView = ({ fields }) => {
 
           if (type === "api") {
             return (
-              <div key={id} className={`col-md-${col || 12} ${className}`}>
+              <div key={fieldKey} className={`col-md-${col || 12} ${className}`}>
                 <ApiSelect name={name} label={label} {...rest} />
               </div>
             );
@@ -108,7 +114,7 @@ const EntityFormView = ({ fields }) => {
 
           if (type === "async-select-pagination") {
             return (
-              <div key={id} className={`col-md-${col || 12} ${className}`}>
+              <div key={fieldKey} className={`col-md-${col || 12} ${className}`}>
                 <AsyncSelectPagination name={name} label={label} {...rest} />
               </div>
             );
@@ -116,7 +122,7 @@ const EntityFormView = ({ fields }) => {
 
           if (type === "async-multi-select-pagination") {
             return (
-              <div key={id} className={`col-md-${col || 12} ${className}`}>
+              <div key={fieldKey} className={`col-md-${col || 12} ${className}`}>
                 <AsyncMultiSelectPagination
                   name={name}
                   label={label}
@@ -126,9 +132,17 @@ const EntityFormView = ({ fields }) => {
             );
           }
 
+          if (type === "rich-text-editor") {
+            return (
+              <div key={fieldKey} className={`col-md-${col || 12} ${className}`}>
+                <RichTextEditor name={name} label={label} {...rest} />
+              </div>
+            );
+          }
+
           if (type === "ui") {
             return (
-              <div key={id} className={`col-md-${col || 12} ${className}`}>
+              <div key={fieldKey} className={`col-md-${col || 12} ${className}`}>
                 {element}
               </div>
             );
@@ -143,23 +157,14 @@ const EntityFormView = ({ fields }) => {
 
   return (
     <>
-      <div className="row my-3">{formFields}</div>
+      <div className={`row ${rowClassName}`}>{formFields}</div>
     </>
   );
 };
 
 EntityFormView.propTypes = {
-  schema: PropTypes.object.isRequired,
-  defaultValues: PropTypes.object,
   fields: PropTypes.array.isRequired,
-  onSubmit: PropTypes.func.isRequired,
-  children: PropTypes.node,
-};
-
-EntityFormView.defaultProps = {
-  defaultValues: {},
-  fields: [],
-  children: null,
+  rowClassName: PropTypes.string,
 };
 
 export default EntityFormView;

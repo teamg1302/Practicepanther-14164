@@ -183,16 +183,16 @@ describe("Select Component", () => {
 
       render(
         <FormWrapper schema={schema}>
-          <Select name="category" label="Category" options={options} />
+          <Select name="category" label="Category" options={options} placeholder="Select..." />
         </FormWrapper>
       );
 
       // react-select doesn't support children, only options prop
       // We verify the select renders with the options
       expect(screen.getByLabelText("Category")).toBeInTheDocument();
-      // The placeholder shows "Select..." by default, not the option label
+      // The placeholder shows "Select..." when provided
       // Options are available but not visible until dropdown opens
-      expect(screen.getByText(/Select/)).toBeInTheDocument();
+      expect(screen.getByText("Select...")).toBeInTheDocument();
     });
   });
 

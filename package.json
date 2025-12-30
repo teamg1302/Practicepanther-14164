@@ -38,6 +38,7 @@
     "react-hook-form": "^7.67.0",
     "react-i18next": "^16.3.5",
     "react-modal-video": "^2.0.2",
+    "react-quill": "^2.0.0",
     "react-redux": "^9.2.0",
     "react-router-dom": "^6.30.2",
     "react-select": "^5.10.2",

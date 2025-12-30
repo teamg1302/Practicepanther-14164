@@ -4,11 +4,11 @@ import { useTranslation } from "react-i18next";
 
 const StandardButton = ({
   label = "",
-  icon,
+  icon = null,
   onClick,
-  className,
-  type,
-  disabled,
+  className = "",
+  type = "button",
+  disabled = false,
   ...rest
 }) => {
   const { t } = useTranslation();
@@ -32,14 +32,6 @@ StandardButton.propTypes = {
   className: PropTypes.string,
   type: PropTypes.string,
   disabled: PropTypes.bool,
-  rest: PropTypes.object,
-};
-StandardButton.defaultProps = {
-  className: "",
-  icon: null,
-  type: "button",
-  disabled: false,
-  rest: {},
 };
 
 export default StandardButton;

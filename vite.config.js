@@ -22,6 +22,19 @@ export default defineConfig({
     environment: "jsdom",
     setupFiles: "./src/test/setup.js",
     css: true,
+    testTimeout: 10000, // 10 seconds timeout for tests
+
+    deps: {
+      external: ["@mui/icons-material"],
+    },
+
+    pool: "threads",
+    poolOptions: {
+      threads: {
+        singleThread: false,
+      },
+    },
+
     coverage: {
       provider: "v8",
       reporter: ["text", "json", "html"],

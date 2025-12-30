@@ -33,8 +33,6 @@ const HorizontalSidebar = () => {
     document.documentElement.setAttribute("data-nav-color", layoutTheme);
   }, [layoutColor, layoutTheme, layoutView]);
 
-  console.log("isOpenChildren", isOpenChildren);
-
   return (
     <div className="sidebar horizontal-sidebar">
       <div id="sidebar-menu-3" className="sidebar-menu">

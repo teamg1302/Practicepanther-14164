@@ -3,7 +3,7 @@
  * Configures testing environment and global test utilities.
  */
 
-import { expect, afterEach } from "vitest";
+import { expect, afterEach, vi } from "vitest";
 import { cleanup } from "@testing-library/react";
 import * as matchers from "@testing-library/jest-dom/matchers";
 
@@ -52,3 +52,12 @@ Object.defineProperty(window, "localStorage", {
   value: localStorageMock,
 });
 
+// 🔴 FIX: Prevent Vitest from loading thousands of MUI icon files
+vi.mock("@mui/icons-material", () => {
+  return new Proxy(
+    {},
+    {
+      get: () => () => null,
+    }
+  );
+});

@@ -39,13 +39,11 @@ const ItemList = () => {
   const columns = useMemo(() => {
     const COLUMNS_CONFIG = [
       {
-        header: "Code",
-        accessorKey: "code",
-      },
-      {
         header: "Name",
         accessorKey: "name",
       },
+      { header: "Code", accessorKey: "code" },
+
       { header: "Description", accessorKey: "description" },
       {
         header: "Price",
@@ -199,9 +197,33 @@ const ItemList = () => {
   };
 
   const fields = [
-    { name: "code", label: "Code", type: "text", col: 6 },
+    {
+      type: "ui",
+      element: (
+        <div className="card-title-head mb-3">
+          <h6 className="border-bottom-0 mb-0 pb-0">{"Item"}</h6>
+          <small className="text-muted">{"Enter the item's details"}</small>
+        </div>
+      ),
+    },
     { name: "name", label: "Name", type: "text", col: 6 },
-    { name: "description", label: "Description", type: "textarea", col: 12 },
+    { name: "code", label: "Code", type: "text", col: 6 },
+    {
+      name: "description",
+      label: "Description",
+      type: "textarea",
+      col: 12,
+      rows: 3,
+    },
+    {
+      type: "ui",
+      element: (
+        <div className="card-title-head mb-3">
+          <h6 className="border-bottom-0 mb-0 pb-0">{"Price"}</h6>
+          <small className="text-muted">{"Enter the item's price"}</small>
+        </div>
+      ),
+    },
     { name: "price", label: "Price", type: "number", col: 6 },
     {
       name: "tax1Id",
@@ -282,7 +304,7 @@ const ItemList = () => {
         defaultValues={getEditDefaultValues()}
         onSubmit={onSubmit}
         fields={fields}
-        t={t}
+        bodyStyle={{ height: "500px", overflowY: "auto" }}
       />
     </>
   );

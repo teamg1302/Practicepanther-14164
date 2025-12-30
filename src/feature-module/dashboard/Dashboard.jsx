@@ -5,6 +5,7 @@ import {
   User,
   UserCheck,
 } from "feather-icons-react/build/IconComponents";
+import { useSelector } from "react-redux";
 import Chart from "react-apexcharts";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
@@ -22,6 +23,14 @@ import withReactContent from "sweetalert2-react-content";
 import Swal from "sweetalert2";
 
 const Dashboard = () => {
+  const { permissions } = useSelector((state) => state.auth);
+
+  const findPermission = permissions.find(
+    (permission) => permission.moduleName === "dashboard_financial_summary"
+  );
+
+  const hasPermission = findPermission?.actions?.read === true;
+
   const { t } = useTranslation();
   const [chartOptions] = useState({
     series: [
@@ -115,99 +124,109 @@ const Dashboard = () => {
       }
     });
   };
+
   return (
     <div>
       <div className="page-wrapper">
         <div className="content">
           <div className="row">
-            <div className="col-xl-3 col-sm-6 col-12 d-flex">
-              <div className="dash-widget w-100">
-                <div className="dash-widgetimg">
-                  <span>
-                    <ImageWithBasePath
-                      src="assets/img/icons/dash1.svg"
-                      alt="img"
-                    />
-                  </span>
+            {hasPermission && (
+              <>
+                <div className="col-xl-3 col-sm-6 col-12 d-flex">
+                  <div className="dash-widget w-100">
+                    <div className="dash-widgetimg">
+                      <span>
+                        <ImageWithBasePath
+                          src="assets/img/icons/dash1.svg"
+                          alt="img"
+                        />
+                      </span>
+                    </div>
+                    <div className="dash-widgetcontent">
+                      <h5>
+                        <CountUp
+                          start={0}
+                          end={307144}
+                          duration={3}
+                          prefix="$"
+                        />
+                      </h5>
+                      <h6>{t("dashboard.totalMonthRevenue")}</h6>
+                    </div>
+                  </div>
                 </div>
-                <div className="dash-widgetcontent">
-                  <h5>
-                    <CountUp start={0} end={307144} duration={3} prefix="$" />
-                  </h5>
-                  <h6>{t("dashboard.totalMonthRevenue")}</h6>
+                <div className="col-xl-3 col-sm-6 col-12 d-flex">
+                  <div className="dash-widget dash1 w-100">
+                    <div className="dash-widgetimg">
+                      <span>
+                        <ImageWithBasePath
+                          src="assets/img/icons/dash2.svg"
+                          alt="img"
+                        />
+                      </span>
+                    </div>
+                    <div className="dash-widgetcontent">
+                      <h5>
+                        $
+                        <CountUp
+                          start={0}
+                          end={4385}
+                          duration={3} // Duration in seconds
+                        />
+                      </h5>
+                      <h6>{t("dashboard.totalTodayRevenue")}</h6>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
-            <div className="col-xl-3 col-sm-6 col-12 d-flex">
-              <div className="dash-widget dash1 w-100">
-                <div className="dash-widgetimg">
-                  <span>
-                    <ImageWithBasePath
-                      src="assets/img/icons/dash2.svg"
-                      alt="img"
-                    />
-                  </span>
+                <div className="col-xl-3 col-sm-6 col-12 d-flex">
+                  <div className="dash-widget dash2 w-100">
+                    <div className="dash-widgetimg">
+                      <span>
+                        <ImageWithBasePath
+                          src="assets/img/icons/dash3.svg"
+                          alt="img"
+                        />
+                      </span>
+                    </div>
+                    <div className="dash-widgetcontent">
+                      <h5>
+                        $
+                        <CountUp
+                          start={0}
+                          end={385656.5}
+                          duration={3} // Duration in seconds
+                          decimals={1}
+                        />
+                      </h5>
+                      <h6>{t("dashboard.totalRevenue")}</h6>
+                    </div>
+                  </div>
                 </div>
-                <div className="dash-widgetcontent">
-                  <h5>
-                    $
-                    <CountUp
-                      start={0}
-                      end={4385}
-                      duration={3} // Duration in seconds
-                    />
-                  </h5>
-                  <h6>{t("dashboard.totalTodayRevenue")}</h6>
+                <div className="col-xl-3 col-sm-6 col-12 d-flex">
+                  <div className="dash-widget dash3 w-100">
+                    <div className="dash-widgetimg">
+                      <span>
+                        <ImageWithBasePath
+                          src="assets/img/icons/dash4.svg"
+                          alt="img"
+                        />
+                      </span>
+                    </div>
+                    <div className="dash-widgetcontent">
+                      <h5>
+                        $
+                        <CountUp
+                          start={0}
+                          end={40000}
+                          duration={3} // Duration in seconds
+                        />
+                      </h5>
+                      <h6>{t("dashboard.totalExpenseAmount")}</h6>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
-            <div className="col-xl-3 col-sm-6 col-12 d-flex">
-              <div className="dash-widget dash2 w-100">
-                <div className="dash-widgetimg">
-                  <span>
-                    <ImageWithBasePath
-                      src="assets/img/icons/dash3.svg"
-                      alt="img"
-                    />
-                  </span>
-                </div>
-                <div className="dash-widgetcontent">
-                  <h5>
-                    $
-                    <CountUp
-                      start={0}
-                      end={385656.5}
-                      duration={3} // Duration in seconds
-                      decimals={1}
-                    />
-                  </h5>
-                  <h6>{t("dashboard.totalRevenue")}</h6>
-                </div>
-              </div>
-            </div>
-            <div className="col-xl-3 col-sm-6 col-12 d-flex">
-              <div className="dash-widget dash3 w-100">
-                <div className="dash-widgetimg">
-                  <span>
-                    <ImageWithBasePath
-                      src="assets/img/icons/dash4.svg"
-                      alt="img"
-                    />
-                  </span>
-                </div>
-                <div className="dash-widgetcontent">
-                  <h5>
-                    $
-                    <CountUp
-                      start={0}
-                      end={40000}
-                      duration={3} // Duration in seconds
-                    />
-                  </h5>
-                  <h6>{t("dashboard.totalExpenseAmount")}</h6>
-                </div>
-              </div>
-            </div>
+              </>
+            )}
             <div className="col-xl-3 col-sm-6 col-12 d-flex">
               <div className="dash-count">
                 <div className="dash-counts">
@@ -257,6 +276,7 @@ const Dashboard = () => {
               </div>
             </div>
           </div>
+
           {/* Button trigger modal */}
 
           {/* Quick Create Section */}
@@ -343,151 +363,156 @@ const Dashboard = () => {
             </div>
           </div>
 
-          <div className="row">
-            <div className="col-xl-7 col-sm-12 col-12 d-flex">
-              <div className="card flex-fill">
-                <div className="card-header d-flex justify-content-between align-items-center">
-                  <h5 className="card-title">Revenue</h5>
-                  <div className="graph-sets">
-                    <ul className="mb-0">
-                      <li>
-                        <span>Revenue</span>
-                      </li>
-                      <li>
-                        <span>Matters</span>
-                      </li>
-                    </ul>
-                    <div className="dropdown dropdown-wraper">
-                      <button
-                        className="btn btn-light btn-sm dropdown-toggle"
-                        type="button"
-                        id="dropdownMenuButton"
-                        data-bs-toggle="dropdown"
-                        aria-expanded="false"
-                      >
-                        2023
-                      </button>
-                      <ul
-                        className="dropdown-menu"
-                        aria-labelledby="dropdownMenuButton"
-                      >
+          {hasPermission && (
+            <div className="row">
+              <div className="col-xl-7 col-sm-12 col-12 d-flex">
+                <div className="card flex-fill">
+                  <div className="card-header d-flex justify-content-between align-items-center">
+                    <h5 className="card-title">Revenue</h5>
+                    <div className="graph-sets">
+                      <ul className="mb-0">
                         <li>
-                          <Link to="#" className="dropdown-item">
-                            2023
-                          </Link>
+                          <span>Revenue</span>
                         </li>
                         <li>
-                          <Link to="#" className="dropdown-item">
-                            2022
-                          </Link>
-                        </li>
-                        <li>
-                          <Link to="#" className="dropdown-item">
-                            2021
-                          </Link>
+                          <span>Matters</span>
                         </li>
                       </ul>
+                      <div className="dropdown dropdown-wraper">
+                        <button
+                          className="btn btn-light btn-sm dropdown-toggle"
+                          type="button"
+                          id="dropdownMenuButton"
+                          data-bs-toggle="dropdown"
+                          aria-expanded="false"
+                        >
+                          2023
+                        </button>
+                        <ul
+                          className="dropdown-menu"
+                          aria-labelledby="dropdownMenuButton"
+                        >
+                          <li>
+                            <Link to="#" className="dropdown-item">
+                              2023
+                            </Link>
+                          </li>
+                          <li>
+                            <Link to="#" className="dropdown-item">
+                              2022
+                            </Link>
+                          </li>
+                          <li>
+                            <Link to="#" className="dropdown-item">
+                              2021
+                            </Link>
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="card-body">
+                    <div id="sales_charts" />
+                    <Chart
+                      options={chartOptions}
+                      series={chartOptions.series}
+                      type="bar"
+                      height={320}
+                    />
+                  </div>
+                </div>
+              </div>
+              <div className="col-xl-5 col-sm-12 col-12 d-flex">
+                <div className="card flex-fill default-cover mb-4">
+                  <div className="card-header d-flex justify-content-between align-items-center">
+                    <h4 className="card-title mb-0">Recent Activities</h4>
+                    <div className="view-all-link">
+                      <Link
+                        to="#"
+                        className="view-all d-flex align-items-center"
+                      >
+                        {t("dashboard.viewAll")}
+                        <span className="ps-2 d-flex align-items-center">
+                          <ArrowRight className="feather-16" />
+                        </span>
+                      </Link>
+                    </div>
+                  </div>
+                  <div className="card-body">
+                    <div className="table-responsive dataview">
+                      <table className="table dashboard-recent-products">
+                        <thead>
+                          <tr>
+                            <th>#</th>
+                            <th>Activity</th>
+                            <th>Time</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <td>1</td>
+                            <td className="productimgname">
+                              New matter opened: Smith v. Johnson - Personal
+                              Injury
+                            </td>
+                            <td>Dec 06, 2025 00:19</td>
+                          </tr>
+                          <tr>
+                            <td>2</td>
+                            <td className="productimgname">
+                              Payment received: $5,000 from Acme Corp - Invoice
+                              #INV-2024-001
+                            </td>
+                            <td>Dec 05, 2025 23:19</td>
+                          </tr>
+                          <tr>
+                            <td>3</td>
+                            <td className="productimgname">
+                              Document signed: Contract Agreement - Client: Jane
+                              Williams
+                            </td>
+                            <td>Dec 05, 2025 22:19</td>
+                          </tr>
+                          <tr>
+                            <td>4</td>
+                            <td className="productimgname">
+                              New client onboarded: Robert Martinez - Estate
+                              Planning
+                            </td>
+                            <td>Dec 05, 2025 21:19</td>
+                          </tr>
+                          <tr>
+                            <td>5</td>
+                            <td className="productimgname">
+                              New client onboarded: Robert Martinez - Estate
+                              Planning
+                            </td>
+                            <td>Dec 05, 2025 21:19</td>
+                          </tr>
+                          <tr>
+                            <td>6</td>
+                            <td className="productimgname">
+                              New client onboarded: Robert Martinez - Estate
+                              Planning
+                            </td>
+                            <td>Dec 05, 2025 21:19</td>
+                          </tr>
+                          <tr>
+                            <td>7</td>
+                            <td className="productimgname">
+                              New client onboarded: Robert Martinez - Estate
+                              Planning
+                            </td>
+                            <td>Dec 05, 2025 21:19</td>
+                          </tr>
+                        </tbody>
+                      </table>
                     </div>
                   </div>
                 </div>
-                <div className="card-body">
-                  <div id="sales_charts" />
-                  <Chart
-                    options={chartOptions}
-                    series={chartOptions.series}
-                    type="bar"
-                    height={320}
-                  />
-                </div>
               </div>
             </div>
-            <div className="col-xl-5 col-sm-12 col-12 d-flex">
-              <div className="card flex-fill default-cover mb-4">
-                <div className="card-header d-flex justify-content-between align-items-center">
-                  <h4 className="card-title mb-0">Recent Activities</h4>
-                  <div className="view-all-link">
-                    <Link to="#" className="view-all d-flex align-items-center">
-                      {t("dashboard.viewAll")}
-                      <span className="ps-2 d-flex align-items-center">
-                        <ArrowRight className="feather-16" />
-                      </span>
-                    </Link>
-                  </div>
-                </div>
-                <div className="card-body">
-                  <div className="table-responsive dataview">
-                    <table className="table dashboard-recent-products">
-                      <thead>
-                        <tr>
-                          <th>#</th>
-                          <th>Activity</th>
-                          <th>Time</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr>
-                          <td>1</td>
-                          <td className="productimgname">
-                            New matter opened: Smith v. Johnson - Personal
-                            Injury
-                          </td>
-                          <td>Dec 06, 2025 00:19</td>
-                        </tr>
-                        <tr>
-                          <td>2</td>
-                          <td className="productimgname">
-                            Payment received: $5,000 from Acme Corp - Invoice
-                            #INV-2024-001
-                          </td>
-                          <td>Dec 05, 2025 23:19</td>
-                        </tr>
-                        <tr>
-                          <td>3</td>
-                          <td className="productimgname">
-                            Document signed: Contract Agreement - Client: Jane
-                            Williams
-                          </td>
-                          <td>Dec 05, 2025 22:19</td>
-                        </tr>
-                        <tr>
-                          <td>4</td>
-                          <td className="productimgname">
-                            New client onboarded: Robert Martinez - Estate
-                            Planning
-                          </td>
-                          <td>Dec 05, 2025 21:19</td>
-                        </tr>
-                        <tr>
-                          <td>5</td>
-                          <td className="productimgname">
-                            New client onboarded: Robert Martinez - Estate
-                            Planning
-                          </td>
-                          <td>Dec 05, 2025 21:19</td>
-                        </tr>
-                        <tr>
-                          <td>6</td>
-                          <td className="productimgname">
-                            New client onboarded: Robert Martinez - Estate
-                            Planning
-                          </td>
-                          <td>Dec 05, 2025 21:19</td>
-                        </tr>
-                        <tr>
-                          <td>7</td>
-                          <td className="productimgname">
-                            New client onboarded: Robert Martinez - Estate
-                            Planning
-                          </td>
-                          <td>Dec 05, 2025 21:19</td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+          )}
 
           <div className="row">
             <div className="col-12">

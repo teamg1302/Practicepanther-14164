@@ -35,6 +35,12 @@ import {
 } from "@/feature-module/pages/time-entries";
 import { CategoryList } from "@/feature-module/pages/categories";
 import { ItemList } from "@/feature-module/pages/items";
+import { ExpenseList, ExpenseAddEdit } from "@/feature-module/pages/expense";
+import {
+  FlatFeesList,
+  FlatFeesAddEdit,
+} from "@/feature-module/pages/flat-fees";
+import { InvoicesList, InvoicesAddEdit } from "@/feature-module/pages/invoices";
 import { all_routes } from "./all_routes";
 
 const routes = all_routes;
@@ -138,17 +144,91 @@ export const publicRoutes = [
     element: <MultipleTimeEntries />,
     route: Route,
   },
+
+  // Invoices
   {
     id: 12,
     path: routes.headers?.[4]?.children?.[0]?.path,
     name: routes.headers?.[4]?.children?.[0]?.name,
-    element: <CategoryList />,
+    element: <InvoicesList />,
+    route: Route,
+  },
+  {
+    id: 12,
+    path: routes.addInvoice.path,
+    name: routes.addInvoice.name,
+    element: <InvoicesAddEdit />,
+    route: Route,
+  },
+  {
+    id: 12,
+    path: routes.editInvoice.path,
+    name: routes.editInvoice.name,
+    element: <InvoicesAddEdit />,
+    route: Route,
+  },
+
+  {
+    id: 12,
+    path: routes.headers?.[4]?.children?.[1]?.path,
+    name: routes.headers?.[4]?.children?.[1]?.name,
+    element: <ExpenseList />,
     route: Route,
   },
   {
     id: 13,
-    path: routes.headers?.[4]?.children?.[1]?.path,
-    name: routes.headers?.[4]?.children?.[1]?.name,
+    path: routes.addExpense.path,
+    name: routes.addExpense.name,
+    element: <ExpenseAddEdit />,
+    route: Route,
+  },
+  {
+    id: 14,
+    path: routes.editExpense.path,
+    name: routes.editExpense.name,
+    element: <ExpenseAddEdit />,
+    route: Route,
+  },
+  {
+    id: 15,
+    path: routes.headers?.[4]?.children?.[2]?.path,
+    name: routes.headers?.[4]?.children?.[2]?.name,
+    element: <FlatFeesList />,
+    route: Route,
+  },
+  {
+    id: 16,
+    path: routes.addFlatFee.path,
+    name: routes.addFlatFee.name,
+    element: <FlatFeesAddEdit />,
+    route: Route,
+  },
+  {
+    id: 17,
+    path: routes.editFlatFee.path,
+    name: routes.editFlatFee.name,
+    element: <FlatFeesAddEdit />,
+    route: Route,
+  },
+
+  // {
+  //   id: 13,
+  //   path: routes.headers?.[4]?.children?.[1]?.path,
+  //   name: routes.headers?.[4]?.children?.[1]?.name,
+  //   element: <FlatFeesList />,
+  //   route: Route,
+  // },
+  {
+    id: 18,
+    path: routes.headers?.[4]?.children?.[3]?.path,
+    name: routes.headers?.[4]?.children?.[3]?.name,
+    element: <CategoryList />,
+    route: Route,
+  },
+  {
+    id: 19,
+    path: routes.headers?.[4]?.children?.[4]?.path,
+    name: routes.headers?.[4]?.children?.[4]?.name,
     element: <ItemList />,
     route: Route,
   },

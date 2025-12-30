@@ -304,21 +304,4 @@ FormSelect.propTypes = {
   selectProps: PropTypes.object,
 };
 
-FormSelect.defaultProps = {
-  options: [],
-  placeholder: "Select...",
-  required: false,
-  className: "",
-  registerOptions: {},
-  id: undefined,
-  ariaLabel: undefined,
-  showError: true,
-  disabled: false,
-  isMulti: false,
-  isSearchable: true,
-  isClearable: false,
-  helpText: undefined,
-  selectProps: {},
-};
-
 export default FormSelect;

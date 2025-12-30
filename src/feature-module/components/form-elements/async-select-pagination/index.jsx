@@ -25,6 +25,8 @@ import { components } from "react-select";
  * @property {Function} [formatOptionLabel] - Custom function to format option labels
  * @property {Function} [getOptionValue] - Custom function to get option value
  * @property {Function} [getOptionLabel] - Custom function to get option label
+ * @property {string} [labelKey] - Key name in item object to use as label (e.g., "matterName")
+ * @property {string} [valueKey] - Key name in item object to use as value (e.g., "_id")
  */
 
 /**
@@ -121,6 +123,8 @@ const AsyncSelectPagination = ({
   formatOptionLabel,
   getOptionValue,
   getOptionLabel,
+  labelKey,
+  valueKey,
   ...rest
 }) => {
   const { t } = useTranslation();
@@ -132,36 +136,37 @@ const AsyncSelectPagination = ({
   // Helper function to get nested errors for array fields
   const getNestedError = (errorsObj, fieldName) => {
     if (!errorsObj || !fieldName) return undefined;
-    
+
     // If field name contains dots, navigate through nested structure
-    if (fieldName.includes('.')) {
-      const parts = fieldName.split('.');
+    if (fieldName.includes(".")) {
+      const parts = fieldName.split(".");
       let current = errorsObj;
-      
+
       for (const part of parts) {
         // Handle array indices (numeric strings)
         const index = parseInt(part, 10);
         if (!isNaN(index) && Array.isArray(current)) {
           current = current[index];
-        } else if (current && typeof current === 'object') {
+        } else if (current && typeof current === "object") {
           current = current[part];
         } else {
           return undefined;
         }
-        
+
         if (current === undefined || current === null) {
           return undefined;
         }
       }
-      
+
       return current;
     }
-    
+
     // Simple field name, direct access
     return errorsObj[fieldName];
   };
 
   const [hasMore, setHasMore] = useState(true);
+  // eslint-disable-next-line no-unused-vars
   const [currentPage, setCurrentPage] = useState(1);
   const [allOptions, setAllOptions] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -206,10 +211,20 @@ const AsyncSelectPagination = ({
       }
 
       const transformed = items.map((item) => {
+        // Priority: getOptionLabel/getOptionValue > labelKey/valueKey > default
         if (getOptionValue && getOptionLabel) {
           return {
             label: getOptionLabel(item),
             value: getOptionValue(item),
+            data: item,
+          };
+        }
+
+        // Use labelKey and valueKey if provided
+        if (labelKey && valueKey) {
+          return {
+            label: item[labelKey] || String(item[valueKey] || ""),
+            value: item[valueKey] || item._id || item.id,
             data: item,
           };
         }
@@ -230,7 +245,7 @@ const AsyncSelectPagination = ({
 
       return transformed;
     },
-    [getOptionValue, getOptionLabel]
+    [getOptionValue, getOptionLabel, labelKey, valueKey]
   );
 
   /**
@@ -534,6 +549,8 @@ AsyncSelectPagination.propTypes = {
   formatOptionLabel: PropTypes.func,
   getOptionValue: PropTypes.func,
   getOptionLabel: PropTypes.func,
+  labelKey: PropTypes.string,
+  valueKey: PropTypes.string,
 };
 
 AsyncSelectPagination.defaultProps = {
@@ -545,6 +562,8 @@ AsyncSelectPagination.defaultProps = {
   formatOptionLabel: undefined,
   getOptionValue: undefined,
   getOptionLabel: undefined,
+  labelKey: undefined,
+  valueKey: undefined,
 };
 
 export default AsyncSelectPagination;

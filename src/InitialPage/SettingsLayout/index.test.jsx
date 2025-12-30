@@ -30,9 +30,7 @@ const renderWithProviders = (component, { preloadedState = {} } = {}) => {
   return render(
     <Provider store={store}>
       <BrowserRouter>
-        <Routes>
-          <Route path="*" element={component} />
-        </Routes>
+        {component}
       </BrowserRouter>
     </Provider>
   );
@@ -45,10 +43,15 @@ describe("SettingsLayout Component", () => {
 
   describe("Rendering", () => {
     it("should render settings layout wrapper", () => {
-      const { container } = renderWithProviders(<SettingsLayout />);
+      const { container } = renderWithProviders(
+        <Routes>
+          <Route path="/" element={<SettingsLayout />} />
+        </Routes>
+      );
       // Component should render a div wrapper
-      expect(container.firstChild).toBeInTheDocument();
-      expect(container.firstChild.tagName).toBe("DIV");
+      const div = container.querySelector("div");
+      expect(div).toBeInTheDocument();
+      expect(div.tagName).toBe("DIV");
     });
 
     it("should render outlet for nested routes", () => {

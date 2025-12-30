@@ -19,8 +19,8 @@ export const getTimezone = async (params = {}) => {
     // Build query string if params are provided
     const queryParams = new URLSearchParams(params).toString();
     const url = queryParams
-      ? `/masters/search/timezone/?${queryParams}&limit=200`
-      : "/masters/search/timezone/?limit=200";
+      ? `/masters/search/timezone/?${queryParams}&limit=1000`
+      : "/masters/search/timezone/?limit=1000";
 
     const response = await api.get(url);
     // Handle nested response structure if needed

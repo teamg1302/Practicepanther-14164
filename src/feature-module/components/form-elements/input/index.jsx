@@ -218,17 +218,4 @@ Input.propTypes = {
   inputProps: PropTypes.object,
 };
 
-Input.defaultProps = {
-  type: "text",
-  placeholder: undefined,
-  required: false,
-  className: "",
-  registerOptions: {},
-  id: undefined,
-  ariaLabel: undefined,
-  showError: true,
-  helpText: undefined,
-  inputProps: {},
-};
-
 export default Input;

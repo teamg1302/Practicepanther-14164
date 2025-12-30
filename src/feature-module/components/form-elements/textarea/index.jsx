@@ -236,18 +236,4 @@ Textarea.propTypes = {
   textareaProps: PropTypes.object,
 };
 
-Textarea.defaultProps = {
-  placeholder: undefined,
-  required: false,
-  className: "",
-  registerOptions: {},
-  id: undefined,
-  ariaLabel: undefined,
-  showError: true,
-  helpText: undefined,
-  rows: 5,
-  maxLength: undefined,
-  textareaProps: {},
-};
-
 export default Textarea;

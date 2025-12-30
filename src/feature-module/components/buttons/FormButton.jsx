@@ -8,7 +8,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-const FormButton = ({ type, isSubmitting, ...props }) => {
+const FormButton = ({ type = "submit", isSubmitting = false, ...props }) => {
   const { t } = useTranslation();
   const buttonLabel = React.useMemo(() => {
     switch (type) {
@@ -64,11 +64,6 @@ const FormButton = ({ type, isSubmitting, ...props }) => {
 FormButton.propTypes = {
   type: PropTypes.string,
   isSubmitting: PropTypes.bool,
-};
-
-FormButton.defaultProps = {
-  type: "submit",
-  isSubmitting: false,
 };
 
 export default FormButton;

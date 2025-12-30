@@ -208,19 +208,4 @@ Switch.propTypes = {
   disabled: PropTypes.bool,
 };
 
-Switch.defaultProps = {
-  defaultValue: false,
-  className: "",
-  registerOptions: {},
-  id: undefined,
-  ariaLabel: undefined,
-  activeColor: "#FF9F43",
-  inactiveColor: "#e9ecef",
-  activeText: "Yes",
-  inactiveText: "No",
-  width: 72,
-  height: 36,
-  disabled: false,
-};
-
 export default Switch;

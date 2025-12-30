@@ -24,9 +24,9 @@ const FormModal = ({
   schema,
   defaultValues,
   onSubmit,
-  t,
   size = "md",
   showCloseButton = true,
+  bodyStyle,
 }) => {
   // Handle body scroll lock when modal is open
   useEffect(() => {
@@ -124,15 +124,18 @@ const FormModal = ({
                 />
               )}
             </div>
-            <div className="modal-body">
-              <FormProvider
-                schema={schema}
-                defaultValues={defaultValues}
-                onSubmit={onSubmit}
-              >
-                <Form fields={fields} t={t} onClose={onClose} />
-              </FormProvider>
-            </div>
+            <FormProvider
+              schema={schema}
+              defaultValues={defaultValues}
+              onSubmit={onSubmit}
+            >
+              <div className="modal-body" style={bodyStyle}>
+                <Form fields={fields} />
+              </div>
+              <div className="d-flex flex-row gap-2 align-items-center justify-content-end p-3">
+                <FormButtons onClose={onClose} />
+              </div>
+            </FormProvider>
           </div>
         </div>
       </div>
@@ -140,27 +143,30 @@ const FormModal = ({
   );
 };
 
-const Form = ({ fields, t, onClose }) => {
+const Form = ({ fields }) => {
+  return <EntityFormView fields={fields} rowClassName="" />;
+};
+
+const FormButtons = ({ onClose }) => {
   const { isSubmitting } = useFormContext();
   return (
-    <div>
-      <EntityFormView fields={fields} />
-      <div className="d-flex flex-row gap-2 align-items-center justify-content-end">
-        <FormButton isSubmitting={isSubmitting} type={"submit"} />
-        <FormButton
-          isSubmitting={isSubmitting}
-          type={"cancel"}
-          onClick={onClose}
-        />
-      </div>
-    </div>
+    <>
+      <FormButton isSubmitting={isSubmitting} type={"submit"} />
+      <FormButton
+        isSubmitting={isSubmitting}
+        type={"cancel"}
+        onClick={onClose}
+      />
+    </>
   );
 };
 
 Form.propTypes = {
   fields: PropTypes.array.isRequired,
   id: PropTypes.string,
-  t: PropTypes.func.isRequired,
+};
+
+FormButtons.propTypes = {
   onClose: PropTypes.func.isRequired,
 };
 
@@ -171,10 +177,10 @@ FormModal.propTypes = {
   fields: PropTypes.array.isRequired,
   schema: PropTypes.object.isRequired,
   defaultValues: PropTypes.object.isRequired,
-  t: PropTypes.func.isRequired,
   onSubmit: PropTypes.func.isRequired,
   size: PropTypes.oneOf(["sm", "md", "lg", "xl"]),
   showCloseButton: PropTypes.bool,
+  bodyStyle: PropTypes.object,
 };
 
 export default FormModal;

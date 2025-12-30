@@ -87,6 +87,8 @@ const AddTimeEntry = () => {
         label: "Matter",
         type: "async-select-pagination",
         api: getMatters,
+        labelKey: "matterName",
+        valueKey: "_id",
         pageSize: 50,
         searchKey: "search",
         required: true,
