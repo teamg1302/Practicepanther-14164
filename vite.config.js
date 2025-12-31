@@ -2,6 +2,9 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import { resolve } from "path";
+import { fileURLToPath } from "url";
+
+const __dirname = fileURLToPath(new URL(".", import.meta.url));
 
 export default defineConfig({
   base: "/company/",
@@ -22,19 +25,6 @@ export default defineConfig({
     environment: "jsdom",
     setupFiles: "./src/test/setup.js",
     css: true,
-    testTimeout: 10000, // 10 seconds timeout for tests
-
-    deps: {
-      external: ["@mui/icons-material"],
-    },
-
-    pool: "threads",
-    poolOptions: {
-      threads: {
-        singleThread: false,
-      },
-    },
-
     coverage: {
       provider: "v8",
       reporter: ["text", "json", "html"],

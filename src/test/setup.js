@@ -52,12 +52,31 @@ Object.defineProperty(window, "localStorage", {
   value: localStorageMock,
 });
 
-// 🔴 FIX: Prevent Vitest from loading thousands of MUI icon files
-vi.mock("@mui/icons-material", () => {
-  return new Proxy(
-    {},
-    {
-      get: () => () => null,
-    }
-  );
-});
+// vi.mock("@mui/material", async () => {
+//   const actual = await vi.importActual("@mui/material");
+//   return actual;
+// });
+
+// vi.mock("@mui/icons-material", () => {
+//   return new Proxy(
+//     {},
+//     {
+//       get: () => () => null,
+//     }
+//   );
+// });
+
+vi.mock("react-i18next", () => ({
+  useTranslation: () => ({
+    t: (key) => key,
+    i18n: {
+      changeLanguage: vi.fn(),
+      language: "en",
+    },
+  }),
+  Trans: ({ children }) => children,
+  initReactI18next: {
+    type: "languageDetector",
+    init: vi.fn(),
+  },
+}));

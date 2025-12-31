@@ -5,9 +5,10 @@
 
 import { describe, it, expect, beforeEach, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { MemoryRouter, Routes, Route } from "react-router-dom";
 import { Provider } from "react-redux";
 import { configureStore } from "@reduxjs/toolkit";
+
 import SettingsLayout from "./index";
 import rootReducer from "../../core/redux/reducer";
 
@@ -21,7 +22,10 @@ vi.mock("@/core/services/mastersService", () => ({
 }));
 
 // Helper function to render component with providers
-const renderWithProviders = (component, { preloadedState = {} } = {}) => {
+const renderWithProviders = (
+  component,
+  { preloadedState = {}, initialEntries = ["/"] } = {}
+) => {
   const store = configureStore({
     reducer: rootReducer,
     preloadedState,
@@ -29,9 +33,7 @@ const renderWithProviders = (component, { preloadedState = {} } = {}) => {
 
   return render(
     <Provider store={store}>
-      <BrowserRouter>
-        {component}
-      </BrowserRouter>
+      <MemoryRouter initialEntries={initialEntries}>{component}</MemoryRouter>
     </Provider>
   );
 };
@@ -49,8 +51,12 @@ describe("SettingsLayout Component", () => {
         </Routes>
       );
       // Component should render a div wrapper
-      const div = container.querySelector("div");
-      expect(div).toBeInTheDocument();
+      // SettingsLayout renders a div with an Outlet inside
+      const layoutDiv = container.querySelector("div > div");
+      // If no nested div, check for the direct child div
+      const div = layoutDiv || container.firstChild?.querySelector("div");
+      expect(div).toBeTruthy();
+      expect(div).toBeInstanceOf(HTMLDivElement);
       expect(div.tagName).toBe("DIV");
     });
 
@@ -60,7 +66,8 @@ describe("SettingsLayout Component", () => {
           <Route path="/" element={<SettingsLayout />}>
             <Route index element={<div>Settings Content</div>} />
           </Route>
-        </Routes>
+        </Routes>,
+        { initialEntries: ["/"] }
       );
       expect(screen.getByText("Settings Content")).toBeInTheDocument();
     });
@@ -69,9 +76,13 @@ describe("SettingsLayout Component", () => {
       renderWithProviders(
         <Routes>
           <Route path="/" element={<SettingsLayout />}>
-            <Route index element={<div data-testid="outlet-content">Content</div>} />
+            <Route
+              index
+              element={<div data-testid="outlet-content">Content</div>}
+            />
           </Route>
-        </Routes>
+        </Routes>,
+        { initialEntries: ["/"] }
       );
 
       const content = screen.getByTestId("outlet-content");
@@ -80,4 +91,3 @@ describe("SettingsLayout Component", () => {
     });
   });
 });
-

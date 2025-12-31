@@ -7,7 +7,10 @@ import { fileURLToPath } from "url";
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
 
 export default defineConfig({
-  base: process.env.VITE_BASE_PATH ?? "/",
+  base: "/company/",
+  optimizeDeps: {
+    exclude: ["@mui/icons-material"],
+  },
   define: {
     global: "globalThis",
   },
@@ -26,6 +29,10 @@ export default defineConfig({
   plugins: [react()],
   server: {
     port: 8914,
+    watch: {
+      // Prevent excessive file watching on Windows
+      ignored: ["**/node_modules/**"],
+    },
   },
   test: {
     globals: true,
