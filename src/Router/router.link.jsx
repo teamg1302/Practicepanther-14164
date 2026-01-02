@@ -41,6 +41,7 @@ import {
   FlatFeesAddEdit,
 } from "@/feature-module/pages/flat-fees";
 import { InvoicesList, InvoicesAddEdit } from "@/feature-module/pages/invoices";
+import { SubscriptionSettings } from "@/feature-module/pages/settings/subscriptions";
 import { all_routes } from "./all_routes";
 
 const routes = all_routes;
@@ -310,6 +311,13 @@ export const settingsRoutes = [
     path: routes.addUser.path,
     name: routes.addUser.name,
     element: <PersonalSettings />,
+    route: Route,
+  },
+  {
+    id: 11,
+    path: routes.settings[2].children[0].path,
+    name: routes.settings[2].children[0].name,
+    element: <SubscriptionSettings />,
     route: Route,
   },
 ];

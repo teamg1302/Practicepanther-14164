@@ -24,6 +24,7 @@ const EntityFormView = ({ fields, rowClassName = "my-3" }) => {
             label,
             type,
             col,
+            selectProps,
             element,
             className = "",
             ...rest
@@ -33,7 +34,10 @@ const EntityFormView = ({ fields, rowClassName = "my-3" }) => {
           // Check for switch first (before input types)
           if (type === "switch") {
             return (
-              <div key={fieldKey} className={`col-md-${col || 12} ${className}`}>
+              <div
+                key={fieldKey}
+                className={`col-md-${col || 12} ${className}`}
+              >
                 <Switch name={name} label={label} {...rest} />
               </div>
             );
@@ -52,7 +56,10 @@ const EntityFormView = ({ fields, rowClassName = "my-3" }) => {
 
           if (isInputType) {
             return (
-              <div key={fieldKey} className={`col-md-${col || 12} ${className}`}>
+              <div
+                key={fieldKey}
+                className={`col-md-${col || 12} ${className}`}
+              >
                 <Input
                   id={id}
                   name={name}
@@ -66,7 +73,10 @@ const EntityFormView = ({ fields, rowClassName = "my-3" }) => {
 
           if (type === "textarea") {
             return (
-              <div key={fieldKey} className={`col-md-${col || 12} ${className}`}>
+              <div
+                key={fieldKey}
+                className={`col-md-${col || 12} ${className}`}
+              >
                 <Textarea name={name} label={label} {...rest} />
               </div>
             );
@@ -74,15 +84,26 @@ const EntityFormView = ({ fields, rowClassName = "my-3" }) => {
 
           if (type === "select") {
             return (
-              <div key={fieldKey} className={`col-md-${col || 12} ${className}`}>
-                <Select name={name} label={label} {...rest} />
+              <div
+                key={fieldKey}
+                className={`col-md-${col || 12} ${className}`}
+              >
+                <Select
+                  name={name}
+                  label={label}
+                  selectProps={selectProps}
+                  {...rest}
+                />
               </div>
             );
           }
 
           if (type === "master") {
             return (
-              <div key={fieldKey} className={`col-md-${col || 12} ${className}`}>
+              <div
+                key={fieldKey}
+                className={`col-md-${col || 12} ${className}`}
+              >
                 <MasterPicker name={name} label={label} {...rest} />
               </div>
             );
@@ -90,7 +111,10 @@ const EntityFormView = ({ fields, rowClassName = "my-3" }) => {
 
           if (type === "userImage") {
             return (
-              <div key={fieldKey} className={`col-md-${col || 12} ${className}`}>
+              <div
+                key={fieldKey}
+                className={`col-md-${col || 12} ${className}`}
+              >
                 <PhotoUpload name={name} label={label} {...rest} />
               </div>
             );
@@ -98,7 +122,10 @@ const EntityFormView = ({ fields, rowClassName = "my-3" }) => {
 
           if (type === "datepicker") {
             return (
-              <div key={fieldKey} className={`col-md-${col || 12} ${className}`}>
+              <div
+                key={fieldKey}
+                className={`col-md-${col || 12} ${className}`}
+              >
                 <DatePicker name={name} label={label} {...rest} />
               </div>
             );
@@ -106,7 +133,10 @@ const EntityFormView = ({ fields, rowClassName = "my-3" }) => {
 
           if (type === "api") {
             return (
-              <div key={fieldKey} className={`col-md-${col || 12} ${className}`}>
+              <div
+                key={fieldKey}
+                className={`col-md-${col || 12} ${className}`}
+              >
                 <ApiSelect name={name} label={label} {...rest} />
               </div>
             );
@@ -114,7 +144,10 @@ const EntityFormView = ({ fields, rowClassName = "my-3" }) => {
 
           if (type === "async-select-pagination") {
             return (
-              <div key={fieldKey} className={`col-md-${col || 12} ${className}`}>
+              <div
+                key={fieldKey}
+                className={`col-md-${col || 12} ${className}`}
+              >
                 <AsyncSelectPagination name={name} label={label} {...rest} />
               </div>
             );
@@ -122,7 +155,10 @@ const EntityFormView = ({ fields, rowClassName = "my-3" }) => {
 
           if (type === "async-multi-select-pagination") {
             return (
-              <div key={fieldKey} className={`col-md-${col || 12} ${className}`}>
+              <div
+                key={fieldKey}
+                className={`col-md-${col || 12} ${className}`}
+              >
                 <AsyncMultiSelectPagination
                   name={name}
                   label={label}
@@ -134,7 +170,10 @@ const EntityFormView = ({ fields, rowClassName = "my-3" }) => {
 
           if (type === "rich-text-editor") {
             return (
-              <div key={fieldKey} className={`col-md-${col || 12} ${className}`}>
+              <div
+                key={fieldKey}
+                className={`col-md-${col || 12} ${className}`}
+              >
                 <RichTextEditor name={name} label={label} {...rest} />
               </div>
             );
@@ -142,7 +181,10 @@ const EntityFormView = ({ fields, rowClassName = "my-3" }) => {
 
           if (type === "ui") {
             return (
-              <div key={fieldKey} className={`col-md-${col || 12} ${className}`}>
+              <div
+                key={fieldKey}
+                className={`col-md-${col || 12} ${className}`}
+              >
                 {element}
               </div>
             );

@@ -22,7 +22,8 @@ import { useDispatch, useSelector } from "react-redux";
 import FeatherIcon from "feather-icons-react";
 import { Lock } from "react-feather";
 import ImageWithBasePath from "../../core/img/imagewithbasebath";
-import { Search, Settings, XCircle } from "react-feather";
+import { Search, Settings, XCircle, Award } from "react-feather";
+import { EventRepeatOutlined } from "@mui/icons-material";
 import { all_routes } from "../../Router/all_routes";
 import { logout } from "../../core/services/authService";
 import { clearAuth } from "../../core/redux/action";
@@ -735,6 +736,11 @@ const Header = () => {
               <FeatherIcon icon="settings" aria-hidden="true" />
             </Link>
           </li>
+          <li className="nav-item nav-item-box">
+            <Link to={route.settings[2].path} aria-label="Subscriptions">
+              <EventRepeatOutlined />
+            </Link>
+          </li>
 
           <li className="nav-item dropdown has-arrow main-drop">
             <Link
@@ -813,6 +819,11 @@ const Header = () => {
                 >
                   <Lock className="me-2" />
                   Change Password
+                </Link>
+                <hr className="m-0" />
+                <Link className="dropdown-item" to={route.settings[2].path}>
+                  <EventRepeatOutlined className="me-2" />
+                  Subscriptions
                 </Link>
                 <hr className="m-0" />
                 <Link

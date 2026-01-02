@@ -70,3 +70,31 @@ export const getTaxRateById = async (taxId) => {
   }
 };
 
+/**
+ * Create a new tax rate
+ * @param {Object} taxData - Tax rate data to create
+ * @param {string} taxData.name - Tax rate name
+ * @param {number} taxData.rate - Tax rate percentage (0-100)
+ * @param {boolean} [taxData.inclusive] - Whether tax is inclusive (default: false)
+ * @param {string} [taxData.description] - Tax rate description
+ * @param {boolean} [taxData.isActive] - Whether tax is active (default: true)
+ * @returns {Promise} API response with created tax rate
+ *
+ * @example
+ * // Create a new tax rate
+ * await createTax({
+ *   name: "VAT",
+ *   rate: 20,
+ *   inclusive: false,
+ *   description: "Value Added Tax",
+ *   isActive: true
+ * });
+ */
+export const createTax = async (taxData) => {
+  try {
+    const response = await api.post("/masters/tax", taxData);
+    return response.data?.data || response.data;
+  } catch (error) {
+    throw error.response?.data || error.message;
+  }
+};

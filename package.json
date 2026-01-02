@@ -61,9 +61,10 @@
     "build": "vite build",
     "preview": "vite preview",
     "lint": "eslint \"src/**/*.{js,jsx}\" --max-warnings=0",
-    "test": "vitest run",
+    "test": "vitest run --no-coverage",
     "test:ui": "vitest --ui",
-    "test:coverage": "vitest --coverage"
+    "test:coverage": "vitest --coverage",
+    "test:single": "vitest run --run --no-coverage --reporter=verbose --pool=forks --poolOptions.forks.singleFork=true"
   },
   "browserslist": {
     "production": [

@@ -10,6 +10,7 @@ import {
   createItem,
   updateItem,
 } from "@/core/services/itemService";
+import { createTax } from "@/core/services/taxService";
 import EntityListView from "@/feature-module/components/entity-list-view";
 import withEntityHandlers from "@/feature-module/hoc/withEntityHandlers";
 import { getTableColumns } from "@/feature-module/components/table-columns";
@@ -25,6 +26,7 @@ const ItemList = () => {
   const [selectedItem, setSelectedItem] = useState(null);
   const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
+  const [isOpenTaxModal, setIsOpenTaxModal] = useState(false);
   const navigate = useNavigate();
   const [customFilters, setCustomFilters] = useState({
     startDate: null,
@@ -179,6 +181,25 @@ const ItemList = () => {
       }));
     }
   };
+  const onSubmitTax = async (data) => {
+    try {
+      await createTax(data);
+      Swal.fire({
+        title: "Tax created successfully",
+        icon: "success",
+      });
+      setIsOpenTaxModal(false);
+      // Refresh taxes list
+      dispatch(fetchTaxes());
+    } catch (error) {
+      console.log("error", error);
+      Swal.fire({
+        title: "Error",
+        text: error?.message || "Something went wrong",
+        icon: "error",
+      });
+    }
+  };
 
   // Transform selected item for edit - convert tax IDs to objects if needed
   const getEditDefaultValues = () => {
@@ -231,6 +252,12 @@ const ItemList = () => {
       type: "select",
       options: taxes,
       col: 6,
+      selectProps: {
+        onAddClick: () => {
+          setIsOpenTaxModal(true);
+        },
+        addButtonLabel: "Create New",
+      },
     },
     {
       name: "tax2Id",
@@ -238,8 +265,44 @@ const ItemList = () => {
       type: "select",
       options: taxes,
       col: 6,
+      selectProps: {
+        onAddClick: () => {
+          setIsOpenTaxModal(true);
+        },
+        addButtonLabel: "Create New",
+      },
     },
     { name: "isActive", label: "Status", type: "switch", col: 12 },
+  ];
+
+  const taxFields = [
+    {
+      name: "name",
+      label: "Name",
+      type: "text",
+      col: 6,
+      required: true,
+    },
+    {
+      name: "rate",
+      label: "Tax Rate (%)",
+      type: "number",
+      col: 6,
+      required: true,
+    },
+    {
+      name: "inclusive",
+      label: "Inclusive",
+      type: "switch",
+      col: 12,
+    },
+    {
+      name: "description",
+      label: "Description",
+      type: "textarea",
+      col: 12,
+      rows: 3,
+    },
   ];
 
   return (
@@ -305,6 +368,31 @@ const ItemList = () => {
         onSubmit={onSubmit}
         fields={fields}
         bodyStyle={{ height: "500px", overflowY: "auto" }}
+      />
+      <FormModal
+        isOpen={isOpenTaxModal}
+        onClose={() => {
+          setIsOpenTaxModal(false);
+        }}
+        title="Add Tax"
+        fields={taxFields}
+        onSubmit={onSubmitTax}
+        zIndex={1070}
+        schema={yup.object({
+          name: getValidationRules(t).textOnlyRequired,
+          rate: yup
+            .number()
+            .typeError("Tax rate must be a number")
+            .min(0, "Tax rate must be greater than or equal to 0")
+            .max(100, "Tax rate must be less than or equal to 100")
+            .required("Tax rate is required"),
+        })}
+        defaultValues={{
+          name: "",
+          rate: 0,
+          inclusive: false,
+          description: "",
+        }}
       />
     </>
   );

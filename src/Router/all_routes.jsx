@@ -14,7 +14,10 @@ import {
   Briefcase,
   CreditCard,
 } from "react-feather";
-import { ReceiptLong } from "@mui/icons-material";
+import {
+  EventAvailableOutlined,
+  EventRepeatOutlined,
+} from "@mui/icons-material";
 import { Settings } from "feather-icons-react/build/IconComponents";
 
 export const all_routes = {
@@ -402,6 +405,25 @@ export const all_routes = {
           icon: Lock,
           text: "Roles & Permissions",
           permission: "read",
+        },
+      ],
+    },
+    {
+      id: 3,
+      module: "manage_subscriptions",
+      name: "subscriptions-settings-group",
+      path: "/settings/subscriptions",
+      icon: EventAvailableOutlined,
+      text: "Subscriptions",
+      permission: "read",
+      children: [
+        {
+          id: 1,
+          module: "manage_subscriptions",
+          name: "subscriptions-settings",
+          path: "/settings/subscriptions",
+          icon: EventRepeatOutlined,
+          text: "Subscriptions",
         },
       ],
     },

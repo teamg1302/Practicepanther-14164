@@ -27,6 +27,7 @@ const FormModal = ({
   size = "md",
   showCloseButton = true,
   bodyStyle,
+  zIndex = 1050,
 }) => {
   // Handle body scroll lock when modal is open
   useEffect(() => {
@@ -89,7 +90,7 @@ const FormModal = ({
       <div
         className="modal-backdrop fade show"
         onClick={handleBackdropClick}
-        style={{ zIndex: 1040 }}
+        style={{ zIndex: zIndex - 10 }}
       />
 
       {/* Modal */}
@@ -97,7 +98,7 @@ const FormModal = ({
         className={`modal fade ${isOpen ? "show" : ""}`}
         style={{
           display: isOpen ? "block" : "none",
-          zIndex: 1050,
+          zIndex: zIndex,
         }}
         data-bs-backdrop="static"
         data-bs-keyboard="false"
@@ -181,6 +182,7 @@ FormModal.propTypes = {
   size: PropTypes.oneOf(["sm", "md", "lg", "xl"]),
   showCloseButton: PropTypes.bool,
   bodyStyle: PropTypes.object,
+  zIndex: PropTypes.number,
 };
 
 export default FormModal;
