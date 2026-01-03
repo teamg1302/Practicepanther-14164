@@ -24,6 +24,7 @@ import { useNavigate } from "react-router-dom";
 import { FormProvider } from "@/feature-module/components/rhf";
 import Input from "@/feature-module/components/form-elements/input";
 import Select from "@/feature-module/components/form-elements/select";
+import Switch from "@/feature-module/components/form-elements/switch";
 import { PhotoUpload } from "@/feature-module/components/form-elements/file-upload";
 import { FormButton } from "@/feature-module/components/buttons";
 import { getFirmDetails, updateFirmDetails } from "@/core/services/firmService";
@@ -663,6 +664,25 @@ const FirmLogoInfoContent = React.forwardRef(
               label={"Header Color"}
               type="color"
             />
+          </div>
+        </div>
+
+        <div className="col-md-12">
+          <div className="card-title-head mb-3">
+            <h6 className="border-bottom-0 mb-0 pb-0">{"Auto Numbering"}</h6>
+            <small className="text-muted">
+              {
+                "Automatically add a Contact or Matter Number when creating new contacts or matters."
+              }
+            </small>
+          </div>
+        </div>
+        <div className="row">
+          <div className="col-md-4">
+            <Switch name="autoContacts" label={"Contacts"} />
+          </div>
+          <div className="col-md-4">
+            <Switch name="autoMatters" label={"Matters"} />
           </div>
         </div>
 

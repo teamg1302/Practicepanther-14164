@@ -20,8 +20,11 @@ import {
   createMatter,
   updateMatter,
 } from "@/core/services/mattersService";
+import { FormModal } from "@/feature-module/components/modals";
 
 const MattersAddEdit = () => {
+  const [isOpenInvoiceTemplateModal, setIsOpenInvoiceTemplateModal] =
+    useState(false);
   const navigate = useNavigate();
   const route = all_routes;
   const { matterId } = useParams();
@@ -167,10 +170,14 @@ const MattersAddEdit = () => {
         name: "invoiceTemplate",
         label: "Invoice Template",
         type: "select",
-        options: [
-          { label: "Template 1", value: "template1" },
-          { label: "Template 2", value: "template2" },
-        ],
+        options: [{ label: "Default Template", value: "defaultTemplate" }],
+        selectProps: {
+          onAddClick: () => {
+            setIsOpenInvoiceTemplateModal(true);
+          },
+          addButtonLabel: "Create New",
+        },
+        required: true,
       },
       {
         id: "isEvergreenRetainer",
@@ -327,6 +334,31 @@ const MattersAddEdit = () => {
     }
   };
 
+  const schemaTemplate = useMemo(
+    () =>
+      yup.object({
+        name: getValidationRules(t).textOnlyRequired,
+        invoiceTheme: getValidationRules(t).textOnlyRequired,
+      }),
+    [t]
+  );
+
+  const onSubmitTemplate = async (data, event) => {
+    try {
+      console.log("data", data);
+    } catch (error) {
+      console.log("error", error);
+    }
+  };
+
+  const defaultValuesTemplate = useMemo(
+    () => ({
+      name: "",
+      invoiceTheme: "",
+    }),
+    []
+  );
+
   return (
     <PageLayout
       breadcrumbs={[
@@ -356,6 +388,87 @@ const MattersAddEdit = () => {
       >
         <MattersForm fields={fields} matterId={matterId || false} t={t} />
       </FormProvider>
+      <FormModal
+        isOpen={isOpenInvoiceTemplateModal}
+        onClose={() => setIsOpenInvoiceTemplateModal(false)}
+        title="Create Invoice Template"
+        fields={[
+          {
+            type: "ui",
+            element: (
+              <div className="card-title-head mb-3">
+                <h6 className="border-bottom-0 mb-0 pb-0">
+                  {"Invoice Template"}
+                </h6>
+              </div>
+            ),
+          },
+          {
+            name: "isDefault",
+            label: "Is Default",
+            type: "switch",
+          },
+          {
+            name: "name",
+            label: "Template Name",
+            type: "text",
+            required: true,
+            inputProps: {
+              placeholder: "Enter the invoice template name",
+            },
+          },
+          {
+            id: "Terms and Conditions",
+            col: 12,
+            name: "termsAndConditions",
+            label: "Terms and Conditions",
+            type: "rich-text-editor",
+            maxLength: 1000,
+          },
+          {
+            id: "Notes",
+            col: 12,
+            name: "notes",
+            label: "Notes",
+            type: "rich-text-editor",
+            maxLength: 1000,
+          },
+          {
+            type: "ui",
+            element: (
+              <div className="card-title-head mb-3">
+                <h6 className="border-bottom-0 mb-0 pb-0">
+                  {"Default Payment Options"}
+                </h6>
+              </div>
+            ),
+          },
+          {
+            name: "sendInvoicePaymentReminders",
+            label: "Send invoice payment reminders?",
+            type: "switch",
+          },
+          {
+            type: "ui",
+            element: (
+              <div className="card-title-head mb-3">
+                <h6 className="border-bottom-0 mb-0 pb-0">{"Invoice Theme"}</h6>
+              </div>
+            ),
+          },
+          {
+            name: "invoiceTheme",
+            label: "Invoice Theme",
+            type: "select",
+            options: [{ label: "Default Theme", value: "defaultTheme" }],
+            required: true,
+          },
+        ]}
+        schema={schemaTemplate}
+        defaultValues={defaultValuesTemplate}
+        onSubmit={onSubmitTemplate}
+        bodyStyle={{ height: "500px", overflowY: "auto" }}
+      />
     </PageLayout>
   );
 };

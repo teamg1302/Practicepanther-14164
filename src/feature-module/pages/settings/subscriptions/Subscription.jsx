@@ -265,7 +265,7 @@ const SubscriptionSettings = () => {
                       <XCircle size={18} className="me-2 text-muted" />
                       <span className="text-muted">Standard support</span>
                     </li>
-                    <li className="mb-0">
+                    {/* <li className="mb-0">
                       <button
                         className="btn btn-primary btn-sm w-100 mt-2"
                         onClick={() => {
@@ -275,7 +275,7 @@ const SubscriptionSettings = () => {
                       >
                         Upgrade to Premium
                       </button>
-                    </li>
+                    </li> */}
                   </ul>
                 )}
               </div>
@@ -283,7 +283,7 @@ const SubscriptionSettings = () => {
           </div>
 
           {/* Action Card */}
-          <div className="col-12">
+          {/* <div className="col-12">
             <div className="card">
               <div className="card-header">
                 <h5 className="card-title mb-0">Subscription Actions</h5>
@@ -337,7 +337,7 @@ const SubscriptionSettings = () => {
                 </div>
               </div>
             </div>
-          </div>
+          </div> */}
         </div>
       </PageLayout>
     </>

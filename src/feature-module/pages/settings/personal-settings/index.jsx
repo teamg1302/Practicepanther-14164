@@ -21,6 +21,7 @@ import * as yup from "yup";
 import Swal from "sweetalert2";
 import { FormProvider } from "@/feature-module/components/rhf";
 import Input from "@/feature-module/components/form-elements/input";
+import Switch from "@/feature-module/components/form-elements/switch";
 import Select from "@/feature-module/components/form-elements/select";
 import { PhotoUpload } from "@/feature-module/components/form-elements/file-upload";
 import { FormButton } from "@/feature-module/components/buttons";
@@ -275,6 +276,8 @@ const PersonalSettings = () => {
           roundTimeEntryType: "",
           dailyAgendaEmail: false,
           profileImage: "",
+          oneTime2FA: true,
+          is2FAEnabled: true,
         }}
         onSubmit={onSubmit}
       >
@@ -425,6 +428,8 @@ const PersonalSettingsContent = React.forwardRef(
             email: userData?.email || "",
             timezoneId: userData?.timezoneId?._id || "",
             roleId: userData?.roleId?._id || userData?.role?._id || "",
+            oneTime2FA: userData?.oneTime2FA || false,
+            is2FAEnabled: userData?.is2FAEnabled || false,
             home: userData?.home || userData?.homeAddress || "",
             office: userData?.office || userData?.officeAddress || "",
             hourlyRate: userData?.hourlyRate || userData?.hourly_rate || "",
@@ -598,7 +603,24 @@ const PersonalSettingsContent = React.forwardRef(
               />
             </div>
           )}
+          <div className="col-md-12">
+            <div className="card-title-head mb-3">
+              <h6 className="border-bottom-0 mb-0 pb-0">
+                {"Authentication Settings"}
+              </h6>
+              <small className="text-muted">
+                {"Enter the authentication settings"}
+              </small>
+            </div>
+          </div>
+          <div className="col-md-4">
+            <Switch name="oneTime2FA" label={"One time 2FA for 15 days"} />
+          </div>
+          <div className="col-md-4">
+            <Switch name="is2FAEnabled" label={"Enable 2FA"} />
+          </div>
         </div>
+
         {/* <div className="card-title-head">
           <h6>
             <span>
