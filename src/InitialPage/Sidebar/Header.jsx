@@ -27,8 +27,10 @@ import { EventRepeatOutlined } from "@mui/icons-material";
 import { all_routes } from "../../Router/all_routes";
 import { logout } from "../../core/services/authService";
 import { clearAuth } from "../../core/redux/action";
+import { useIsOwner } from "../../core/utilities/utility";
 
 const Header = () => {
+  const isOwner = useIsOwner();
   const auth = useSelector((state) => state.auth);
   const route = all_routes;
   const navigate = useNavigate();
@@ -736,11 +738,14 @@ const Header = () => {
               <FeatherIcon icon="settings" aria-hidden="true" />
             </Link>
           </li>
-          <li className="nav-item nav-item-box">
-            <Link to={route.settings[2].path} aria-label="Subscriptions">
-              <EventRepeatOutlined />
-            </Link>
-          </li>
+
+          {isOwner && (
+            <li className="nav-item nav-item-box">
+              <Link to={route.settings[2].path} aria-label="Subscriptions">
+                <EventRepeatOutlined />
+              </Link>
+            </li>
+          )}
 
           <li className="nav-item dropdown has-arrow main-drop">
             <Link
@@ -821,11 +826,16 @@ const Header = () => {
                   Change Password
                 </Link>
                 <hr className="m-0" />
-                <Link className="dropdown-item" to={route.settings[2].path}>
-                  <EventRepeatOutlined className="me-2" />
-                  Subscriptions
-                </Link>
-                <hr className="m-0" />
+                {isOwner && (
+                  <>
+                    <Link className="dropdown-item" to={route.settings[2].path}>
+                      <EventRepeatOutlined className="me-2" />
+                      Subscriptions
+                    </Link>
+                    <hr className="m-0" />
+                  </>
+                )}
+
                 <Link
                   className="dropdown-item logout pb-0"
                   to="/signin"

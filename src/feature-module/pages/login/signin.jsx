@@ -6,12 +6,15 @@ import * as yup from "yup";
 import { useDispatch } from "react-redux";
 import { useTranslation } from "react-i18next";
 import { User, Lock } from "react-feather";
-import ImageWithBasePath from "@/core/img/imagewithbasebath";
 import { Link } from "react-router-dom";
+import Swal from "sweetalert2";
+
+import ImageWithBasePath from "@/core/img/imagewithbasebath";
 import { all_routes } from "@/Router/all_routes";
 import { login } from "@/core/services/authService";
 import { setLoginEmail } from "@/core/redux/action";
-import Swal from "sweetalert2";
+
+import { setAuthData } from "@/core/redux/action";
 
 const Signin = () => {
   const { t } = useTranslation();
@@ -50,22 +53,45 @@ const Signin = () => {
 
   const onSubmit = async (formData) => {
     try {
-      await login(formData);
+      const response = await login(formData);
 
-      // Store login email in Redux
-      dispatch(setLoginEmail(formData.email));
+      if (response?.data?.token && response?.data?.user) {
+        const token = response?.data?.token;
+        const user = response?.data?.user;
+        const role =
+          response?.data?.user?.role?.name || response?.data?.user?.role;
+        const permissions = response?.data?.user?.permissions || [];
 
-      // Show success message
-      // Swal.fire({
-      //   icon: "success",
-      //   title: t("signin.messages.loginSuccess"),
-      //   text: t("signin.messages.loginSuccessMessage"),
-      //   showConfirmButton: true,
-      //   timer: 2000,
-      // });
+        // Store auth data in Redux
+        if (token && user) {
+          dispatch(
+            setAuthData({
+              token: token,
+              user: user,
+              role: role,
+              permissions: permissions,
+            })
+          );
+        }
 
-      // Navigate to verify token screen
-      navigate(route.verifyToken);
+        // Navigate to dashboard
+        navigate(route.headers[0].path);
+      } else {
+        // Store login email in Redux
+        dispatch(setLoginEmail(formData.email));
+
+        // Show success message
+        // Swal.fire({
+        //   icon: "success",
+        //   title: t("signin.messages.loginSuccess"),
+        //   text: t("signin.messages.loginSuccessMessage"),
+        //   showConfirmButton: true,
+        //   timer: 2000,
+        // });
+
+        // Navigate to verify token screen
+        navigate(route.verifyToken);
+      }
     } catch (error) {
       // Show error message
       const errorMessage =

@@ -5,16 +5,23 @@ import PropTypes from "prop-types";
 
 import { all_routes } from "@/Router/all_routes";
 import { checkPermission } from "@/Router/PermissionRoute";
+import { useIsOwner } from "@/core/utilities/utility";
 
 const SettingsSideBar = ({ isMobileOpen, onClose }) => {
+  const isOwner = useIsOwner();
   const settingsRoutes = all_routes.settings;
   const location = useLocation();
   const permissions = useSelector((state) => state.auth?.permissions || []);
 
-  // Filter routes based on permissions
+  // Filter routes based on permissions and owner status
   const filteredRoutes = useMemo(() => {
     return settingsRoutes
       .map((route) => {
+        // Hide manage_subscriptions module if user is owner
+        if (!isOwner && route.module === "manage_subscriptions") {
+          return null;
+        }
+
         // Check if parent route has permission
         const hasParentPermission =
           !route.module || !route.permission
@@ -24,6 +31,10 @@ const SettingsSideBar = ({ isMobileOpen, onClose }) => {
         // If route has children, filter them
         if (route.children && route.children.length > 0) {
           const filteredChildren = route.children.filter((child) => {
+            // Hide manage_subscriptions children if user is owner
+            if (isOwner && child.module === "manage_subscriptions") {
+              return false;
+            }
             // If child has no module or permission, show it
             if (!child.module || !child.permission) {
               return true;
@@ -47,7 +58,7 @@ const SettingsSideBar = ({ isMobileOpen, onClose }) => {
         return hasParentPermission ? route : null;
       })
       .filter((route) => route !== null); // Remove null entries
-  }, [settingsRoutes, permissions]);
+  }, [settingsRoutes, permissions, isOwner]);
 
   // Close sidebar when route changes on mobile
   useEffect(() => {

@@ -153,6 +153,8 @@ const PersonalSettings = () => {
         delete dataToSubmit.password;
       }
 
+      dataToSubmit.twoFactorAuth.days = formData.twoFactorAuth.days ? 15 : 0;
+
       // Convert form data to FormData using utility function
       const getValues = formRef.current?.getValues;
       const formDataToSubmit = convertToFormData(dataToSubmit, {
@@ -276,8 +278,10 @@ const PersonalSettings = () => {
           roundTimeEntryType: "",
           dailyAgendaEmail: false,
           profileImage: "",
-          oneTime2FA: true,
-          is2FAEnabled: true,
+          twoFactorAuth: {
+            days: false,
+            isEnabled: true,
+          },
         }}
         onSubmit={onSubmit}
       >
@@ -326,6 +330,7 @@ const PersonalSettingsContent = React.forwardRef(
       reset,
       watch,
       getValues,
+      setValue,
       formState: { errors },
     } = useFormContext();
     // console.log("errors", errors);
@@ -418,6 +423,24 @@ const PersonalSettingsContent = React.forwardRef(
           const userData = await getUserDetails(userId);
 
           // Map API response to form fields - ensure proper type conversion
+          // Safely parse twoFactorAuth - check if it's already an object or a JSON string
+          let twoFactorAuth = {};
+          if (userData?.twoFactorAuth) {
+            if (typeof userData.twoFactorAuth === "object") {
+              // Already an object, use it directly
+              twoFactorAuth = userData.twoFactorAuth;
+            } else if (typeof userData.twoFactorAuth === "string") {
+              // It's a string, try to parse it
+              try {
+                twoFactorAuth = JSON.parse(userData.twoFactorAuth);
+              } catch (error) {
+                // If parsing fails, use empty object
+                console.warn("Failed to parse twoFactorAuth:", error);
+                twoFactorAuth = {};
+              }
+            }
+          }
+
           const formData = {
             profileImage: userData?.profileImage,
             name: userData?.name,
@@ -428,8 +451,10 @@ const PersonalSettingsContent = React.forwardRef(
             email: userData?.email || "",
             timezoneId: userData?.timezoneId?._id || "",
             roleId: userData?.roleId?._id || userData?.role?._id || "",
-            oneTime2FA: userData?.oneTime2FA || false,
-            is2FAEnabled: userData?.is2FAEnabled || false,
+            twoFactorAuth: {
+              days: twoFactorAuth?.days ? true : false,
+              isEnabled: twoFactorAuth?.isEnabled ? true : false,
+            },
             home: userData?.home || userData?.homeAddress || "",
             office: userData?.office || userData?.officeAddress || "",
             hourlyRate: userData?.hourlyRate || userData?.hourly_rate || "",
@@ -452,6 +477,11 @@ const PersonalSettingsContent = React.forwardRef(
                 : false
             ),
           };
+
+          console.log(
+            "userData?.twoFactorAuth?.days",
+            formData?.twoFactorAuth?.days
+          );
 
           // Update only profileImage, preserve all other user properties including nested objects
           if (auth?.user) {
@@ -484,6 +514,18 @@ const PersonalSettingsContent = React.forwardRef(
 
       fetchUserDetails();
     }, [userId, reset, setIsLoading, t, isCreateMode, refreshTrigger]);
+
+    // Watch twoFactorAuth.isEnabled and auto-set days to false when isEnabled is false
+    const twoFactorAuthIsEnabled = useWatch({
+      name: "twoFactorAuth.isEnabled",
+    });
+
+    React.useEffect(() => {
+      // When 2FA is disabled, automatically disable the "15 days" option
+      if (twoFactorAuthIsEnabled === false) {
+        setValue("twoFactorAuth.days", false);
+      }
+    }, [twoFactorAuthIsEnabled, setValue]);
 
     if (isLoading) {
       return (
@@ -614,10 +656,14 @@ const PersonalSettingsContent = React.forwardRef(
             </div>
           </div>
           <div className="col-md-4">
-            <Switch name="oneTime2FA" label={"One time 2FA for 15 days"} />
+            <Switch
+              name="twoFactorAuth.days"
+              label={"One time 2FA for 15 days"}
+              disabled={!twoFactorAuthIsEnabled}
+            />
           </div>
           <div className="col-md-4">
-            <Switch name="is2FAEnabled" label={"Enable 2FA"} />
+            <Switch name="twoFactorAuth.isEnabled" label={"Enable 2FA"} />
           </div>
         </div>
 
