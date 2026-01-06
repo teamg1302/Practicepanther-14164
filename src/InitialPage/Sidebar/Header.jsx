@@ -237,6 +237,10 @@ const Header = () => {
     return luminance > 0.5 ? "#000000" : "#FFFFFF";
   };
 
+  console.log("auth?.user?.firmId?.portalLogo", auth?.user?.firmId?.portalLogo);
+
+  console.log("auth?.user.profileImage", auth?.user.profileImage);
+
   return (
     <>
       <div
@@ -259,7 +263,7 @@ const Header = () => {
             <img
               src={
                 auth?.user?.firmId?.portalLogo ||
-                "/assets/img/Jurisoft-logo-sq.png"
+                "/company/assets/img/Jurisoft-logo-hr.png"
               }
               alt={auth?.user?.firmId?.name || "Jurisoft"}
               style={{
@@ -767,7 +771,10 @@ const Header = () => {
               >
                 <span className="user-letter">
                   <img
-                    src={auth?.user.profileImage}
+                    src={
+                      auth?.user.profileImage ||
+                      "/company/assets/img/Jurisoft-logo-hr.png"
+                    }
                     alt={auth?.user?.name}
                     className="img-fluid"
                   />

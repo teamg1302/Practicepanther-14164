@@ -1,3 +1,12 @@
+/**
+ * Firm service for managing firm information.
+ * @module core/services/firmService
+ *
+ * Provides functions to:
+ * - Get firm details by user firm ID
+ * - Update firm details
+ */
+
 import api from "./api";
 
 /**

@@ -3,12 +3,25 @@ import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { useSelector } from "react-redux";
+
 import { all_routes } from "@/Router/all_routes";
 import { getUsers, deleteUser } from "@/core/services/userService";
 import EntityListView from "@/feature-module/components/entity-list-view";
 import withEntityHandlers from "@/feature-module/hoc/withEntityHandlers";
 import { getTableColumns } from "@/feature-module/components/table-columns";
 import ListPageLayout from "@/feature-module/components/list-page-layout";
+import { useIsOwner } from "@/core/utilities/utility";
+
+/**
+ * Users management page component.
+ * @module feature-module/pages/settings/users
+ *
+ * Provides a list view of users with:
+ * - Conditional action buttons based on row data (edit, delete, permissions)
+ * - User filtering and pagination
+ * - Role-based access control
+ * - Owner-specific permissions
+ */
 
 // Columns definition - Pure JSON configuration (srNo and actions are added by withEntityHandlers)
 const COLUMNS_CONFIG = [
@@ -31,7 +44,16 @@ const COLUMNS_CONFIG = [
   { header: "Last Login", accessorKey: "lastLogin", type: "date" },
 ];
 
+/**
+ * Users component for managing users list.
+ * @component
+ * @returns {JSX.Element} Users management page
+ *
+ * @example
+ * <Users />
+ */
 const Users = () => {
+  const isOwner = useIsOwner();
   const navigate = useNavigate();
   const userId = useSelector((state) => state.auth?.user?.id);
   const { t } = useTranslation();
@@ -130,6 +152,7 @@ const Users = () => {
         service={getUsers}
         options={{
           customButtons: {
+            // Use functions for conditional visibility based on row data
             permissions: true,
             edit: true,
             delete: true,

@@ -1,3 +1,15 @@
+/**
+ * Expense service for managing expenses.
+ * @module core/services/expenseService
+ *
+ * Provides functions to:
+ * - Fetch expenses list with pagination and filtering
+ * - Get expense details by ID
+ * - Create new expenses
+ * - Update existing expenses
+ * - Delete expenses
+ */
+
 import api from "./api";
 
 /**

@@ -295,6 +295,21 @@ const withEntityHandlers = (WrappedComponent) => {
       handleMenuClose();
     };
 
+    // Helper function to evaluate button visibility (supports both boolean and function)
+    const shouldShowButton = useCallback(
+      (buttonConfig, rowData) => {
+        if (typeof buttonConfig === "function") {
+          // Only call the function if rowData is available, otherwise return false
+          if (rowData === undefined || rowData === null) {
+            return false;
+          }
+          return buttonConfig(rowData);
+        }
+        return Boolean(buttonConfig);
+      },
+      []
+    );
+
     // TABLE COLUMNS WITH SR NO + ACTION
     const finalColumns = useMemo(() => {
       const cols = Array.isArray(columns) ? [...columns] : [];
@@ -309,20 +324,45 @@ const withEntityHandlers = (WrappedComponent) => {
         });
       }
 
-      if (merged.customButtons.edit || merged.customButtons.delete) {
+      // Show actions column if any button is enabled (check with a sample row to support functions)
+      const hasAnyButton = () => {
+        // Check if any button is enabled (either boolean true or function exists)
+        return (
+          merged.customButtons.edit ||
+          merged.customButtons.delete ||
+          merged.customButtons.restore ||
+          merged.customButtons.permissions
+        );
+      };
+
+      if (hasAnyButton()) {
         cols.push({
           id: "actions",
           header: "Actions",
           size: 100,
-          Cell: ({ row }) => (
-            <IconButton
-              onClick={(e) => handleMenuOpen(e, row)}
-              size="small"
-              aria-label="more actions"
-            >
-              <MoreVert />
-            </IconButton>
-          ),
+          Cell: ({ row }) => {
+            // Check if this row should show any action buttons
+            const rowData = row.original;
+            const showAnyAction =
+              shouldShowButton(merged.customButtons.edit, rowData) ||
+              shouldShowButton(merged.customButtons.delete, rowData) ||
+              shouldShowButton(merged.customButtons.restore, rowData) ||
+              shouldShowButton(merged.customButtons.permissions, rowData);
+
+            if (!showAnyAction) {
+              return null;
+            }
+
+            return (
+              <IconButton
+                onClick={(e) => handleMenuOpen(e, row)}
+                size="small"
+                aria-label="more actions"
+              >
+                <MoreVert />
+              </IconButton>
+            );
+          },
         });
       }
 
@@ -333,6 +373,7 @@ const withEntityHandlers = (WrappedComponent) => {
       pagination.pageSize,
       merged,
       handleMenuOpen,
+      shouldShowButton,
     ]);
 
     // MATERIAL REACT TABLE CONFIG
@@ -568,10 +609,10 @@ const withEntityHandlers = (WrappedComponent) => {
           </Popover>
         )}
 
-        {(merged.customButtons.edit ||
-          merged.customButtons.delete ||
-          merged.customButtons.restore ||
-          merged.customButtons.permissions) && (
+        {(shouldShowButton(merged.customButtons.edit, selectedRow?.original) ||
+          shouldShowButton(merged.customButtons.delete, selectedRow?.original) ||
+          shouldShowButton(merged.customButtons.restore, selectedRow?.original) ||
+          shouldShowButton(merged.customButtons.permissions, selectedRow?.original)) && (
           <Menu
             anchorEl={menuAnchorEl}
             open={Boolean(menuAnchorEl)}
@@ -585,7 +626,10 @@ const withEntityHandlers = (WrappedComponent) => {
               horizontal: "right",
             }}
           >
-            {merged.customButtons.permissions && (
+            {shouldShowButton(
+              merged.customButtons.permissions,
+              selectedRow?.original
+            ) && (
               <MenuItem onClick={handleMenuPermissions}>
                 <ListItemIcon>
                   <Security fontSize="small" className="text-primary" />
@@ -594,7 +638,10 @@ const withEntityHandlers = (WrappedComponent) => {
               </MenuItem>
             )}
 
-            {merged.customButtons.edit && (
+            {shouldShowButton(
+              merged.customButtons.edit,
+              selectedRow?.original
+            ) && (
               <MenuItem onClick={handleMenuEdit}>
                 <ListItemIcon>
                   <Edit fontSize="small" className="text-primary" />
@@ -602,7 +649,10 @@ const withEntityHandlers = (WrappedComponent) => {
                 <ListItemText>{t("Edit")}</ListItemText>
               </MenuItem>
             )}
-            {merged.customButtons.restore && (
+            {shouldShowButton(
+              merged.customButtons.restore,
+              selectedRow?.original
+            ) && (
               <MenuItem onClick={handleMenuRestore}>
                 <ListItemIcon>
                   <Undo fontSize="small" className="text-primary" />
@@ -613,7 +663,10 @@ const withEntityHandlers = (WrappedComponent) => {
               </MenuItem>
             )}
 
-            {merged.customButtons.delete && (
+            {shouldShowButton(
+              merged.customButtons.delete,
+              selectedRow?.original
+            ) && (
               <MenuItem onClick={handleMenuDelete}>
                 <ListItemIcon>
                   <Delete fontSize="small" className="text-danger" />

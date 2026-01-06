@@ -31,7 +31,7 @@ const HeaderLayout = () => {
         <Header />
         <Sidebar />
         <Outlet />
-        {showThemeSettings && <ThemeSettings />}
+        {/* {showThemeSettings && <ThemeSettings />} */}
       </div>
     </ProtectedRoute>
   );

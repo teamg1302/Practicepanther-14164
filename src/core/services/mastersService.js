@@ -1,3 +1,16 @@
+/**
+ * Masters service for fetching reference data.
+ * @module core/services/mastersService
+ *
+ * Provides functions to fetch various master/reference data from the API:
+ * - Timezones
+ * - Job titles
+ * - Countries
+ * - Currencies
+ * - States (by country)
+ * - Tax rates
+ */
+
 import api from "./api";
 
 /**
@@ -49,7 +62,7 @@ export const getTimezone = async (params = {}) => {
  */
 export const getTitles = async (params = {}) => {
   try {
-    const { limit = 100, ...otherParams } = params;
+    const { limit = 500, ...otherParams } = params;
 
     // Build query string
     const queryParams = new URLSearchParams({
@@ -88,7 +101,7 @@ export const getTitles = async (params = {}) => {
  */
 export const getCountries = async (params = {}) => {
   try {
-    const { limit = 50, ...otherParams } = params;
+    const { limit = 500, ...otherParams } = params;
 
     // Build query string
     const queryParams = new URLSearchParams({
@@ -125,7 +138,7 @@ export const getCountries = async (params = {}) => {
  */
 export const getCurrencies = async (params = {}) => {
   try {
-    const { limit = 50, ...otherParams } = params;
+    const { limit = 500, ...otherParams } = params;
 
     // Build query string
     const queryParams = new URLSearchParams({
@@ -202,7 +215,7 @@ export const getStatesByCountry = async (params) => {
  */
 export const getTax = async (params = {}) => {
   try {
-    const { search = "", limit = 50, ...otherParams } = params;
+    const { search = "", limit = 500, ...otherParams } = params;
 
     // Build query string
     const queryParams = new URLSearchParams({

@@ -1,3 +1,10 @@
+/**
+ * Tag service for managing tags.
+ * @module core/services/tagService
+ *
+ * Provides functions to fetch tags with pagination and filtering.
+ */
+
 import api from "./api";
 
 /**

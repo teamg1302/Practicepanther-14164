@@ -1,3 +1,15 @@
+/**
+ * Category service for managing categories.
+ * @module core/services/categoryService
+ *
+ * Provides functions to:
+ * - Fetch categories list with pagination and filtering
+ * - Get category details by ID
+ * - Create new categories
+ * - Update existing categories
+ * - Delete categories
+ */
+
 import api from "./api";
 
 /**

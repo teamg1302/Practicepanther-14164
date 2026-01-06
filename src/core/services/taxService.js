@@ -1,3 +1,15 @@
+/**
+ * Tax service for managing tax rates.
+ * @module core/services/taxService
+ *
+ * Provides functions to:
+ * - Fetch tax rates with pagination and filtering
+ * - Get tax rate details by ID
+ * - Create new tax rates
+ * - Update existing tax rates
+ * - Delete tax rates
+ */
+
 import api from "./api";
 
 /**

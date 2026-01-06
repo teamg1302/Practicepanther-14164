@@ -39,6 +39,19 @@ const initialState = {
   taxesError: null,
 };
 
+const formatTimezoneLabel = (item) => {
+  if (!item?.description) return "";
+
+  // Extract UTC offset
+  const utcMatch = item.description.match(/\(UTC[+-]\d{2}:\d{2}\)/);
+  const utc = utcMatch ? utcMatch[0] : "";
+
+  // Extract location (before UTC)
+  const location = item.description.split("(")[0].trim();
+
+  return `${utc} ${location}`;
+};
+
 /**
  * Async thunk for fetching timezones from API
  * @type {Function}
@@ -56,7 +69,7 @@ export const fetchTimezones = createAsyncThunk(
       // Adjust transformation based on actual API response structure
       const formattedTimezones = Array.isArray(timezoneData.data)
         ? timezoneData.data.map((tz) => ({
-            label: tz.label,
+            label: formatTimezoneLabel(tz),
             value: tz.value,
           }))
         : [];

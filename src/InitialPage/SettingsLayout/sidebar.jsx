@@ -1,3 +1,15 @@
+/**
+ * Settings sidebar component for navigation.
+ * @module InitialPage/SettingsLayout/sidebar
+ *
+ * Provides a sidebar navigation menu for settings pages with:
+ * - Permission-based route filtering
+ * - Owner-based module visibility (manage_subscriptions only visible to owners)
+ * - Mobile-responsive design with overlay
+ * - Active route highlighting
+ * - Nested route support with children
+ */
+
 import React, { useEffect, useMemo } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
@@ -7,6 +19,17 @@ import { all_routes } from "@/Router/all_routes";
 import { checkPermission } from "@/Router/PermissionRoute";
 import { useIsOwner } from "@/core/utilities/utility";
 
+/**
+ * Settings sidebar component.
+ * @component
+ * @param {Object} props - Component props
+ * @param {boolean} props.isMobileOpen - Whether the mobile sidebar is open
+ * @param {Function} props.onClose - Function to close the mobile sidebar
+ * @returns {JSX.Element} Settings sidebar component
+ *
+ * @example
+ * <SettingsSideBar isMobileOpen={false} onClose={() => {}} />
+ */
 const SettingsSideBar = ({ isMobileOpen, onClose }) => {
   const isOwner = useIsOwner();
   const settingsRoutes = all_routes.settings;
@@ -17,7 +40,8 @@ const SettingsSideBar = ({ isMobileOpen, onClose }) => {
   const filteredRoutes = useMemo(() => {
     return settingsRoutes
       .map((route) => {
-        // Hide manage_subscriptions module if user is owner
+        // Hide manage_subscriptions module if user is NOT owner
+        // Only owners should see the manage_subscriptions module
         if (!isOwner && route.module === "manage_subscriptions") {
           return null;
         }
@@ -31,8 +55,9 @@ const SettingsSideBar = ({ isMobileOpen, onClose }) => {
         // If route has children, filter them
         if (route.children && route.children.length > 0) {
           const filteredChildren = route.children.filter((child) => {
-            // Hide manage_subscriptions children if user is owner
-            if (isOwner && child.module === "manage_subscriptions") {
+            // Hide manage_subscriptions children if user is NOT owner
+            // Only owners should see the manage_subscriptions children
+            if (!isOwner && child.module === "manage_subscriptions") {
               return false;
             }
             // If child has no module or permission, show it

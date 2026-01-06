@@ -1,3 +1,16 @@
+/**
+ * User service for managing users.
+ * @module core/services/userService
+ *
+ * Provides functions to:
+ * - Fetch users list with pagination and filtering
+ * - Get user details by ID
+ * - Create new users
+ * - Update user details
+ * - Change user password
+ * - Delete users
+ */
+
 import api from "./api";
 import { ApiPath } from "./path";
 

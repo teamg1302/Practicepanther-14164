@@ -1,3 +1,15 @@
+/**
+ * Item service for managing items.
+ * @module core/services/itemService
+ *
+ * Provides functions to:
+ * - Fetch items list with pagination and filtering
+ * - Get item details by ID
+ * - Create new items
+ * - Update existing items
+ * - Delete items
+ */
+
 import api from "./api";
 
 /**

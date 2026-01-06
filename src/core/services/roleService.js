@@ -1,3 +1,17 @@
+/**
+ * Role service for managing roles and permissions.
+ * @module core/services/roleService
+ *
+ * Provides functions to:
+ * - Fetch roles list with pagination and filtering
+ * - Get role details by ID
+ * - Create new roles
+ * - Update existing roles
+ * - Delete roles
+ * - Fetch permissions
+ * - Get role modules
+ */
+
 import api from "./api";
 
 /**

@@ -1,3 +1,16 @@
+/**
+ * Matter service for managing matters.
+ * @module core/services/mattersService
+ *
+ * Provides functions to:
+ * - Fetch matters list with pagination and filtering
+ * - Get matter details by ID
+ * - Create new matters
+ * - Update existing matters
+ * - Delete matters
+ * - Get activities log by matter ID
+ */
+
 import api from "./api";
 
 /**

@@ -1,3 +1,15 @@
+/**
+ * Flat fee service for managing flat fees.
+ * @module core/services/flatfeesService
+ *
+ * Provides functions to:
+ * - Fetch flat fees list with pagination and filtering
+ * - Get flat fee details by ID
+ * - Create new flat fees
+ * - Update existing flat fees
+ * - Delete flat fees
+ */
+
 import api from "./api";
 
 /**

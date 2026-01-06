@@ -100,6 +100,20 @@ const RolePermissionList = () => {
     }));
   };
 
+  const showEditButton = (row) => {
+    if (row.name === "Firm Owner") {
+      return false;
+    }
+    return true;
+  };
+
+  const showDeleteButton = (row) => {
+    if (row.name === "Firm Owner") {
+      return false;
+    }
+    return true;
+  };
+
   return (
     <ListPageLayout
       breadcrumbs={[
@@ -143,8 +157,8 @@ const RolePermissionList = () => {
         service={getRoles}
         options={{
           customButtons: {
-            edit: true,
-            delete: true,
+            edit: showEditButton,
+            delete: showDeleteButton,
           },
           tableSetting: {
             srNo: true,

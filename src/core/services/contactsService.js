@@ -1,3 +1,17 @@
+/**
+ * Contact service for managing contacts.
+ * @module core/services/contactsService
+ *
+ * Provides functions to:
+ * - Fetch contacts list with pagination and filtering
+ * - Get contact details by ID
+ * - Create new contacts
+ * - Update existing contacts
+ * - Delete contacts
+ * - Get matters by contact ID
+ * - Get activities log by contact ID
+ */
+
 import api from "./api";
 
 /**

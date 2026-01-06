@@ -1,3 +1,12 @@
+/**
+ * Time entry service for managing time entries.
+ * @module core/services/timeEntryService
+ *
+ * Provides functions to:
+ * - Fetch time entries list with pagination and filtering
+ * - Create new time entries
+ */
+
 import api from "./api";
 
 /**
