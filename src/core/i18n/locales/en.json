@@ -2,7 +2,7 @@
   "signin": {
     "welcomeBack": "Welcome Back!",
     "title": "Sign In",
-    "subtitle": "Access the Practice Management System using your email and passcode.",
+    "subtitle": "Access the Jurisoft System using your email and passcode.",
     "emailLabel": "Email Address",
     "emailPlaceholder": "example@email.com",
     "passwordLabel": "Password",

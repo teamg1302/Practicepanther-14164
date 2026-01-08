@@ -56,6 +56,7 @@ const Users = () => {
   const isOwner = useIsOwner();
   const navigate = useNavigate();
   const userId = useSelector((state) => state.auth?.user?.id);
+  const ownerId = useSelector((state) => state.auth?.user?.firmId?.ownerId);
   const { t } = useTranslation();
   const route = all_routes;
   const [customFilters, setCustomFilters] = useState({});
@@ -109,6 +110,13 @@ const Users = () => {
     }));
   };
 
+  const showEdit = (row) => {
+    if (ownerId === row._id) {
+      return false;
+    }
+    return true;
+  };
+
   return (
     <ListPageLayout
       breadcrumbs={[
@@ -153,9 +161,9 @@ const Users = () => {
         options={{
           customButtons: {
             // Use functions for conditional visibility based on row data
-            permissions: true,
-            edit: true,
-            delete: true,
+            permissions: showEdit,
+            edit: showEdit,
+            delete: showEdit,
           },
           tableSetting: {
             srNo: true,

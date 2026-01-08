@@ -30,7 +30,7 @@ import {
   updateUserDetails,
   createUser,
 } from "@/core/services/userService";
-import { getRoles } from "@/core/services/roleService";
+import { getRolesAsMaster } from "@/core/services/roleService";
 import { fetchTimezones, fetchJobTitles } from "@/core/redux/mastersReducer";
 import { convertToFormData } from "@/core/utilities/formDataConverter";
 import { all_routes } from "@/Router/all_routes";
@@ -198,15 +198,10 @@ const PersonalSettings = () => {
       const errorMessage =
         error?.message ||
         error?.error ||
-        (isCreateMode
-          ? t("personalSettings.messages.createFailedMessage") ||
-            "Failed to create user."
-          : t("personalSettings.messages.saveFailedMessage"));
+        (isCreateMode ? "Failed to create user." : "Failed to save user.");
       Swal.fire({
         icon: "error",
-        title: isCreateMode
-          ? t("personalSettings.messages.createFailed") || "Create Failed"
-          : t("personalSettings.messages.saveFailed"),
+        title: isCreateMode ? "Create Failed" : "Save Failed",
         text: errorMessage,
         showConfirmButton: true,
       });
@@ -366,14 +361,15 @@ const PersonalSettingsContent = React.forwardRef(
 
         setRolesLoading(true);
         try {
-          const rolesData = await getRoles({ tab: "all", limit: 100 });
-          // Format roles to match Select component format
-          const formattedRoles = Array.isArray(rolesData?.list)
-            ? rolesData.list.map((role) => ({
-                label: role.name,
-                value: role._id,
+          const rolesData = await getRolesAsMaster({ limit: 1000 });
+
+          const formattedRoles = Array.isArray(rolesData?.data)
+            ? rolesData.data.map((role) => ({
+                label: role.label,
+                value: role.value,
               }))
             : [];
+          console.log("rolesData", rolesData);
           setRoles(formattedRoles);
         } catch (error) {
           console.error("Error fetching roles:", error);
@@ -478,16 +474,12 @@ const PersonalSettingsContent = React.forwardRef(
             ),
           };
 
-          console.log(
-            "userData?.twoFactorAuth?.days",
-            formData?.twoFactorAuth?.days
-          );
-
           // Update only profileImage, preserve all other user properties including nested objects
-          if (auth?.user) {
+          if (!userIdFromParams && auth?.user) {
             dispatch(
               setAuthUser({
                 ...auth.user,
+                name: formData?.name || auth?.user?.name || "",
                 profileImage:
                   formData?.profileImage || auth?.user?.profileImage || "",
               })
@@ -592,6 +584,12 @@ const PersonalSettingsContent = React.forwardRef(
               placeholder={
                 t("personalSettings.selectJobTitle") || "Select Job Title"
               }
+              selectProps={{
+                showSyncIcon: true,
+                onSyncClick: () => {
+                  dispatch(fetchJobTitles());
+                },
+              }}
             />
           </div>
           <div className="col-md-12">
@@ -631,6 +629,12 @@ const PersonalSettingsContent = React.forwardRef(
               options={timezones}
               placeholder={"Select Timezone"}
               disabled={timezonesLoading}
+              selectProps={{
+                showSyncIcon: true,
+                onSyncClick: () => {
+                  dispatch(fetchTimezones());
+                },
+              }}
             />
           </div>
           {shouldShowRoleField && (

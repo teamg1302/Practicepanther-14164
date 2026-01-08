@@ -38,11 +38,14 @@ const HorizontalSidebar = () => {
       <div id="sidebar-menu-3" className="sidebar-menu">
         <ul className="nav">
           {filteredRoutes.map((route) => {
+            console.log("route.path", route.path, location.pathname);
+
             // Check if parent route is active
             const isParentActive =
               location.pathname === route.path ||
               (route.path !== "/" &&
-                location.pathname.startsWith(route.path + "/"));
+                location.pathname.startsWith(route.path + "/")) ||
+              (route.path === "/dashboard" && location.pathname === "/");
 
             // Check if any child route is active
             const isChildActive =

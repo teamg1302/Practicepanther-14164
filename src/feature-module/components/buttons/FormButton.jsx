@@ -8,7 +8,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-const FormButton = ({ type = "submit", isSubmitting = false, ...props }) => {
+const FormButton = ({ type = "submit", isSubmitting = false, disabled = false, ...props }) => {
   const { t } = useTranslation();
   const buttonLabel = React.useMemo(() => {
     switch (type) {
@@ -37,7 +37,7 @@ const FormButton = ({ type = "submit", isSubmitting = false, ...props }) => {
     <button
       type={type === "cancel" || type === "reset" ? "button" : "submit"}
       className={`btn btn-${type} d-flex flex-row gap-2 `}
-      disabled={isSubmitting}
+      disabled={isSubmitting || disabled}
       aria-label={
         isSubmitting
           ? t("formButton.ariaLabel.saving")
@@ -64,6 +64,7 @@ const FormButton = ({ type = "submit", isSubmitting = false, ...props }) => {
 FormButton.propTypes = {
   type: PropTypes.string,
   isSubmitting: PropTypes.bool,
+  disabled: PropTypes.bool,
 };
 
 export default FormButton;

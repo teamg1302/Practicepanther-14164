@@ -213,6 +213,19 @@ const RolePermissionAddEdit = () => {
    */
   const onSubmit = async (formData) => {
     try {
+      // Check if trying to update Firm Owner role
+      const isFirmOwner =
+        roleId && roleDetails?.name?.trim().toLowerCase() === "firm owner";
+      if (isFirmOwner) {
+        Swal.fire({
+          icon: "warning",
+          title: "Cannot Modify",
+          text: "The Firm Owner role cannot be modified.",
+          showConfirmButton: true,
+        });
+        return;
+      }
+
       // Clean and format the data before submission
       const cleanedData = {
         name: String(formData.name || "").trim(),
@@ -277,6 +290,16 @@ const RolePermissionAddEdit = () => {
       });
     }
   };
+
+  // Check if the role is "Firm Owner"
+  const isFirmOwnerRole = useMemo(() => {
+    if (roleId && roleDetails) {
+      return roleDetails.name?.trim().toLowerCase() === "firm owner";
+    } else if (userId && userDetails) {
+      return userDetails.roleId?.name?.trim().toLowerCase() === "firm owner";
+    }
+    return false;
+  }, [roleDetails, userDetails, roleId, userId]);
 
   // Don't render form until data is loaded
   if (loading) {
@@ -352,6 +375,7 @@ const RolePermissionAddEdit = () => {
             modules={modules}
             userDetails={userDetails}
             loading={loading}
+            isFirmOwnerRole={isFirmOwnerRole}
           />
         </FormProvider>
       )}
@@ -363,7 +387,12 @@ const RolePermissionAddEdit = () => {
  * Role Permission Content Component
  * Displays the form with modules and permissions
  */
-const RolePermissionContent = ({ modules, userDetails, loading }) => {
+const RolePermissionContent = ({
+  modules,
+  userDetails,
+  loading,
+  isFirmOwnerRole,
+}) => {
   const {
     watch,
     setValue,
@@ -376,6 +405,11 @@ const RolePermissionContent = ({ modules, userDetails, loading }) => {
    * Handle permission toggle
    */
   const handlePermissionToggle = (moduleName, action, value) => {
+    // Prevent modification if Firm Owner role
+    if (isFirmOwnerRole) {
+      return;
+    }
+
     // Check if permission exists for this module
     const existingPermissionIndex = permissions.findIndex(
       (perm) => perm.moduleName === moduleName
@@ -443,6 +477,11 @@ const RolePermissionContent = ({ modules, userDetails, loading }) => {
    * Handle row selection toggle - syncs with all permissions
    */
   const handleRowSelection = (moduleName) => {
+    // Prevent modification if Firm Owner role
+    if (isFirmOwnerRole) {
+      return;
+    }
+
     const isCurrentlySelected = areAllPermissionsChecked(moduleName);
     const newValue = !isCurrentlySelected;
 
@@ -515,6 +554,11 @@ const RolePermissionContent = ({ modules, userDetails, loading }) => {
    * Handle "All" switch toggle - checks/unchecks all modules' all permissions
    */
   const handleSelectAll = () => {
+    // Prevent modification if Firm Owner role
+    if (isFirmOwnerRole) {
+      return;
+    }
+
     const shouldCheckAll = !areAllModulesFullyChecked();
 
     // Create a map of existing permissions for quick lookup
@@ -570,13 +614,23 @@ const RolePermissionContent = ({ modules, userDetails, loading }) => {
   return (
     <div className="security-settings">
       <div className="row">
+        <div className="card-title-head mb-3">
+          <h4 className="border-bottom-0 mb-0 pb-0">Role Permissions</h4>
+          <p className="text-muted mt-2">Assign permissions to the role</p>
+          {isFirmOwnerRole && (
+            <div className="alert alert-warning" role="alert">
+              <span className="badge bg-warning text-dark me-2">Note</span>
+              This role is default firm owner role and cannot be modified.
+            </div>
+          )}
+        </div>
         {userDetails && (
           <div className="col-md-12">
             <Input
               name="userName"
               label="User Name"
               type="text"
-              inputProps={{ disabled: !!userDetails }}
+              inputProps={{ disabled: !!userDetails || isFirmOwnerRole }}
               required
             />
           </div>
@@ -586,7 +640,7 @@ const RolePermissionContent = ({ modules, userDetails, loading }) => {
             name="name"
             label="Role Name"
             type="text"
-            inputProps={{ disabled: !!userDetails }}
+            inputProps={{ disabled: !!userDetails || isFirmOwnerRole }}
             required
           />
         </div>
@@ -594,7 +648,7 @@ const RolePermissionContent = ({ modules, userDetails, loading }) => {
           <Input
             name="description"
             label="Description"
-            inputProps={{ disabled: !!userDetails }}
+            inputProps={{ disabled: !!userDetails || isFirmOwnerRole }}
             type="text"
           />
         </div>
@@ -612,6 +666,7 @@ const RolePermissionContent = ({ modules, userDetails, loading }) => {
                     className="check"
                     checked={areAllModulesFullyChecked()}
                     onChange={handleSelectAll}
+                    disabled={isFirmOwnerRole}
                   />
                   <label htmlFor="select-all-modules" className="checktoggle">
                     {" "}
@@ -637,6 +692,7 @@ const RolePermissionContent = ({ modules, userDetails, loading }) => {
                         className="check"
                         checked={isRowSelected(module)}
                         onChange={() => handleRowSelection(module)}
+                        disabled={isFirmOwnerRole}
                       />
                       <label
                         htmlFor={`${module}-select`}
@@ -660,6 +716,7 @@ const RolePermissionContent = ({ modules, userDetails, loading }) => {
                             e.target.checked
                           )
                         }
+                        disabled={isFirmOwnerRole}
                       />
                       <label htmlFor={`${module}-read`} className="checktoggle">
                         {" "}
@@ -680,6 +737,7 @@ const RolePermissionContent = ({ modules, userDetails, loading }) => {
                             e.target.checked
                           )
                         }
+                        disabled={isFirmOwnerRole}
                       />
                       <label
                         htmlFor={`${module}-create`}
@@ -703,6 +761,7 @@ const RolePermissionContent = ({ modules, userDetails, loading }) => {
                             e.target.checked
                           )
                         }
+                        disabled={isFirmOwnerRole}
                       />
                       <label
                         htmlFor={`${module}-update`}
@@ -726,6 +785,7 @@ const RolePermissionContent = ({ modules, userDetails, loading }) => {
                             e.target.checked
                           )
                         }
+                        disabled={isFirmOwnerRole}
                       />
                       <label
                         htmlFor={`${module}-delete`}
@@ -740,11 +800,16 @@ const RolePermissionContent = ({ modules, userDetails, loading }) => {
           </tbody>
         </table>
         <div className="settings-bottom-btn d-flex flex-row gap-2 align-items-center justify-content-end">
-          <FormButton type="submit" isSubmitting={isSubmitting} />
+          <FormButton
+            type="submit"
+            isSubmitting={isSubmitting}
+            disabled={isFirmOwnerRole}
+          />
           <FormButton
             type="reset"
             isSubmitting={isSubmitting}
             onClick={() => reset()}
+            disabled={isFirmOwnerRole}
           />
           {/* <FormButton
             type="cancel"
@@ -759,8 +824,9 @@ const RolePermissionContent = ({ modules, userDetails, loading }) => {
 
 RolePermissionContent.propTypes = {
   modules: PropTypes.array.isRequired,
-  userDetails: PropTypes.object.isRequired,
+  userDetails: PropTypes.object,
   loading: PropTypes.bool.isRequired,
+  isFirmOwnerRole: PropTypes.bool,
 };
 
 export default RolePermissionAddEdit;

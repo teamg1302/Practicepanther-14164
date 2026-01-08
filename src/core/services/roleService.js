@@ -73,6 +73,66 @@ export const getRoles = async (params = {}) => {
 };
 
 /**
+ * Get roles list with pagination and filtering
+ * @param {Object} params - Query parameters for roles list
+ * @param {number} [params.limit=10] - Number of items per page
+ * @param {number} [params.pageSize=10] - Page size (same as limit)
+ * @param {number} [params.page=1] - Page number
+ * @param {string} [params.search=""] - Search query string
+ * @param {string} [params.sortBy="updatedAt"] - Field to sort by
+ * @param {string} [params.order="desc"] - Sort order (asc/desc)
+ * @param {string} [params.tab="all"] - Tab filter (all/active/inactive)
+ * @param {string|number} [params.id=""] - Filter by specific role ID
+ * @param {boolean} [params.includeCounts=true] - Include count information
+ * @returns {Promise} API response with roles list
+ *
+ * @example
+ * // Get first page of roles
+ * await getRoles({ page: 1, limit: 10 });
+ *
+ * @example
+ * // Search roles with filters
+ * await getRoles({ search: "admin", tab: "active", sortBy: "name", order: "asc" });
+ */
+export const getRolesAsMaster = async (params = {}) => {
+  try {
+    const {
+      limit = 50,
+      // pageSize = 1,
+      // page = 1,
+      // search = "",
+      // sortBy = "updatedAt",
+      // order = "desc",
+      // tab = "all",
+      // id = "",
+      // includeCounts = true,
+    } = params;
+
+    // Build query string
+    const queryParams = new URLSearchParams({
+      limit: limit.toString(),
+      // pageSize: pageSize.toString(),
+      // page: page.toString(),
+      // search: search.toString(),
+      // sortBy: sortBy.toString(),
+      // order: order.toString(),
+      // tab: tab.toString(),
+      // id: id.toString(),
+      // includeCounts: includeCounts.toString(),
+    });
+
+    const response = await api.get(
+      `/masters/search/role?${queryParams.toString()}`
+    );
+
+    // Handle nested response structure if needed
+    return response.data?.data || response.data;
+  } catch (error) {
+    throw error.response?.data || error.message;
+  }
+};
+
+/**
  * Get role details by role ID
  * @param {string|number} roleId - Role ID to fetch details for
  * @returns {Promise} API response with role details
@@ -122,10 +182,10 @@ export const createRole = async (roleData) => {
  * @returns {Promise} API response with created role
  *
  * @example
- * await addRole({ 
- *   name: "Admin", 
- *   description: "Administrator role", 
- *   permissions: [{ moduleName: "manage_contacts", actions: { create: true, read: true } }] 
+ * await addRole({
+ *   name: "Admin",
+ *   description: "Administrator role",
+ *   permissions: [{ moduleName: "manage_contacts", actions: { create: true, read: true } }]
  * });
  */
 export const addRole = async (roleData) => {
@@ -158,8 +218,6 @@ export const updateRole = async (roleId, roleData) => {
     throw error.response?.data || error.message;
   }
 };
-
-
 
 /**
  * Delete role by role ID

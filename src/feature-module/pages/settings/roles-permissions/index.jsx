@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { Chip } from "@mui/material";
 import Swal from "sweetalert2";
+
 import { all_routes } from "@/Router/all_routes";
 import { getRoles, deleteRole } from "@/core/services/roleService";
 import EntityListView from "@/feature-module/components/entity-list-view";
@@ -157,7 +158,7 @@ const RolePermissionList = () => {
         service={getRoles}
         options={{
           customButtons: {
-            edit: showEditButton,
+            edit: true,
             delete: showDeleteButton,
           },
           tableSetting: {

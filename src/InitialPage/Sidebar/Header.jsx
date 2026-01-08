@@ -21,13 +21,15 @@ import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import FeatherIcon from "feather-icons-react";
 import { Lock } from "react-feather";
+import { Search, Settings, XCircle } from "react-feather";
+
 import ImageWithBasePath from "../../core/img/imagewithbasebath";
-import { Search, Settings, XCircle, Award } from "react-feather";
 import { EventRepeatOutlined } from "@mui/icons-material";
 import { all_routes } from "../../Router/all_routes";
 import { logout } from "../../core/services/authService";
 import { clearAuth } from "../../core/redux/action";
 import { useIsOwner } from "../../core/utilities/utility";
+import { resetMasters } from "../../core/redux/mastersReducer";
 
 const Header = () => {
   const isOwner = useIsOwner();
@@ -51,6 +53,10 @@ const Header = () => {
     // Clear auth from Redux store
     dispatch(clearAuth());
     // Clear token from localStorage
+
+    // Clear masters from Redux store
+    dispatch(resetMasters());
+
     logout();
     // Navigate to signin page
     navigate(route.signin);
@@ -236,10 +242,6 @@ const Header = () => {
     // Light background → black text
     return luminance > 0.5 ? "#000000" : "#FFFFFF";
   };
-
-  console.log("auth?.user?.firmId?.portalLogo", auth?.user?.firmId?.portalLogo);
-
-  console.log("auth?.user.profileImage", auth?.user.profileImage);
 
   return (
     <>
@@ -556,6 +558,7 @@ const Header = () => {
               <FeatherIcon icon="maximize" aria-hidden="true" />
             </Link>
           </li>
+
           {/* <li className="nav-item nav-item-box">
             <Link to="#" aria-label="Email notifications (1 unread)">
               <i data-feather="mail" />

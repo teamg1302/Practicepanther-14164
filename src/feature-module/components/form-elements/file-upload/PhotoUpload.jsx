@@ -2,7 +2,7 @@ import React from "react";
 import { useFormContext } from "react-hook-form";
 import { PlusCircle, Trash2 } from "feather-icons-react/build/IconComponents";
 import PropTypes from "prop-types";
-import { faUndo } from "@fortawesome/free-solid-svg-icons";
+import { faUndo, faUpload } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 /**
@@ -47,13 +47,16 @@ const PhotoUpload = ({
   accept = "image/*",
   className = "",
   inputClassName = "",
-  showFileName = true,
+  showFileName = true, // eslint-disable-line no-unused-vars
   registerOptions = {},
   previewImageUrl,
 }) => {
   const { watch, setValue } = useFormContext();
   const fileValue = watch(name);
   const [previewUrl, setPreviewUrl] = React.useState(previewImageUrl || null);
+  const fileInputRef = React.useRef(null);
+
+  console.log("previewImageUrl", previewImageUrl);
 
   // Handle file change - set single file (not FileList)
   const handleFileChange = (e) => {
@@ -62,6 +65,13 @@ const PhotoUpload = ({
       setValue(name, file, { shouldValidate: true });
     } else {
       setValue(name, null);
+    }
+  };
+
+  // Handle profile pic click - trigger file input
+  const handleProfilePicClick = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
     }
   };
 
@@ -95,7 +105,11 @@ const PhotoUpload = ({
         hasPreview ? "edit-pic" : ""
       }`}
     >
-      <div className="profile-pic">
+      <div
+        className="profile-pic"
+        onClick={handleProfilePicClick}
+        style={{ cursor: "pointer" }}
+      >
         {previewUrl ? (
           <img
             src={previewUrl}
@@ -118,15 +132,25 @@ const PhotoUpload = ({
         <div className="mb-0 d-flex gap-2">
           <div className="image-upload mb-0">
             <input
+              ref={fileInputRef}
               type="file"
               accept={accept}
               onChange={handleFileChange}
+              style={{ display: "none" }}
               {...registerOptions}
             />
-            <div className="image-uploads">
+            <div
+              className="image-uploads"
+              onClick={handleProfilePicClick}
+              style={{ cursor: "pointer" }}
+            >
               <h4>
-                <FontAwesomeIcon icon={faUndo} className="info-img" />
-                {changeText}
+                {previewUrl ? (
+                  <FontAwesomeIcon icon={faUndo} className="info-img" />
+                ) : (
+                  <FontAwesomeIcon icon={faUpload} className="info-img" />
+                )}{" "}
+                {previewUrl ? changeText : "Upload"}
               </h4>
             </div>
           </div>

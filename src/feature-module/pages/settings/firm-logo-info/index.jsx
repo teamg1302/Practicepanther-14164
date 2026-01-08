@@ -574,6 +574,12 @@ const FirmLogoInfoContent = React.forwardRef(
               label={t("firmLogoInfo.country")}
               options={countries}
               placeholder={t("firmLogoInfo.selectCountry")}
+              selectProps={{
+                showSyncIcon: true,
+                onSyncClick: () => {
+                  dispatch(fetchCountries());
+                },
+              }}
             />
           </div>
           <div className="col-md-6">
@@ -596,6 +602,12 @@ const FirmLogoInfoContent = React.forwardRef(
               options={currencies}
               placeholder={t("firmLogoInfo.selectCurrency")}
               disabled={currenciesLoading}
+              selectProps={{
+                showSyncIcon: true,
+                onSyncClick: () => {
+                  dispatch(fetchCurrencies());
+                },
+              }}
             />
           </div>
           <div className="col-md-12">

@@ -2,8 +2,7 @@
   "commands": [
     {
       "name": "Create New React Component",
-      "description": "Generates a new React + TypeScript component with tests, documentation, and README updates.",
-
+      "description": "Generates a new React JavaScript component with tests, documentation, and README updates.",
       "request": {
         "type": "object",
         "properties": {
@@ -25,11 +24,11 @@
           }
         }
       },
-      "prompt": "You are a senior frontend engineer working on a large-scale React + TypeScript + Jest project..."
+      "prompt": "You are a senior frontend engineer working on a large-scale React + JavaScript + Jest project. Create a new React component named {{componentName}}.\n\nRequirements:\n1. Use JavaScript (.js or .jsx) - NOT TypeScript\n2. Create functional component with React hooks if needed\n3. Add comprehensive JSDoc documentation with @param, @returns, @example\n4. Include PropTypes for prop validation\n5. Create comprehensive Jest tests using @testing-library/react\n6. Follow the project's existing component structure\n7. Ensure component is reusable and well-documented\n8. Add proper error handling and edge cases\n9. Include accessibility features (ARIA labels, keyboard navigation)\n10. Use semantic HTML elements\n11. Update README.md with component documentation\n12. Export component properly\n\nGenerate:\n- Component file: src/components/{{componentName}}/{{componentName}}.js (or .jsx)\n- Test file: src/components/{{componentName}}/{{componentName}}.test.js\n- CSS/SCSS file if needed: src/components/{{componentName}}/{{componentName}}.css\n- Index file: src/components/{{componentName}}/index.js\n- Update README.md with component documentation\n\nMake sure all code follows JavaScript best practices and React patterns."
     },
     {
       "name": "Create New Feature or Function",
-      "description": "Creates a new typed TS function with JSDoc, Jest tests, documentation, and README update.",
+      "description": "Creates a new JavaScript function with JSDoc, Jest tests, documentation, and README update.",
       "request": {
         "type": "object",
         "properties": {
@@ -50,11 +49,11 @@
           }
         }
       },
-      "prompt": "You are a senior TypeScript developer. Create a new function or feature named {{featureName}}..."
+      "prompt": "You are a senior JavaScript developer. Create a new function or feature named {{featureName}}.\n\nRequirements:\n1. Use JavaScript (.js) - NOT TypeScript\n2. Add comprehensive JSDoc documentation with @param, @returns, @throws, @example\n3. Include proper parameter validation and error handling\n4. Create comprehensive Jest tests covering all edge cases\n5. Follow the project's existing function/utility structure (typically src/utils/ or src/helpers/)\n6. Ensure function is pure and well-documented\n7. Add TypeScript-style JSDoc type annotations using @param {Type} and @returns {Type}\n8. Include usage examples in JSDoc\n9. Update README.md with function documentation\n10. Export function properly\n\nGenerate:\n- Function file: src/utils/{{featureName}}.js (or appropriate directory)\n- Test file: src/utils/{{featureName}}.test.js\n- Update README.md with function documentation\n\nMake sure all code follows JavaScript best practices and includes comprehensive error handling."
     },
     {
       "name": "Create New Page (React Route)",
-      "description": "Generates a full Next.js page with tests and documentation.",
+      "description": "Generates a full React page component with React Router integration, tests and documentation.",
       "request": {
         "type": "object",
         "properties": {
@@ -75,7 +74,7 @@
           }
         }
       },
-      "prompt": "You are a senior React + Next.js engineer. Create a new page named {{pageName}}..."
+      "prompt": "You are a senior React engineer working with Create React App and React Router. Create a new page component named {{pageName}}.\n\nRequirements:\n1. Use JavaScript (.js or .jsx) - NOT TypeScript\n2. Create a page component that can be used with React Router\n3. Add comprehensive JSDoc documentation\n4. Include PropTypes for prop validation\n5. Create comprehensive Jest tests using @testing-library/react\n6. Follow the project's existing page structure (typically src/pages/)\n7. Ensure page is responsive and accessible\n8. Include proper error boundaries if needed\n9. Add loading states and error handling\n10. Use semantic HTML elements\n11. Update README.md with page documentation\n12. If React Router is not installed, note it in documentation\n\nGenerate:\n- Page file: src/pages/{{pageName}}/{{pageName}}.js (or .jsx)\n- Test file: src/pages/{{pageName}}/{{pageName}}.test.js\n- CSS file: src/pages/{{pageName}}/{{pageName}}.css\n- Index file: src/pages/{{pageName}}/index.js\n- Update README.md with page documentation\n\nMake sure all code follows JavaScript best practices and React Router patterns."
     },
     {
       "name": "Auto Update Documentation",
@@ -121,7 +120,7 @@
     },
     {
       "name": "Create Responsive UI Component",
-      "description": "Generates a new responsive and mobile-friendly React + TypeScript UI component with Tailwind CSS, tests, and documentation.",
+      "description": "Generates a new responsive and mobile-friendly React JavaScript UI component with CSS/Tailwind CSS, tests, and documentation.",
       "request": {
         "type": "object",
         "properties": {
@@ -159,7 +158,7 @@
           }
         }
       },
-      "prompt": "You are a senior frontend engineer specializing in responsive design and mobile-first development. Create a new responsive and mobile-friendly React + TypeScript UI component named {{componentName}} of type {{componentType}}.{{#if description}} Description: {{description}}{{/if}}\n\nRequirements:\n1. Use Tailwind CSS with mobile-first responsive design (sm:, md:, lg:, xl: breakpoints)\n2. Component must be fully responsive and work seamlessly on mobile (320px+), tablet (768px+), and desktop (1024px+)\n3. Implement touch-friendly interactions (minimum 44x44px touch targets)\n4. Use flexible layouts (flexbox/grid) that adapt to screen sizes\n5. Ensure proper spacing and typography scaling across breakpoints\n6. Include proper accessibility (ARIA labels, keyboard navigation, focus states)\n7. Add hover and active states for desktop, touch states for mobile\n8. Use semantic HTML elements\n9. Include TypeScript types and interfaces\n10. Add JSDoc documentation\n11. Create comprehensive Jest/Vitest tests\n12. Follow the project's existing component structure in src/components/ui/\n13. Use shadcn/ui patterns if applicable\n14. Ensure the component is reusable and composable\n15. Add responsive utilities for hiding/showing elements at different breakpoints\n16. Consider landscape/portrait orientation changes\n17. Optimize for performance (lazy loading, memoization where appropriate)\n18. Include dark mode support if applicable\n\nGenerate:\n- Component file: src/components/ui/{{componentName}}.tsx\n- Test file: src/components/ui/{{componentName}}.test.tsx\n- Export in appropriate index file if needed\n\nMake sure the component follows mobile-first principles and provides an excellent user experience across all device sizes."
+      "prompt": "You are a senior frontend engineer specializing in responsive design and mobile-first development. Create a new responsive and mobile-friendly React JavaScript UI component named {{componentName}} of type {{componentType}}.{{#if description}} Description: {{description}}{{/if}}\n\nRequirements:\n1. Use JavaScript (.js or .jsx) - NOT TypeScript\n2. Use CSS with mobile-first responsive design (media queries: @media (min-width: 768px), etc.) or Tailwind CSS if installed\n3. Component must be fully responsive and work seamlessly on mobile (320px+), tablet (768px+), and desktop (1024px+)\n4. Implement touch-friendly interactions (minimum 44x44px touch targets)\n5. Use flexible layouts (flexbox/grid) that adapt to screen sizes\n6. Ensure proper spacing and typography scaling across breakpoints\n7. Include proper accessibility (ARIA labels, keyboard navigation, focus states)\n8. Add hover and active states for desktop, touch states for mobile\n9. Use semantic HTML elements\n10. Add comprehensive JSDoc documentation with PropTypes\n11. Create comprehensive Jest tests using @testing-library/react\n12. Follow the project's existing component structure in src/components/ui/\n13. Ensure the component is reusable and composable\n14. Add responsive utilities for hiding/showing elements at different breakpoints\n15. Consider landscape/portrait orientation changes\n16. Optimize for performance (React.memo, useMemo, useCallback where appropriate)\n17. Include dark mode support if applicable (using CSS variables or theme context)\n18. Use CSS Modules or scoped styles to avoid conflicts\n\nGenerate:\n- Component file: src/components/ui/{{componentName}}/{{componentName}}.js (or .jsx)\n- Test file: src/components/ui/{{componentName}}/{{componentName}}.test.js\n- CSS file: src/components/ui/{{componentName}}/{{componentName}}.css\n- Index file: src/components/ui/{{componentName}}/index.js\n- Update README.md with component documentation\n\nMake sure the component follows mobile-first principles and provides an excellent user experience across all device sizes. Use JavaScript best practices and React patterns."
     }
   ]
 }

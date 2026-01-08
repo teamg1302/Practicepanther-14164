@@ -49,7 +49,7 @@ api.interceptors.request.use(
   (config) => {
     // Get token from localStorage (synced by redux-persist)
     const token = localStorage.getItem("authToken");
-    config.headers["source"] = "company";
+    config.headers["device-platform"] = "company";
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }

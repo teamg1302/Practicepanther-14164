@@ -8,7 +8,10 @@ import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 import { useFormContext, Controller } from "react-hook-form";
 import { useTranslation } from "react-i18next";
-import { PlusCircle } from "feather-icons-react/build/IconComponents";
+import {
+  PlusCircle,
+  RefreshCw,
+} from "feather-icons-react/build/IconComponents";
 import ReactSelect, { components } from "react-select";
 
 /* -------------------- Custom MenuList -------------------- */
@@ -37,6 +40,68 @@ const CustomMenuList = (props) => {
   );
 };
 
+CustomMenuList.propTypes = {
+  children: PropTypes.node,
+  selectProps: PropTypes.shape({
+    onAddClick: PropTypes.func,
+    addButtonLabel: PropTypes.string,
+  }),
+};
+
+/* -------------------- Custom IndicatorsContainer -------------------- */
+const CustomIndicatorsContainer = (props) => {
+  const { showSyncIcon, onSyncClick } = props.selectProps || {};
+
+  const handleSyncClick = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (onSyncClick) {
+      onSyncClick();
+    }
+  };
+
+  const handleMouseDown = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+  };
+
+  return (
+    <components.IndicatorsContainer {...props}>
+      {showSyncIcon && onSyncClick && (
+        <div
+          className="react-select__sync-icon"
+          onClick={handleSyncClick}
+          onMouseDown={handleMouseDown}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            padding: "0 8px",
+            cursor: "pointer",
+            color: "#6c757d",
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.color = "#495057";
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.color = "#6c757d";
+          }}
+        >
+          <RefreshCw size={16} />
+        </div>
+      )}
+      {props.children}
+    </components.IndicatorsContainer>
+  );
+};
+
+CustomIndicatorsContainer.propTypes = {
+  children: PropTypes.node,
+  selectProps: PropTypes.shape({
+    showSyncIcon: PropTypes.bool,
+    onSyncClick: PropTypes.func,
+  }),
+};
+
 /* -------------------- Component -------------------- */
 const FormSelect = ({
   name,
@@ -54,6 +119,8 @@ const FormSelect = ({
   isSearchable = true,
   isClearable = false,
   helpText,
+  showSyncIcon = false,
+  onSyncClick,
   selectProps = {},
 }) => {
   const { t } = useTranslation();
@@ -140,7 +207,15 @@ const FormSelect = ({
             styles={customStyles}
             classNamePrefix="react-select"
             className={hasError ? "is-invalid" : ""}
-            components={{ MenuList: CustomMenuList }}
+            components={{
+              MenuList: CustomMenuList,
+              IndicatorsContainer: CustomIndicatorsContainer,
+            }}
+            selectProps={{
+              ...selectProps,
+              showSyncIcon,
+              onSyncClick,
+            }}
             onChange={(selected) => {
               if (isMulti) {
                 field.onChange(selected ? selected.map((i) => i.value) : []);
@@ -184,6 +259,8 @@ FormSelect.propTypes = {
   isSearchable: PropTypes.bool,
   isClearable: PropTypes.bool,
   helpText: PropTypes.string,
+  showSyncIcon: PropTypes.bool,
+  onSyncClick: PropTypes.func,
   selectProps: PropTypes.shape({
     onAddClick: PropTypes.func,
     addButtonLabel: PropTypes.string,
