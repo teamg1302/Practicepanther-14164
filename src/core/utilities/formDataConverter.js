@@ -42,20 +42,69 @@ export const convertToFormData = (formData, options = {}) => {
 
   const formDataToSubmit = new FormData();
 
+  // Ensure fileFields is an array (handle null/undefined cases)
+  const fileFieldsArray = Array.isArray(fileFields) ? fileFields : [];
+  const processedKeys = new Set();
+
   // Append all form fields to FormData
   Object.keys(formData).forEach((key) => {
+    processedKeys.add(key);
     let value = formData[key];
+    const isFileField = fileFieldsArray.includes(key);
 
     // For file fields, try to get the actual File object from form state
-    if (fileFields.includes(key) && getValues) {
-      const fileValue = getValues(key);
+    if (isFileField) {
+      let fileValue = value;
+      const originalValue = value; // Preserve original value from formData
+
+      // If getValues is provided, use it to get the actual File object
+      if (getValues) {
+        fileValue = getValues(key);
+      }
+
+      // If getValues returns a File object, use it (new file upload)
       if (fileValue instanceof File) {
         value = fileValue;
+      } else if (
+        fileValue === null ||
+        fileValue === undefined ||
+        fileValue === ""
+      ) {
+        // If getValues returns null/empty, check if original value exists (existing file URL)
+        if (
+          originalValue &&
+          typeof originalValue === "string" &&
+          originalValue.trim() !== ""
+        ) {
+          // Keep the original value (existing file URL) - don't delete it
+          value = originalValue;
+        } else {
+          // Both are empty - user deleted the file, append as empty string for deletion
+          formDataToSubmit.append(key, "");
+          return;
+        }
+      } else {
+        // If it's a file field but not a File instance, use the original value if it exists
+        if (
+          originalValue &&
+          typeof originalValue === "string" &&
+          originalValue.trim() !== ""
+        ) {
+          value = originalValue;
+        } else {
+          // No valid value, append as empty string
+          formDataToSubmit.append(key, "");
+          return;
+        }
       }
     }
 
-    // Skip null, undefined, or empty string values
-    if (skipEmpty && (value === null || value === undefined || value === "")) {
+    // Skip null, undefined, or empty string values (except for file fields which are handled above)
+    if (
+      skipEmpty &&
+      !isFileField &&
+      (value === null || value === undefined || value === "")
+    ) {
       return;
     }
 
@@ -64,7 +113,6 @@ export const convertToFormData = (formData, options = {}) => {
       formDataToSubmit.append(key, value);
       return;
     }
-
     // Convert boolean to string for FormData
     if (typeof value === "boolean") {
       formDataToSubmit.append(key, value.toString());
@@ -80,6 +128,32 @@ export const convertToFormData = (formData, options = {}) => {
     // Handle primitive values (strings, numbers, etc.)
     formDataToSubmit.append(key, value);
   });
+
+  // Handle file fields that might not be in formData but should be checked via getValues
+  if (getValues) {
+    fileFieldsArray.forEach((key) => {
+      if (!processedKeys.has(key)) {
+        const fileValue = getValues(key);
+        // If getValues returns a File object, use it (new file upload)
+        if (fileValue instanceof File) {
+          formDataToSubmit.append(key, fileValue);
+        } else if (
+          fileValue === null ||
+          fileValue === undefined ||
+          fileValue === ""
+        ) {
+          // Field not in formData and getValues returns empty - append as empty string for deletion
+          formDataToSubmit.append(key, "");
+        } else if (typeof fileValue === "string" && fileValue.trim() !== "") {
+          // If it's a string (URL), append it
+          formDataToSubmit.append(key, fileValue);
+        } else {
+          // No valid value, append as empty string
+          formDataToSubmit.append(key, "");
+        }
+      }
+    });
+  }
 
   return formDataToSubmit;
 };

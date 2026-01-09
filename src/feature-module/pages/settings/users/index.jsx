@@ -11,6 +11,7 @@ import withEntityHandlers from "@/feature-module/hoc/withEntityHandlers";
 import { getTableColumns } from "@/feature-module/components/table-columns";
 import ListPageLayout from "@/feature-module/components/list-page-layout";
 import { useIsOwner } from "@/core/utilities/utility";
+import { checkPermission } from "@/Router/PermissionRoute";
 
 /**
  * Users management page component.
@@ -53,6 +54,7 @@ const COLUMNS_CONFIG = [
  * <Users />
  */
 const Users = () => {
+  const permissions = useSelector((state) => state.auth?.permissions || []);
   const isOwner = useIsOwner();
   const navigate = useNavigate();
   const userId = useSelector((state) => state.auth?.user?.id);
@@ -117,6 +119,17 @@ const Users = () => {
     return true;
   };
 
+  const showPermissions = (row) => {
+    if (ownerId === row._id) {
+      return false;
+    }
+    return checkPermission(
+      permissions,
+      all_routes.settings[1].children[1].module,
+      "update"
+    );
+  };
+
   return (
     <ListPageLayout
       breadcrumbs={[
@@ -152,6 +165,7 @@ const Users = () => {
       onRefresh={handleRefresh}
     >
       <EnhancedList
+        module={all_routes.settings[1].children[0].module}
         columns={columns}
         customFilters={customFilters}
         onDelete={handleDelete}
@@ -160,8 +174,7 @@ const Users = () => {
         service={getUsers}
         options={{
           customButtons: {
-            // Use functions for conditional visibility based on row data
-            permissions: showEdit,
+            permissions: showPermissions,
             edit: showEdit,
             delete: showEdit,
           },

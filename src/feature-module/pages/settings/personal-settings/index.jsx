@@ -480,8 +480,7 @@ const PersonalSettingsContent = React.forwardRef(
               setAuthUser({
                 ...auth.user,
                 name: formData?.name || auth?.user?.name || "",
-                profileImage:
-                  formData?.profileImage || auth?.user?.profileImage || "",
+                profileImage: formData?.profileImage || "",
               })
             );
           }

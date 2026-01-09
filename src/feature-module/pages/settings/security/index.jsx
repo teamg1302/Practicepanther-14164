@@ -16,6 +16,7 @@ import { all_routes } from "@/Router/all_routes";
 const SecuritySettings = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
+  const resetFormRef = React.useRef(null);
 
   const securitySettingsSchema = useMemo(
     () =>
@@ -93,7 +94,7 @@ const SecuritySettings = () => {
     [t]
   );
 
-  const onSubmit = async (data, event) => {
+  const onSubmit = async (data) => {
     try {
       // Remove confirmPassword before sending to API (only used for frontend validation)
       // eslint-disable-next-line no-unused-vars
@@ -106,7 +107,11 @@ const SecuritySettings = () => {
         icon: "success",
         timer: 1500,
       });
-      event.target.reset();
+
+      // Reset form after successful submission
+      if (resetFormRef.current) {
+        resetFormRef.current();
+      }
     } catch (error) {
       console.log("error", error);
 
@@ -153,18 +158,31 @@ const SecuritySettings = () => {
           defaultValues={defaultValues}
           onSubmit={onSubmit}
         >
-          <SecurityForm fields={fields} />
+          <SecurityForm
+            fields={fields}
+            resetFormRef={resetFormRef}
+            defaultValues={defaultValues}
+          />
         </FormProvider>
       </PageLayout>
     </>
   );
 };
 
-const SecurityForm = ({ fields }) => {
+const SecurityForm = ({ fields, resetFormRef, defaultValues }) => {
   const {
     formState: { isSubmitting },
     reset,
   } = useFormContext();
+
+  // Expose reset function to parent component via ref
+  React.useEffect(() => {
+    if (resetFormRef) {
+      resetFormRef.current = () => {
+        reset(defaultValues);
+      };
+    }
+  }, [reset, resetFormRef, defaultValues]);
 
   return (
     <>
@@ -174,7 +192,7 @@ const SecurityForm = ({ fields }) => {
         <FormButton
           type="reset"
           isSubmitting={isSubmitting}
-          onClick={() => reset()}
+          onClick={() => reset(defaultValues)}
         />
       </div>
     </>
@@ -183,6 +201,10 @@ const SecurityForm = ({ fields }) => {
 
 SecurityForm.propTypes = {
   fields: PropTypes.array.isRequired,
+  resetFormRef: PropTypes.shape({
+    current: PropTypes.func,
+  }),
+  defaultValues: PropTypes.object.isRequired,
 };
 
 export default SecuritySettings;

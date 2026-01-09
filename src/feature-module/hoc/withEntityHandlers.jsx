@@ -26,10 +26,13 @@ import {
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import Swal from "sweetalert2";
+import { useSelector } from "react-redux";
+import { checkPermission } from "@/Router/PermissionRoute";
 
 const withEntityHandlers = (WrappedComponent) => {
   function EntityHandlerComponent({
     api,
+    module = null,
     columns,
     options = {},
     onAdd,
@@ -48,6 +51,7 @@ const withEntityHandlers = (WrappedComponent) => {
     ...props
   }) {
     const { t } = useTranslation();
+    const permissions = useSelector((state) => state.auth?.permissions || []);
     const [filterAnchorEl, setFilterAnchorEl] = useState(null);
     const [localFilters, setLocalFilters] = useState(customFilters || {});
     const [menuAnchorEl, setMenuAnchorEl] = useState(null);
@@ -71,11 +75,11 @@ const withEntityHandlers = (WrappedComponent) => {
     const merged = useMemo(
       () => ({
         customButtons: {
-          add: true,
-          edit: true,
-          delete: true,
-          restore: false,
-          permissions: false,
+          add: checkPermission(permissions, module, "create"),
+          edit: checkPermission(permissions, module, "update"),
+          delete: checkPermission(permissions, module, "delete"),
+          restore: checkPermission(permissions, module, "restore"),
+          permissions: checkPermission(permissions, module, "permissions"),
           permissionsLabel: t("Permissions"),
           restoreLabel: "Restore",
           deleteLabel: options.customButtons?.deleteLabel || "Delete",
@@ -296,19 +300,16 @@ const withEntityHandlers = (WrappedComponent) => {
     };
 
     // Helper function to evaluate button visibility (supports both boolean and function)
-    const shouldShowButton = useCallback(
-      (buttonConfig, rowData) => {
-        if (typeof buttonConfig === "function") {
-          // Only call the function if rowData is available, otherwise return false
-          if (rowData === undefined || rowData === null) {
-            return false;
-          }
-          return buttonConfig(rowData);
+    const shouldShowButton = useCallback((buttonConfig, rowData) => {
+      if (typeof buttonConfig === "function") {
+        // Only call the function if rowData is available, otherwise return false
+        if (rowData === undefined || rowData === null) {
+          return false;
         }
-        return Boolean(buttonConfig);
-      },
-      []
-    );
+        return buttonConfig(rowData);
+      }
+      return Boolean(buttonConfig);
+    }, []);
 
     // TABLE COLUMNS WITH SR NO + ACTION
     const finalColumns = useMemo(() => {
@@ -610,9 +611,18 @@ const withEntityHandlers = (WrappedComponent) => {
         )}
 
         {(shouldShowButton(merged.customButtons.edit, selectedRow?.original) ||
-          shouldShowButton(merged.customButtons.delete, selectedRow?.original) ||
-          shouldShowButton(merged.customButtons.restore, selectedRow?.original) ||
-          shouldShowButton(merged.customButtons.permissions, selectedRow?.original)) && (
+          shouldShowButton(
+            merged.customButtons.delete,
+            selectedRow?.original
+          ) ||
+          shouldShowButton(
+            merged.customButtons.restore,
+            selectedRow?.original
+          ) ||
+          shouldShowButton(
+            merged.customButtons.permissions,
+            selectedRow?.original
+          )) && (
           <Menu
             anchorEl={menuAnchorEl}
             open={Boolean(menuAnchorEl)}
@@ -649,6 +659,7 @@ const withEntityHandlers = (WrappedComponent) => {
                 <ListItemText>{t("Edit")}</ListItemText>
               </MenuItem>
             )}
+
             {shouldShowButton(
               merged.customButtons.restore,
               selectedRow?.original

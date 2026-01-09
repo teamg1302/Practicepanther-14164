@@ -243,6 +243,22 @@ const Header = () => {
     return luminance > 0.5 ? "#000000" : "#FFFFFF";
   };
 
+  /**
+   * Generates a dummy user avatar image URL based on the user's name.
+   * Uses UI Avatars service to create an avatar with initials.
+   *
+   * @param {string} name - User's full name
+   * @returns {string} URL to the generated avatar image
+   */
+  const getUserAvatarUrl = (name) => {
+    if (!name) {
+      return "https://ui-avatars.com/api/?name=User&size=128&background=random&color=fff";
+    }
+    // Encode the name for URL
+    const encodedName = encodeURIComponent(name);
+    return `https://ui-avatars.com/api/?name=${encodedName}&size=128&background=random&color=fff`;
+  };
+
   return (
     <>
       <div
@@ -776,7 +792,7 @@ const Header = () => {
                   <img
                     src={
                       auth?.user.profileImage ||
-                      "/company/assets/img/Jurisoft-logo-hr.png"
+                      getUserAvatarUrl(auth?.user?.name)
                     }
                     alt={auth?.user?.name}
                     className="img-fluid"

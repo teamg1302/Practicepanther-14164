@@ -337,40 +337,6 @@ export const all_routes = {
         },
       ],
     },
-    // {
-    //   id: 2,
-    //   name: "invoices-and-payments-group",
-    //   path: "/settings/online-payments",
-    //   icon: Archive,
-    //   text: "Invoices & Payments",
-    //   permission: "read",
-    //   children: [
-    //     {
-    //       id: 1,
-    //       name: "custom-hourly-rates-settings",
-    //       path: "/settings/online-payments",
-    //       icon: CreditCard,
-    //       text: "Custom Hourly Rates",
-    //       permission: "read",
-    //     },
-    //     {
-    //       id: 2,
-    //       name: "email-templates-settings",
-    //       path: "/settings/email-templates",
-    //       icon: Mail,
-    //       text: "Email Templates",
-    //       permission: "read",
-    //     },
-    //     {
-    //       id: 3,
-    //       name: "invoice-options-settings",
-    //       path: "/settings/invoice-options",
-    //       icon: FileText,
-    //       text: "Invoice Options",
-    //       permission: "read",
-    //     },
-    //   ],
-    // },
     {
       id: 2,
       module: "manage_users",
@@ -389,14 +355,6 @@ export const all_routes = {
           text: "Users",
           permission: "read",
         },
-        // {
-        //   id: 2,
-        //   name: "user-roles-settings",
-        //   path: "/settings/user-groups",
-        //   icon: Users,
-        //   text: "User Groups",
-        //   permission: "read",
-        // },
         {
           id: 3,
           module: "manage_users_role",
@@ -437,14 +395,13 @@ export const all_routes = {
     permission: "update",
   },
   editUserPermissions: {
-    module: "manage_users",
+    module: "manage_users_role",
     name: "editUserPermissions",
     path: "/settings/users/:userId/permissions",
     icon: Lock,
     text: "Edit User Permissions",
     permission: "update",
   },
-
   addRolePermission: {
     module: "manage_users_role",
     name: "addRolePermission",
