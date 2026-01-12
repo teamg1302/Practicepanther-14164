@@ -684,17 +684,17 @@ const FirmLogoInfoContent = React.forwardRef(
             <h6 className="border-bottom-0 mb-0 pb-0">{"Auto Numbering"}</h6>
             <small className="text-muted">
               {
-                "Automatically add a Contact or Matter Number when creating new contacts or matters."
+                "Automatically add a Client or Case Number when creating new clients or cases."
               }
             </small>
           </div>
         </div>
         <div className="row">
           <div className="col-md-4">
-            <Switch name="autoContacts" label={"Contacts"} />
+            <Switch name="autoContacts" label={"Clients & Parties"} />
           </div>
           <div className="col-md-4">
-            <Switch name="autoMatters" label={"Matters"} />
+            <Switch name="autoMatters" label={"Cases"} />
           </div>
         </div>
 

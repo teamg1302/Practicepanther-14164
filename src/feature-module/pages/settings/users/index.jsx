@@ -138,13 +138,13 @@ const Users = () => {
           redirect: all_routes.settings[0].path,
         },
         {
-          label: "Users",
+          label: "Team Members",
           redirect: "#",
         },
       ]}
       isSettingsLayout={true}
-      title={t("Users")}
-      subtitle="Manage your users"
+      title={t("Team Members")}
+      subtitle="Manage your team members"
       toolIcons={{
         showRefresh: true,
         showExcel: true,

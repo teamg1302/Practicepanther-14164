@@ -343,7 +343,7 @@ export const all_routes = {
       name: "user-settings-group",
       path: "/settings/users",
       icon: Server,
-      text: "User Settings",
+      text: "Team Members Settings",
       permission: "read",
       children: [
         {
@@ -352,7 +352,7 @@ export const all_routes = {
           name: "user-groups-settings",
           path: "/settings/users",
           icon: UserPlus,
-          text: "Users",
+          text: "Team Members",
           permission: "read",
         },
         {
@@ -416,7 +416,7 @@ export const all_routes = {
     name: "addUser",
     path: "/settings/users/add",
     icon: UserPlus,
-    text: "Add User",
+    text: "Add Team Member",
     permission: "create",
   },
 
@@ -425,7 +425,7 @@ export const all_routes = {
     name: "editUser",
     path: "/settings/users/:userId/edit",
     icon: User,
-    text: "Edit User",
+    text: "Edit Team Member",
     permission: "update",
   },
 

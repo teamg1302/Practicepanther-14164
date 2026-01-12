@@ -231,7 +231,7 @@ const Dashboard = () => {
               <div className="dash-count">
                 <div className="dash-counts">
                   <h4>125</h4>
-                  <h5>Users</h5>
+                  <h5>Team Members</h5>
                 </div>
                 <div className="dash-imgs">
                   <User />
@@ -242,7 +242,7 @@ const Dashboard = () => {
               <div className="dash-count das1">
                 <div className="dash-counts">
                   <h4>110</h4>
-                  <h5>Active Users</h5>
+                  <h5>Active Team Members</h5>
                 </div>
                 <div className="dash-imgs">
                   <UserCheck />
@@ -253,7 +253,7 @@ const Dashboard = () => {
               <div className="dash-count das2">
                 <div className="dash-counts">
                   <h4>150</h4>
-                  <h5>Active Matters</h5>
+                  <h5>Live Cases</h5>
                 </div>
                 <div className="dash-imgs">
                   <ImageWithBasePath
@@ -268,7 +268,7 @@ const Dashboard = () => {
               <div className="dash-count das3">
                 <div className="dash-counts">
                   <h4>170</h4>
-                  <h5>Total Contacts</h5>
+                  <h5>Clients & Parties</h5>
                 </div>
                 <div className="dash-imgs">
                   <File />
@@ -294,7 +294,7 @@ const Dashboard = () => {
                         <div className="quick-create-icon">
                           <UserPlus />
                         </div>
-                        <span className="quick-create-label">New Contact</span>
+                        <span className="quick-create-label">New Client</span>
                       </Link>
                     </div>
                     <div className="quick-create-item">
@@ -302,7 +302,7 @@ const Dashboard = () => {
                         <div className="quick-create-icon">
                           <Briefcase />
                         </div>
-                        <span className="quick-create-label">New Matter</span>
+                        <span className="quick-create-label">New Case</span>
                       </Link>
                     </div>
 
@@ -375,7 +375,7 @@ const Dashboard = () => {
                           <span>Revenue</span>
                         </li>
                         <li>
-                          <span>Matters</span>
+                          <span>Cases</span>
                         </li>
                       </ul>
                       <div className="dropdown dropdown-wraper">
@@ -452,7 +452,7 @@ const Dashboard = () => {
                           <tr>
                             <td>1</td>
                             <td className="productimgname">
-                              New matter opened: Smith v. Johnson - Personal
+                              New case opened: Smith v. Johnson - Personal
                               Injury
                             </td>
                             <td>Dec 06, 2025 00:19</td>
@@ -570,7 +570,7 @@ const Dashboard = () => {
 
           <div className="card">
             <div className="card-header">
-              <h4 className="card-title">Recent Matters </h4>
+              <h4 className="card-title">Recent Cases </h4>
             </div>
             <div className="card-body">
               <div className="table-responsive dataview">
@@ -578,7 +578,7 @@ const Dashboard = () => {
                   <thead>
                     <tr>
                       <th>Client</th>
-                      <th>Matter Type </th>
+                      <th>Case Type </th>
                       <th>Date</th>
                       <th>Amount</th>
                       <th className="no-sort">{t("dashboard.action")}</th>

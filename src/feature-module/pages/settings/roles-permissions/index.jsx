@@ -150,6 +150,7 @@ const RolePermissionList = () => {
       onRefresh={handleRefresh}
     >
       <EnhancedList
+        module={all_routes.settings[1].children[1].module}
         columns={columns}
         onEdit={handleEdit}
         customFilters={customFilters}

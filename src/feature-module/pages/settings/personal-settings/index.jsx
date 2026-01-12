@@ -217,9 +217,9 @@ const PersonalSettings = () => {
         },
         {
           label: isCreateMode
-            ? "Add User"
+            ? "Add Team Member"
             : userId
-            ? "Edit User"
+            ? "Edit Team Member"
             : "Personal Settings",
           redirect: "#",
         },
@@ -228,24 +228,24 @@ const PersonalSettings = () => {
       isSettingsLayout={true}
       title={
         isCreateMode
-          ? t("Add User")
+          ? t("Add Team Member")
           : userId
-          ? t("Edit User")
+          ? t("Edit Team Member")
           : t("personalSettings.title")
       }
       subtitle={
         isCreateMode
           ? "Add new user to the system"
           : userId
-          ? "Edit user details"
+          ? "Edit team member details"
           : "Manage your personal profile settings"
       }
       actions={{
         onPrevious: {
           text: isCreateMode
-            ? "Back to Users"
+            ? "Back to Team Members"
             : userId
-            ? "Back to Users"
+            ? "Back to Team Members"
             : "Back to Home",
           onClick: () =>
             isCreateMode
