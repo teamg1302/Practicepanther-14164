@@ -133,12 +133,22 @@ const Input = ({
   const errorMessage = error?.message;
   const inputAriaLabel = ariaLabel || label;
 
-  // Extract className from inputProps to merge with form-control
-  const { className: inputPropsClassName, ...restInputProps } = inputProps;
+  // Extract className and style from inputProps to merge with form-control
+  const {
+    className: inputPropsClassName,
+    style: inputPropsStyle,
+    ...restInputProps
+  } = inputProps;
 
-  const inputClassName = `form-control ${
-    hasError && type !== "password" ? "is-invalid" : ""
-  } ${inputPropsClassName || ""}`.trim();
+  const inputClassName = `form-control ${hasError ? "is-invalid" : ""} ${
+    inputPropsClassName || ""
+  }`.trim();
+
+  // Remove background image for password fields when there's an error
+  const inputStyle =
+    hasError && type === "password"
+      ? { ...inputPropsStyle, backgroundImage: "none" }
+      : inputPropsStyle || {};
 
   return (
     <div className={`mb-3 ${className}`}>
@@ -157,6 +167,7 @@ const Input = ({
             type === "password" ? (showPassword ? "text" : "password") : type
           }
           className={inputClassName}
+          style={inputStyle}
           placeholder={placeholder}
           aria-label={inputAriaLabel}
           aria-required={required}

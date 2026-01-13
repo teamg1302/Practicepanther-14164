@@ -41,7 +41,7 @@ const SecuritySettings = () => {
         col: 12,
         name: "currentPassword",
         label: t("formElements.currentPassword"),
-        type: "text",
+        type: "password",
         required: true,
         // helpText: t("formElements.currentPasswordHelpText"),
         inputProps: {

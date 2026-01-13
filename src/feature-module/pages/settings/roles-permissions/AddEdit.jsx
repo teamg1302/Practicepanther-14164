@@ -254,7 +254,7 @@ const RolePermissionAddEdit = () => {
           text: "Role updated successfully",
           showConfirmButton: true,
         });
-        navigate("/settings/roles-permissions");
+        navigate(all_routes.settings[1].children[1].path);
       } else if (userId) {
         const userPermissions = {
           ...userDetails,
@@ -265,10 +265,10 @@ const RolePermissionAddEdit = () => {
         Swal.fire({
           icon: "success",
           title: "Success",
-          text: "User's permissions updated successfully",
+          text: "Team Member's permissions updated successfully",
           showConfirmButton: true,
         });
-        navigate("/settings/users");
+        navigate(all_routes.settings[1].children[0].path);
       } else {
         // Add new role
         await addRole(cleanedData);
@@ -278,7 +278,7 @@ const RolePermissionAddEdit = () => {
           text: "Role created successfully",
           showConfirmButton: true,
         });
-        navigate("/settings/roles-permissions");
+        navigate(all_routes.settings[1].children[1].path);
       }
     } catch (error) {
       console.error("Error saving role:", error);
@@ -346,7 +346,7 @@ const RolePermissionAddEdit = () => {
         roleId
           ? "Edit role and permissions"
           : userId
-          ? "Edit user's role permissions"
+          ? "Edit team member's role permissions"
           : "Add a new role and assign permissions"
       }
       actions={{
@@ -354,7 +354,7 @@ const RolePermissionAddEdit = () => {
           text: roleId
             ? "Back to Roles & Permissions"
             : userId
-            ? "Back to Users"
+            ? "Back to Team Members"
             : "Back to Roles & Permissions",
           onClick: () =>
             roleId
@@ -628,7 +628,7 @@ const RolePermissionContent = ({
           <div className="col-md-12">
             <Input
               name="userName"
-              label="User Name"
+              label="Team Member"
               type="text"
               inputProps={{ disabled: !!userDetails || isFirmOwnerRole }}
               required
