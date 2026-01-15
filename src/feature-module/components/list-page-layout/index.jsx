@@ -10,14 +10,12 @@ import {
   RotateCcw,
   Download,
   ArrowLeft,
-  Menu,
 } from "feather-icons-react/build/IconComponents";
 import { Button } from "@mui/material";
 import { setToogleHeader } from "@/core/redux/action";
 import ImageWithBasePath from "@/core/img/imagewithbasebath";
 import { checkPermission } from "@/Router/PermissionRoute";
 import { t } from "i18next";
-import SettingsSidebar from "@/InitialPage/SettingsLayout/sidebar";
 
 /**
  * Reusable List Page Layout Component
@@ -53,7 +51,6 @@ const ListPageLayout = ({
   filterContent,
   showFilter = false,
 }) => {
-  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
   const location = useLocation();
   const dispatch = useDispatch();
   const data = useSelector((state) => state.toggle_header);
@@ -137,26 +134,6 @@ const ListPageLayout = ({
             </div>
           </div>
           <ul className="table-top-head">
-            {/* Mobile Menu Toggle Button */}
-            <button
-              type="button"
-              className="btn btn-sm settings-mobile-toggle d-lg-none"
-              onClick={() => setIsMobileSidebarOpen(!isMobileSidebarOpen)}
-              aria-label="Toggle settings sidebar"
-              aria-expanded={isMobileSidebarOpen}
-              aria-controls="settings-sidebar"
-              style={{
-                marginLeft: "auto",
-                marginRight: "15px",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                minWidth: "44px",
-                minHeight: "44px",
-              }}
-            >
-              <Menu size={20} aria-hidden="true" />
-            </button>
             {toolIcons.showPdf && (
               <li>
                 <OverlayTrigger placement="top" overlay={renderTooltip}>
@@ -274,20 +251,13 @@ const ListPageLayout = ({
 
         {isSettingsLayout ? (
           <div className="col-xl-12">
-            <div className="settings-wrapper d-flex gap-4">
-              <SettingsSidebar
-                id="settings-sidebar"
-                isMobileOpen={isMobileSidebarOpen}
-                onClose={() => setIsMobileSidebarOpen(false)}
-              />
-              {isFormLayout ? (
-                <main className="settings-content-main w-100">
-                  <div className="settings-page-wrap w-100">{children}</div>
-                </main>
-              ) : (
-                children
-              )}
-            </div>
+            {isFormLayout ? (
+              <main className="settings-content-main w-100">
+                <div className="settings-page-wrap w-100">{children}</div>
+              </main>
+            ) : (
+              children
+            )}
           </div>
         ) : (
           <div

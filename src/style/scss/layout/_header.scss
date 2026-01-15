@@ -309,14 +309,6 @@
 }
 @include respond-above(custom992) {
   .mini-sidebar {
-    &.expand-menu {
-      .header-left {
-        flex-direction: row;
-        justify-content: space-between;
-        -webkit-justify-content: space-between;
-        -ms-flex-pack: space-between;
-      }
-    }
     .header-left {
       display: -webkit-box;
       display: -ms-flexbox;
@@ -324,18 +316,28 @@
       align-items: center;
       -webkit-box-align: center;
       -ms-flex-align: center;
-      justify-content: center;
-      -webkit-justify-content: center;
-      -ms-flex-pack: center;
-      width: 80px;
-      @include margin-padding(null, 0);
-      flex-direction: column;
+      justify-content: space-between;
+      -webkit-justify-content: space-between;
+      -ms-flex-pack: space-between;
+      width: 260px;
+      @include margin-padding(null, 0 24px);
+      flex-direction: row;
       .logo-small {
         display: block;
         padding: 10px 0 0;
       }
       .logo {
-        display: none;
+        display: block;
+        width: 100%;
+        padding: 8px;
+        img {
+          width: 100% !important;
+          max-width: 64px !important;
+          max-height: 50px !important;
+          height: auto !important;
+          object-fit: contain;
+          margin: 0 auto;
+        }
       }
     }
     .menu-arrow {
@@ -347,27 +349,6 @@
     .user-menu {
       .badge {
         display: flex !important;
-      }
-    }
-    &.expand-menu {
-      .menu-arrow {
-        display: block !important;
-      }
-      .chat-user {
-        display: block !important;
-      }
-      .logo-small {
-        display: none;
-      }
-      .logo {
-        display: block;
-      }
-      #toggle_btn {
-        opacity: 1;
-      }
-      .header-left {
-        @include margin-padding(null, 0 20px);
-        display: flex;
       }
     }
     .noti-dot {
@@ -840,9 +821,9 @@ hr {
   align-items: center;
   -webkit-box-align: center;
   -ms-flex-align: center;
-  justify-content: center;
-  -webkit-justify-content: center;
-  -ms-flex-pack: center;
+  justify-content: flex-end;
+  -webkit-justify-content: flex-end;
+  -ms-flex-pack: flex-end;
   margin: 0;
   position: relative;
   padding-right: 15px;

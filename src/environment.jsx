@@ -1,7 +1,7 @@
 const DEFAULT_BASE_PATH = "/company/";
 const DEFAULT_IMAGE_PATH = "/company/";
-const DEFAULT_API_BASE_URL_V1 = "http://172.172.176.106:6075/owner/api/v1";
-//const DEFAULT_API_BASE_URL_V1 = "http://localhost:3001/api/v1/";
+// const DEFAULT_API_BASE_URL_V1 = "http://172.172.176.106:6075/owner/api/v1";
+const DEFAULT_API_BASE_URL_V1 = "http://localhost:3001/api/v1/";
 
 export const base_path = import.meta.env.VITE_BASE_PATH ?? DEFAULT_BASE_PATH;
 export const image_path = import.meta.env.VITE_IMAGE_PATH ?? DEFAULT_IMAGE_PATH;

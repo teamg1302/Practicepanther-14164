@@ -145,25 +145,6 @@ const Header = () => {
     SetToggle((current) => !current);
   };
 
-  /**
-   * Removes the expand-menu class from body element.
-   * Called when mouse leaves the header-left area.
-   *
-   * @returns {void}
-   */
-  const expandMenu = () => {
-    document.body.classList.remove("expand-menu");
-  };
-
-  /**
-   * Adds the expand-menu class to body element.
-   * Called when mouse enters the header-left area.
-   *
-   * @returns {void}
-   */
-  const expandMenuOpen = () => {
-    document.body.classList.add("expand-menu");
-  };
 
   /**
    * Toggles the mobile sidebar overlay.
@@ -274,8 +255,6 @@ const Header = () => {
         {/* Logo */}
         <div
           className={`header-left ${toggle ? "" : "active"}`}
-          onMouseLeave={expandMenu}
-          onMouseOver={expandMenuOpen}
         >
           <Link to="/" className="logo logo-normal">
             <img
@@ -307,12 +286,7 @@ const Header = () => {
             aria-label="Toggle sidebar"
             aria-expanded={!toggle}
             style={{
-              display:
-                pathname.includes("tasks") || pathname.includes("pos")
-                  ? "none"
-                  : pathname.includes("compose")
-                  ? "none"
-                  : "",
+              display: "none",
             }}
             onClick={handlesidebar}
           >
@@ -342,7 +316,7 @@ const Header = () => {
         {/* Header Menu */}
         <ul className="nav user-menu">
           {/* Search */}
-          <li className="nav-item nav-searchinputs">
+          <li className="nav-item nav-searchinputs" style={{ display: "none" }}>
             <div className="top-nav-search">
               <Link to="#" className="responsive-search">
                 <Search />

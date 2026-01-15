@@ -2,6 +2,7 @@ import React from "react";
 import { Route, Routes, Navigate } from "react-router-dom";
 import Header from "@/InitialPage/Sidebar/Header";
 import Sidebar from "@/InitialPage/Sidebar/Sidebar";
+import Footer from "@/InitialPage/Sidebar/Footer";
 import { pagesRoute, publicRoutes, settingsRoutes } from "@/Router/router.link";
 import { Outlet, useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
@@ -31,6 +32,7 @@ const HeaderLayout = () => {
         <Header />
         <Sidebar />
         <Outlet />
+        <Footer />
         {/* {showThemeSettings && <ThemeSettings />} */}
       </div>
     </ProtectedRoute>
