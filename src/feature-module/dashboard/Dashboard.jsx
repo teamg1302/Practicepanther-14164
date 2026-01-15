@@ -55,20 +55,52 @@ const Dashboard = () => {
   const { t } = useTranslation();
   const route = all_routes;
   const permissions = useSelector((state) => state.auth?.permissions || []);
-  
+
   // Permission checks for dashboard sections
   // Check for financial summary - use view_financial_summary or dashboard_financial_summary
-  const hasFinancialSummaryPermission = 
+  const hasFinancialSummaryPermission =
     checkPermission(permissions, "view_financial_summary", "read") ||
     checkPermission(permissions, "dashboard_financial_summary", "read");
-  const hasCasesPermission = checkPermission(permissions, "manage_matters", "read");
-  const hasTimeEntriesPermission = checkPermission(permissions, "manage_time_entries", "read");
-  const hasContactsPermission = checkPermission(permissions, "manage_contacts", "read");
-  const hasDocumentsPermission = checkPermission(permissions, "manage_documents", "read");
-  const hasCalendarPermission = checkPermission(permissions, "manage_calendar", "read");
-  const hasTasksPermission = checkPermission(permissions, "manage_tasks", "read");
-  const hasSettingsPermission = checkPermission(permissions, "manage_settings", "read");
-  const hasActivitiesPermission = checkPermission(permissions, "manage_activities", "read");
+  const hasCasesPermission = checkPermission(
+    permissions,
+    "manage_matters",
+    "read"
+  );
+  const hasTimeEntriesPermission = checkPermission(
+    permissions,
+    "manage_time_entries",
+    "read"
+  );
+  const hasContactsPermission = checkPermission(
+    permissions,
+    "manage_contacts",
+    "read"
+  );
+  const hasDocumentsPermission = checkPermission(
+    permissions,
+    "manage_documents",
+    "read"
+  );
+  const hasCalendarPermission = checkPermission(
+    permissions,
+    "manage_calendar",
+    "read"
+  );
+  const hasTasksPermission = checkPermission(
+    permissions,
+    "manage_tasks",
+    "read"
+  );
+  const hasSettingsPermission = checkPermission(
+    permissions,
+    "manage_settings",
+    "read"
+  );
+  const hasActivitiesPermission = checkPermission(
+    permissions,
+    "manage_activities",
+    "read"
+  );
   const [chartOptions] = useState({
     series: [
       {
@@ -208,7 +240,11 @@ const Dashboard = () => {
     { id: 2, description: "Review contract: Chen Inc.", time: "12:00 PM" },
     { id: 3, description: "Return call to A. Patel.", time: "2:30 PM" },
     { id: 4, description: "Draft agreement: Rodriguez", time: "4:00 PM" },
-    { id: 5, description: "Submit court filing: Thompson case", time: "5:00 PM" },
+    {
+      id: 5,
+      description: "Submit court filing: Thompson case",
+      time: "5:00 PM",
+    },
   ];
 
   // Recent Activities data
@@ -457,824 +493,1147 @@ const Dashboard = () => {
 
           {/* Financial Summary Section */}
           {hasFinancialSummaryPermission && (
-          <div className="row g-2 mb-1">
-            <div className="col-xl-12 col-sm-12 col-12 d-flex">
-              <div className="card flex-fill">
-                <div className="card-header d-flex justify-content-between align-items-center">
-                  <h4 className="card-title mb-0 d-flex align-items-center">
-                    <DollarSign className="me-2" size={20} color="#28c76f" />
-                    Financial Summary
-                  </h4>
-                  <div className="dropdown dropdown-wraper">
-                    <button
-                      className="btn btn-light btn-sm dropdown-toggle"
-                      type="button"
-                      id="financialDropdown"
-                      data-bs-toggle="dropdown"
-                      aria-expanded="false"
-                    >
-                      This Month
-                    </button>
-                    <ul
-                      className="dropdown-menu"
-                      aria-labelledby="financialDropdown"
-                    >
-                      <li>
-                        <Link to="#" className="dropdown-item">
-                          This Month
-                        </Link>
-                      </li>
-                      <li>
-                        <Link to="#" className="dropdown-item">
-                          This Quarter
-                        </Link>
-                      </li>
-                      <li>
-                        <Link to="#" className="dropdown-item">
-                          This Year
-                        </Link>
-                      </li>
-                    </ul>
+            <div className="row g-2 mb-1">
+              <div className="col-xl-12 col-sm-12 col-12 d-flex">
+                <div className="card flex-fill">
+                  <div className="card-header d-flex justify-content-between align-items-center">
+                    <h4 className="card-title mb-0 d-flex align-items-center">
+                      <DollarSign className="me-2" size={20} color="#28c76f" />
+                      Financial Summary
+                    </h4>
+                    <div className="dropdown dropdown-wraper">
+                      <button
+                        className="btn btn-light btn-sm dropdown-toggle"
+                        type="button"
+                        id="financialDropdown"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false"
+                      >
+                        This Month
+                      </button>
+                      <ul
+                        className="dropdown-menu"
+                        aria-labelledby="financialDropdown"
+                      >
+                        <li>
+                          <Link to="#" className="dropdown-item">
+                            This Month
+                          </Link>
+                        </li>
+                        <li>
+                          <Link to="#" className="dropdown-item">
+                            This Quarter
+                          </Link>
+                        </li>
+                        <li>
+                          <Link to="#" className="dropdown-item">
+                            This Year
+                          </Link>
+                        </li>
+                      </ul>
+                    </div>
                   </div>
-                </div>
-                <div className="card-body">
-                  <div className="row g-2">
-                    {/* Total Revenue */}
-                    <div className="col-xl-3 col-md-6 col-sm-6 col-12">
-                      <div className="financial-card">
-                        <div className="financial-icon bg-success">
-                          <TrendingUp size={24} color="#fff" />
-                        </div>
-                        <div className="financial-content">
-                          <div className="financial-label text-muted small mb-1">
-                            Total Revenue
+                  <div className="card-body">
+                    <div className="row g-2">
+                      {/* Total Revenue */}
+                      <div className="col-xl-3 col-md-6 col-sm-6 col-12">
+                        <div className="financial-card">
+                          <div className="financial-icon bg-success">
+                            <TrendingUp size={24} color="#fff" />
                           </div>
-                          <div className="financial-value fw-bold text-success">
-                            $<CountUp start={0} end={125000} duration={2} decimals={0} />
-                          </div>
-                          {/* <div className="financial-change text-success small mt-1">
+                          <div className="financial-content">
+                            <div className="financial-label text-muted small mb-1">
+                              Total Revenue
+                            </div>
+                            <div className="financial-value fw-bold text-success">
+                              $
+                              <CountUp
+                                start={0}
+                                end={125000}
+                                duration={2}
+                                decimals={0}
+                              />
+                            </div>
+                            {/* <div className="financial-change text-success small mt-1">
                             <TrendingUp size={12} className="me-1" />
                             +12.5% from last month
                           </div> */}
+                          </div>
                         </div>
                       </div>
-                    </div>
 
-                    {/* Total Expenses */}
-                    <div className="col-xl-3 col-md-6 col-sm-6 col-12">
-                      <div className="financial-card">
-                        <div className="financial-icon bg-danger">
-                          <TrendingDown size={24} color="#fff" />
-                        </div>
-                        <div className="financial-content">
-                          <div className="financial-label text-muted small mb-1">
-                            Total Expenses
+                      {/* Total Expenses */}
+                      <div className="col-xl-3 col-md-6 col-sm-6 col-12">
+                        <div className="financial-card">
+                          <div className="financial-icon bg-danger">
+                            <TrendingDown size={24} color="#fff" />
                           </div>
-                          <div className="financial-value fw-bold text-danger">
-                            $<CountUp start={0} end={45200} duration={2} decimals={0} />
-                          </div>
-                          {/* <div className="financial-change text-danger small mt-1">
+                          <div className="financial-content">
+                            <div className="financial-label text-muted small mb-1">
+                              Total Expenses
+                            </div>
+                            <div className="financial-value fw-bold text-danger">
+                              $
+                              <CountUp
+                                start={0}
+                                end={45200}
+                                duration={2}
+                                decimals={0}
+                              />
+                            </div>
+                            {/* <div className="financial-change text-danger small mt-1">
                             <TrendingDown size={12} className="me-1" />
                             +5.2% from last month
                           </div> */}
+                          </div>
                         </div>
                       </div>
-                    </div>
 
-                    
-
-                    {/* Outstanding Invoices */}
-                    <div className="col-xl-3 col-md-6 col-sm-6 col-12">
-                      <div className="financial-card">
-                        <div className="financial-icon bg-warning">
-                          <FileText size={24} color="#fff" />
-                        </div>
-                        <div className="financial-content">
-                          <div className="financial-label text-muted small mb-1">
-                            Outstanding Invoices
+                      {/* Outstanding Invoices */}
+                      <div className="col-xl-3 col-md-6 col-sm-6 col-12">
+                        <div className="financial-card">
+                          <div className="financial-icon bg-warning">
+                            <FileText size={24} color="#fff" />
                           </div>
-                          <div className="financial-value fw-bold text-warning">
-                            $<CountUp start={0} end={34200} duration={2} decimals={0} />
-                          </div>
-                          {/* <div className="financial-change text-muted small mt-1">
+                          <div className="financial-content">
+                            <div className="financial-label text-muted small mb-1">
+                              Outstanding Invoices
+                            </div>
+                            <div className="financial-value fw-bold text-warning">
+                              $
+                              <CountUp
+                                start={0}
+                                end={34200}
+                                duration={2}
+                                decimals={0}
+                              />
+                            </div>
+                            {/* <div className="financial-change text-muted small mt-1">
                             <span className="me-1">15</span> unpaid invoices
                           </div> */}
+                          </div>
                         </div>
                       </div>
-                    </div>
 
-                    
-                    <div className="col-xl-3 col-md-6 col-sm-6 col-12">
-                      <div className="financial-card">
-                        <div className="financial-icon bg-primary">
-                          <DollarSign size={24} color="#fff" />
-                        </div>
-                        <div className="financial-content">
-                          <div className="financial-label text-muted small mb-1">
-                            Unbilled Amount
+                      <div className="col-xl-3 col-md-6 col-sm-6 col-12">
+                        <div className="financial-card">
+                          <div className="financial-icon bg-primary">
+                            <DollarSign size={24} color="#fff" />
                           </div>
-                          <div className="financial-value fw-bold text-primary">
-                            $<CountUp start={0} end={79800} duration={2} decimals={0} />
-                          </div>
-                          {/* <div className="financial-change text-success small mt-1">
+                          <div className="financial-content">
+                            <div className="financial-label text-muted small mb-1">
+                              Unbilled Amount
+                            </div>
+                            <div className="financial-value fw-bold text-primary">
+                              $
+                              <CountUp
+                                start={0}
+                                end={79800}
+                                duration={2}
+                                decimals={0}
+                              />
+                            </div>
+                            {/* <div className="financial-change text-success small mt-1">
                             <TrendingUp size={12} className="me-1" />
                             +18.3% from last month
                           </div> */}
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
 
-                  {/* Additional Financial Metrics */}
-                 
+                    {/* Additional Financial Metrics */}
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
           )}
 
           {/* Middle Section: Urgent Deadlines and My Tasks Today */}
           <div className="row g-2 mb-1">
             {/* Urgent Deadlines Section */}
             {hasCasesPermission && (
-            <div className="col-xl-6 col-sm-12 col-12 d-flex">
-              <div className="card flex-fill">
-                <div className="card-header d-flex justify-content-between align-items-center">
-                  <h4 className="card-title mb-0 d-flex align-items-center">
-                    <AlertCircle className="me-2" size={20} color="#EA5455" />
-                    Urgent Deadlines
-                  </h4>
-                  <div className="view-all-link">
-                    <Link to="#" className="view-all d-flex align-items-center">
-                      View All
-                      <span className="ps-2 d-flex align-items-center">
-                        <ArrowRight className="feather-16" />
-                      </span>
-                    </Link>
+              <div
+                className={`${
+                  hasTasksPermission ? "col-xl-6" : "col-xl-12"
+                } col-sm-12 col-12 d-flex`}
+              >
+                <div className="card flex-fill">
+                  <div className="card-header d-flex justify-content-between align-items-center">
+                    <h4 className="card-title mb-0 d-flex align-items-center">
+                      <AlertCircle className="me-2" size={20} color="#EA5455" />
+                      Urgent Deadlines
+                    </h4>
+                    <div className="view-all-link">
+                      <Link
+                        to="#"
+                        className="view-all d-flex align-items-center"
+                      >
+                        View All
+                        <span className="ps-2 d-flex align-items-center">
+                          <ArrowRight className="feather-16" />
+                        </span>
+                      </Link>
+                    </div>
                   </div>
-                </div>
-                <div className="card-body">
-                  <div className="urgent-deadlines-list">
-                    {urgentDeadlines.map((deadline) => {
-                      const IconComponent = deadline.icon;
-                      return (
-                        <div
-                          key={deadline.id}
-                          className="deadline-item d-flex align-items-start justify-content-between mb-2"
-                        >
-                          <div className="d-flex align-items-start flex-grow-1">
-                            <div
-                              className="deadline-icon me-3"
-                              style={{ backgroundColor: deadline.color }}
-                            >
-                              <IconComponent size={20} color="#fff" />
+                  <div className="card-body">
+                    <div className="urgent-deadlines-list">
+                      {urgentDeadlines.map((deadline) => {
+                        const IconComponent = deadline.icon;
+                        return (
+                          <div
+                            key={deadline.id}
+                            className="deadline-item d-flex align-items-start justify-content-between mb-2"
+                          >
+                            <div className="d-flex align-items-start flex-grow-1">
+                              <div
+                                className="deadline-icon me-3"
+                                style={{ backgroundColor: deadline.color }}
+                              >
+                                <IconComponent size={20} color="#fff" />
+                              </div>
+                              <div className="deadline-content">
+                                <div className="deadline-type fw-bold">
+                                  {deadline.type}
+                                </div>
+                                <div className="deadline-person d-flex align-items-center">
+                                  {deadline.person}
+                                  <ChevronDown size={16} className="ms-1" />
+                                </div>
+                              </div>
                             </div>
-                            <div className="deadline-content">
-                              <div className="deadline-type fw-bold">
-                                {deadline.type}
+                            <div className="deadline-meta text-end">
+                              <div className="deadline-date text-muted small">
+                                {deadline.date}
                               </div>
-                              <div className="deadline-person d-flex align-items-center">
-                                {deadline.person}
-                                <ChevronDown size={16} className="ms-1" />
-                              </div>
+                              {deadline.location && (
+                                <div className="deadline-location text-muted small d-flex align-items-center justify-content-end">
+                                  <MapPin size={14} className="me-1" />
+                                  {deadline.location}
+                                </div>
+                              )}
                             </div>
                           </div>
-                          <div className="deadline-meta text-end">
-                            <div className="deadline-date text-muted small">
-                              {deadline.date}
-                            </div>
-                            {deadline.location && (
-                              <div className="deadline-location text-muted small d-flex align-items-center justify-content-end">
-                                <MapPin size={14} className="me-1" />
-                                {deadline.location}
-                              </div>
-                            )}
-                          </div>
-                        </div>
-                      );
-                    })}
+                        );
+                      })}
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
             )}
 
             {/* My Tasks Today Section */}
             {hasTasksPermission && (
-            <div className="col-xl-6 col-sm-12 col-12 d-flex">
-              <div className="card flex-fill">
-                <div className="card-header d-flex justify-content-between align-items-center">
-                  <h4 className="card-title mb-0">My Tasks Today</h4>
-                  <div className="view-all-link">
-                    <Link to="#" className="view-all d-flex align-items-center">
-                      View All
-                      <span className="ps-2 d-flex align-items-center">
-                        <ArrowRight className="feather-16" />
-                      </span>
-                    </Link>
-                  </div>
-                </div>
-                <div className="card-body">
-                  <div className="tasks-list">
-                    {tasks.map((task) => (
-                      <div
-                        key={task.id}
-                        className="task-item d-flex align-items-center mb-3"
+              <div
+                className={`${
+                  hasCasesPermission ? "col-xl-6" : "col-xl-12"
+                } col-sm-12 col-12 d-flex`}
+              >
+                <div className="card flex-fill">
+                  <div className="card-header d-flex justify-content-between align-items-center">
+                    <h4 className="card-title mb-0">My Tasks Today</h4>
+                    <div className="view-all-link">
+                      <Link
+                        to="#"
+                        className="view-all d-flex align-items-center"
                       >
-                        <input
-                          type="checkbox"
-                          className="form-check-input me-3"
-                          style={{ width: "18px", height: "18px" }}
-                        />
-                        <div className="task-content flex-grow-1">
-                          <div className="task-description">{task.description}</div>
+                        View All
+                        <span className="ps-2 d-flex align-items-center">
+                          <ArrowRight className="feather-16" />
+                        </span>
+                      </Link>
+                    </div>
+                  </div>
+                  <div className="card-body">
+                    <div className="tasks-list">
+                      {tasks.map((task) => (
+                        <div
+                          key={task.id}
+                          className="task-item d-flex align-items-center mb-3"
+                        >
+                          <input
+                            type="checkbox"
+                            className="form-check-input me-3"
+                            style={{ width: "18px", height: "18px" }}
+                          />
+                          <div className="task-content flex-grow-1">
+                            <div className="task-description">
+                              {task.description}
+                            </div>
+                          </div>
+                          <div className="task-time text-muted">
+                            {task.time}
+                          </div>
                         </div>
-                        <div className="task-time text-muted">{task.time}</div>
-                      </div>
-                    ))}
+                      ))}
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
             )}
           </div>
 
           {/* Bottom Section: Fast Actions and Placeholder */}
           <div className="row g-2">
             {/* Fast Actions Section */}
-            {(hasContactsPermission || hasCasesPermission || hasTimeEntriesPermission) && (
-            <div className="col-xl-6 col-sm-12 col-12 d-flex">
-              <div className="card flex-fill">
-                <div className="card-header d-flex justify-content-between align-items-center">
-                  <h4 className="card-title mb-0 d-flex align-items-center">
-                    <Zap className="me-2" size={20} color="#FFC107" />
-                    Fast Actions
-                  </h4>
-                  <div className="view-all-link">
-                    <Link to="#" className="view-all d-flex align-items-center">
-                      View All
-                      <span className="ps-2 d-flex align-items-center">
-                        <ArrowRight className="feather-16" />
-                      </span>
-                    </Link>
+            {(hasContactsPermission ||
+              hasCasesPermission ||
+              hasTimeEntriesPermission) && (
+              <div
+                className={`${
+                  hasFinancialSummaryPermission ? "col-xl-6" : "col-xl-12"
+                } col-sm-12 col-12 d-flex`}
+              >
+                <div className="card flex-fill">
+                  <div className="card-header d-flex justify-content-between align-items-center">
+                    <h4 className="card-title mb-0 d-flex align-items-center">
+                      <Zap className="me-2" size={20} color="#FFC107" />
+                      Fast Actions
+                    </h4>
+                    <div className="view-all-link">
+                      <Link
+                        to="#"
+                        className="view-all d-flex align-items-center"
+                      >
+                        View All
+                        <span className="ps-2 d-flex align-items-center">
+                          <ArrowRight className="feather-16" />
+                        </span>
+                      </Link>
+                    </div>
                   </div>
-                </div>
-                <div className="card-body">
-                  <div className="fast-actions-grid">
-                    <Link to="#" className="fast-action-btn">
-                      <div className="fast-action-icon">
-                        <UserPlus size={28} />
-                      </div>
-                      <div className="fast-action-label">New Client</div>
-                    </Link>
-                    <Link to="#" className="fast-action-btn">
-                      <div className="fast-action-icon">
-                        <Briefcase size={28} />
-                      </div>
-                      <div className="fast-action-label">New Case</div>
-                    </Link>
-                    <Link to="#" className="fast-action-btn">
-                      <div className="fast-action-icon">
-                        <Clock size={28} />
-                      </div>
-                      <div className="fast-action-label">Log Time</div>
-                    </Link>
-                    <Link to="#" className="fast-action-btn">
-                      <div className="fast-action-icon">
-                        <FileText size={28} />
-                      </div>
-                      <div className="fast-action-label">Case Note</div>
-                    </Link>
+                  <div className="card-body">
+                    <div className="fast-actions-grid">
+                      <Link to="#" className="fast-action-btn">
+                        <div className="fast-action-icon">
+                          <UserPlus size={28} />
+                        </div>
+                        <div className="fast-action-label">New Client</div>
+                      </Link>
+                      <Link to="#" className="fast-action-btn">
+                        <div className="fast-action-icon">
+                          <Briefcase size={28} />
+                        </div>
+                        <div className="fast-action-label">New Case</div>
+                      </Link>
+                      <Link to="#" className="fast-action-btn">
+                        <div className="fast-action-icon">
+                          <Clock size={28} />
+                        </div>
+                        <div className="fast-action-label">Log Time</div>
+                      </Link>
+                      <Link to="#" className="fast-action-btn">
+                        <div className="fast-action-icon">
+                          <FileText size={28} />
+                        </div>
+                        <div className="fast-action-label">Case Note</div>
+                      </Link>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
             )}
 
             {/* Revenue Overview Section */}
             {hasFinancialSummaryPermission && (
-            <div className="col-xl-6 col-sm-12 col-12 d-flex">
-              <div className="card flex-fill">
-                <div className="card-header d-flex justify-content-between align-items-center">
-                  <h4 className="card-title mb-0 d-flex align-items-center">
-                    <BarChart2 className="me-2" size={20} color="#00cfe8" />
-                    Revenue Overview
-                  </h4>
-                  <div className="graph-sets">
-                    <ul className="mb-0">
-                      <li>
-                        <span>Revenue</span>
-                      </li>
-                      <li>
-                        <span>Cases</span>
-                      </li>
-                    </ul>
-                    <div className="dropdown dropdown-wraper">
-                      <button
-                        className="btn btn-light btn-sm dropdown-toggle"
-                        type="button"
-                        id="dropdownMenuButton"
-                        data-bs-toggle="dropdown"
-                        aria-expanded="false"
-                      >
-                        2023
-                      </button>
-                      <ul
-                        className="dropdown-menu"
-                        aria-labelledby="dropdownMenuButton"
-                      >
+              <div
+                className={`${
+                  hasContactsPermission ||
+                  hasCasesPermission ||
+                  hasTimeEntriesPermission
+                    ? "col-xl-6"
+                    : "col-xl-12"
+                } col-sm-12 col-12 d-flex`}
+              >
+                <div className="card flex-fill">
+                  <div className="card-header d-flex justify-content-between align-items-center">
+                    <h4 className="card-title mb-0 d-flex align-items-center">
+                      <BarChart2 className="me-2" size={20} color="#00cfe8" />
+                      Revenue Overview
+                    </h4>
+                    <div className="graph-sets">
+                      <ul className="mb-0">
                         <li>
-                          <Link to="#" className="dropdown-item">
-                            2023
-                          </Link>
+                          <span>Revenue</span>
                         </li>
                         <li>
-                          <Link to="#" className="dropdown-item">
-                            2022
-                          </Link>
-                        </li>
-                        <li>
-                          <Link to="#" className="dropdown-item">
-                            2021
-                          </Link>
+                          <span>Cases</span>
                         </li>
                       </ul>
+                      <div className="dropdown dropdown-wraper">
+                        <button
+                          className="btn btn-light btn-sm dropdown-toggle"
+                          type="button"
+                          id="dropdownMenuButton"
+                          data-bs-toggle="dropdown"
+                          aria-expanded="false"
+                        >
+                          2023
+                        </button>
+                        <ul
+                          className="dropdown-menu"
+                          aria-labelledby="dropdownMenuButton"
+                        >
+                          <li>
+                            <Link to="#" className="dropdown-item">
+                              2023
+                            </Link>
+                          </li>
+                          <li>
+                            <Link to="#" className="dropdown-item">
+                              2022
+                            </Link>
+                          </li>
+                          <li>
+                            <Link to="#" className="dropdown-item">
+                              2021
+                            </Link>
+                          </li>
+                        </ul>
+                      </div>
                     </div>
                   </div>
-                </div>
-                <div className="card-body">
-                  <Chart
-                    options={chartOptions}
-                    series={chartOptions.series}
-                    type="bar"
-                    height={320}
-                  />
+                  <div className="card-body">
+                    <Chart
+                      options={chartOptions}
+                      series={chartOptions.series}
+                      type="bar"
+                      height={320}
+                    />
+                  </div>
                 </div>
               </div>
-            </div>
             )}
           </div>
 
           {/* Recent Activities Section */}
           {hasCasesPermission && (
-          <div className="row g-2 mb-1">
-            <div className="col-xl-12 col-sm-12 col-12 d-flex">
-              <div className="card flex-fill">
-                <div className="card-header d-flex justify-content-between align-items-center">
-                  <h4 className="card-title mb-0 d-flex align-items-center">
-                    <Activity className="me-2" size={20} color="#28c76f" />
-                    Recent Activities
-                  </h4>
-                  <div className="view-all-link">
-                    <Link to="#" className="view-all d-flex align-items-center">
-                      View All
-                      <span className="ps-2 d-flex align-items-center">
-                        <ArrowRight className="feather-16" />
-                      </span>
-                    </Link>
+            <div className="row g-2 mb-1">
+              <div className="col-xl-12 col-sm-12 col-12 d-flex">
+                <div className="card flex-fill">
+                  <div className="card-header d-flex justify-content-between align-items-center">
+                    <h4 className="card-title mb-0 d-flex align-items-center">
+                      <Activity className="me-2" size={20} color="#28c76f" />
+                      Recent Activities
+                    </h4>
+                    <div className="view-all-link">
+                      <Link
+                        to="#"
+                        className="view-all d-flex align-items-center"
+                      >
+                        View All
+                        <span className="ps-2 d-flex align-items-center">
+                          <ArrowRight className="feather-16" />
+                        </span>
+                      </Link>
+                    </div>
                   </div>
-                </div>
-                <div className="card-body">
-                  <div className="activities-list">
-                    {recentActivities.map((activity) => {
-                      const IconComponent = activity.icon;
-                      return (
-                        <div
-                          key={activity.id}
-                          className="activity-item d-flex align-items-start mb-2"
-                        >
+                  <div className="card-body">
+                    <div className="activities-list">
+                      {recentActivities.map((activity) => {
+                        const IconComponent = activity.icon;
+                        return (
                           <div
-                            className="activity-icon me-3"
-                            style={{ backgroundColor: activity.color }}
+                            key={activity.id}
+                            className="activity-item d-flex align-items-start mb-2"
                           >
-                            <IconComponent size={18} color="#fff" />
+                            <div
+                              className="activity-icon me-3"
+                              style={{ backgroundColor: activity.color }}
+                            >
+                              <IconComponent size={18} color="#fff" />
+                            </div>
+                            <div className="activity-content flex-grow-1">
+                              <div className="activity-type fw-bold mb-1">
+                                {activity.type}
+                              </div>
+                              <div className="activity-description text-muted small mb-1">
+                                {activity.description}
+                              </div>
+                              <div
+                                className="activity-time text-muted"
+                                style={{ fontSize: "12px" }}
+                              >
+                                {activity.time}
+                              </div>
+                            </div>
                           </div>
-                          <div className="activity-content flex-grow-1">
-                            <div className="activity-type fw-bold mb-1">
-                              {activity.type}
-                            </div>
-                            <div className="activity-description text-muted small mb-1">
-                              {activity.description}
-                            </div>
-                            <div className="activity-time text-muted" style={{ fontSize: "12px" }}>
-                              {activity.time}
-                            </div>
-                          </div>
-                        </div>
-                      );
-                    })}
+                        );
+                      })}
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
           )}
 
           {/* Upcoming Events and Recent Documents */}
           <div className="row g-2 mb-1">
             {/* Upcoming Events Section */}
             {hasCalendarPermission && (
-            <div className="col-xl-6 col-sm-12 col-12 d-flex">
-              <div className="card flex-fill">
-                <div className="card-header d-flex justify-content-between align-items-center">
-                  <h4 className="card-title mb-0 d-flex align-items-center">
-                    <Calendar className="me-2" size={20} color="#ff9800" />
-                    Upcoming Events
-                  </h4>
-                  <div className="view-all-link">
-                    <Link to="#" className="view-all d-flex align-items-center">
-                      View All
-                      <span className="ps-2 d-flex align-items-center">
-                        <ArrowRight className="feather-16" />
-                      </span>
-                    </Link>
-                  </div>
-                </div>
-                <div className="card-body">
-                  <div className="events-list">
-                    {upcomingEvents.map((event) => (
-                      <div
-                        key={event.id}
-                        className="event-item d-flex align-items-start mb-3"
+              <div
+                className={`${
+                  hasDocumentsPermission ? "col-xl-6" : "col-xl-12"
+                } col-sm-12 col-12 d-flex`}
+              >
+                <div className="card flex-fill">
+                  <div className="card-header d-flex justify-content-between align-items-center">
+                    <h4 className="card-title mb-0 d-flex align-items-center">
+                      <Calendar className="me-2" size={20} color="#ff9800" />
+                      Upcoming Events
+                    </h4>
+                    <div className="view-all-link">
+                      <Link
+                        to="#"
+                        className="view-all d-flex align-items-center"
                       >
+                        View All
+                        <span className="ps-2 d-flex align-items-center">
+                          <ArrowRight className="feather-16" />
+                        </span>
+                      </Link>
+                    </div>
+                  </div>
+                  <div className="card-body">
+                    <div className="events-list">
+                      {upcomingEvents.map((event) => (
                         <div
-                          className={`event-icon me-3 ${
-                            event.type === "court"
-                              ? "bg-danger"
-                              : event.type === "meeting"
-                              ? "bg-primary"
-                              : "bg-info"
-                          }`}
+                          key={event.id}
+                          className="event-item d-flex align-items-start mb-3"
                         >
-                          {event.type === "court" ? (
-                            <Award size={18} color="#fff" />
-                          ) : event.type === "meeting" ? (
-                            <Users size={18} color="#fff" />
-                          ) : (
-                            <FileText size={18} color="#fff" />
-                          )}
+                          <div
+                            className={`event-icon me-3 ${
+                              event.type === "court"
+                                ? "bg-danger"
+                                : event.type === "meeting"
+                                ? "bg-primary"
+                                : "bg-info"
+                            }`}
+                          >
+                            {event.type === "court" ? (
+                              <Award size={18} color="#fff" />
+                            ) : event.type === "meeting" ? (
+                              <Users size={18} color="#fff" />
+                            ) : (
+                              <FileText size={18} color="#fff" />
+                            )}
+                          </div>
+                          <div className="event-content flex-grow-1">
+                            <div className="event-title fw-bold mb-1">
+                              {event.title}
+                            </div>
+                            <div className="event-client text-muted small mb-1">
+                              {event.client}
+                            </div>
+                            <div
+                              className="event-date text-muted"
+                              style={{ fontSize: "12px" }}
+                            >
+                              <Clock size={12} className="me-1" />
+                              {event.date}
+                            </div>
+                          </div>
                         </div>
-                        <div className="event-content flex-grow-1">
-                          <div className="event-title fw-bold mb-1">
-                            {event.title}
-                          </div>
-                          <div className="event-client text-muted small mb-1">
-                            {event.client}
-                          </div>
-                          <div className="event-date text-muted" style={{ fontSize: "12px" }}>
-                            <Clock size={12} className="me-1" />
-                            {event.date}
-                          </div>
-                        </div>
-                      </div>
                       ))}
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
             )}
 
             {/* Recent Documents Section */}
             {hasDocumentsPermission && (
-            <div className="col-xl-6 col-sm-12 col-12 d-flex">
-              <div className="card flex-fill">
-                <div className="card-header d-flex justify-content-between align-items-center">
-                  <h4 className="card-title mb-0 d-flex align-items-center">
-                    <Folder className="me-2" size={20} color="#1e293b" />
-                    Recent Documents
-                  </h4>
-                  <div className="view-all-link">
-                    <Link to="#" className="view-all d-flex align-items-center">
-                      View All
-                      <span className="ps-2 d-flex align-items-center">
-                        <ArrowRight className="feather-16" />
-                      </span>
-                    </Link>
-                  </div>
-                </div>
-                <div className="card-body">
-                  <div className="documents-list">
-                    {recentDocuments.map((doc) => (
-                      <div
-                        key={doc.id}
-                        className="document-item d-flex align-items-center mb-2"
+              <div
+                className={`${
+                  hasCalendarPermission ? "col-xl-6" : "col-xl-12"
+                } col-sm-12 col-12 d-flex`}
+              >
+                <div className="card flex-fill">
+                  <div className="card-header d-flex justify-content-between align-items-center">
+                    <h4 className="card-title mb-0 d-flex align-items-center">
+                      <Folder className="me-2" size={20} color="#1e293b" />
+                      Recent Documents
+                    </h4>
+                    <div className="view-all-link">
+                      <Link
+                        to="#"
+                        className="view-all d-flex align-items-center"
                       >
+                        View All
+                        <span className="ps-2 d-flex align-items-center">
+                          <ArrowRight className="feather-16" />
+                        </span>
+                      </Link>
+                    </div>
+                  </div>
+                  <div className="card-body">
+                    <div className="documents-list">
+                      {recentDocuments.map((doc) => (
                         <div
-                          className={`document-icon me-3 ${
-                            doc.type === "pdf" ? "bg-danger" : "bg-primary"
-                          }`}
+                          key={doc.id}
+                          className="document-item d-flex align-items-center mb-2"
                         >
-                          <FileText size={18} color="#fff" />
-                        </div>
-                        <div className="document-content flex-grow-1">
-                          <div className="document-name fw-medium mb-1">
-                            {doc.name}
+                          <div
+                            className={`document-icon me-3 ${
+                              doc.type === "pdf" ? "bg-danger" : "bg-primary"
+                            }`}
+                          >
+                            <FileText size={18} color="#fff" />
                           </div>
-                          <div className="document-meta text-muted small d-flex align-items-center">
-                            <span className="me-3">{doc.case}</span>
-                            <span className="me-3">{doc.date}</span>
-                            <span>{doc.size}</span>
+                          <div className="document-content flex-grow-1">
+                            <div className="document-name fw-medium mb-1">
+                              {doc.name}
+                            </div>
+                            <div className="document-meta text-muted small d-flex align-items-center">
+                              <span className="me-3">{doc.case}</span>
+                              <span className="me-3">{doc.date}</span>
+                              <span>{doc.size}</span>
+                            </div>
+                          </div>
+                          <div className="document-actions d-flex gap-2">
+                            <button className="btn btn-sm btn-light p-2">
+                              <Eye size={16} />
+                            </button>
+                            <button className="btn btn-sm btn-light p-2">
+                              <Download size={16} />
+                            </button>
                           </div>
                         </div>
-                        <div className="document-actions d-flex gap-2">
-                          <button className="btn btn-sm btn-light p-2">
-                            <Eye size={16} />
-                          </button>
-                          <button className="btn btn-sm btn-light p-2">
-                            <Download size={16} />
-                          </button>
-                        </div>
-                      </div>
                       ))}
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
             )}
           </div>
 
           {/* New Sections: Unbilled Work + Recent Cases Table (Left) and Right Column */}
-          <div className="row g-2 mb-1">
-            {/* Left Column: Unbilled Work and Recent Cases Table */}
-            <div className="col-xl-8 col-lg-8 col-md-12 col-12">
-              <div className="d-flex flex-column" style={{ gap: "8px" }}>
-                {/* Unbilled Work Card */}
-                {hasTimeEntriesPermission && (
-                <div className="card flex-fill">
-                  <div className="card-header d-flex justify-content-between align-items-center">
-                    <h4 className="card-title mb-0 d-flex align-items-center">
-                      <Send className="me-2" size={20} color="#ffc107" />
-                      Unbilled Work
-                    </h4>
-                    <div className="view-all-link">
-                      <Link to="#" className="view-all d-flex align-items-center">
-                        View All
-                        <span className="ps-2 d-flex align-items-center">
-                          <ArrowRight className="feather-16" />
-                        </span>
-                      </Link>
-                    </div>
-                  </div>
-                  <div className="card-body">
-                    <div className="unbilled-work-content">
-                      <div className="d-flex align-items-center justify-content-between mb-3">
-                        <div>
-                          <div className="unbilled-hours fw-bold" style={{ fontSize: "32px", color: "#1b2850" }}>
-                            4.50 Hours
-                          </div>
-                          <div className="unbilled-amount fw-bold mt-2" style={{ fontSize: "24px", color: "#28c76f" }}>
-                            $1,125.00
-                          </div>
-                        </div>
-                        <div className="d-flex align-items-center">
-                          <DollarSign size={32} color="#28c76f" className="me-2" />
-                          <span className="fw-bold" style={{ fontSize: "28px", color: "#1b2850" }}>
-                            $6,200.00
-                          </span>
-                        </div>
-                      </div>
-                      <div className="unbilled-status-badge">
-                        <span className="badge bg-warning text-dark px-3 py-2" style={{ fontSize: "12px", fontWeight: 600 }}>
-                          a.30 lits, not billed
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                )}
+          {(() => {
+            const hasLeftColumn =
+              hasTimeEntriesPermission || hasCasesPermission;
+            const hasRightColumn =
+              hasFinancialSummaryPermission ||
+              hasCasesPermission ||
+              hasSettingsPermission;
 
-                {/* Recent Cases Table */}
-                {hasCasesPermission && (
-                <div className="card flex-fill">
-                  <div className="card-header d-flex justify-content-between align-items-center">
-                    <h4 className="card-title mb-0 d-flex align-items-center">
-                      <Briefcase className="me-2" size={20} color="#1e293b" />
-                      Recent Cases
-                    </h4>
-                    <div className="view-all-link">
-                      <Link to="#" className="view-all d-flex align-items-center">
-                        View All
-                        <span className="ps-2 d-flex align-items-center">
-                          <ArrowRight className="feather-16" />
-                        </span>
-                      </Link>
-                    </div>
-                  </div>
-                  <div className="card-body">
-                    <div className="table-responsive">
-                      <table className="table table-hover mb-0">
-                        <thead>
-                          <tr>
-                            <th>Client</th>
-                            <th>Case Type</th>
-                            <th>Date</th>
-                            <th>Amount</th>
-                            <th>Status</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {recentCases.map((caseItem) => (
-                            <tr key={caseItem.id}>
-                              <td className="fw-medium">{caseItem.client}</td>
-                              <td className="text-muted">{caseItem.caseType}</td>
-                              <td className="text-muted">{caseItem.date}</td>
-                              <td className="fw-bold text-success">{caseItem.amount}</td>
-                              <td>
-                                <span
-                                  className={`badge ${
-                                    caseItem.status === "Active"
-                                      ? "bg-success"
-                                      : "bg-warning"
-                                  }`}
-                                >
-                                  {caseItem.status}
+            if (!hasLeftColumn && !hasRightColumn) return null;
+
+            return (
+              <div className="row g-2 mb-1">
+                {/* Left Column: Unbilled Work and Recent Cases Table */}
+                {hasLeftColumn && (
+                  <div
+                    className={`${
+                      hasRightColumn ? "col-xl-8" : "col-xl-12"
+                    } col-lg-8 col-md-12 col-12`}
+                  >
+                    <div className="d-flex flex-column" style={{ gap: "8px" }}>
+                      {/* Unbilled Work Card */}
+                      {hasTimeEntriesPermission && (
+                        <div className="card flex-fill">
+                          <div className="card-header d-flex justify-content-between align-items-center">
+                            <h4 className="card-title mb-0 d-flex align-items-center">
+                              <Send
+                                className="me-2"
+                                size={20}
+                                color="#ffc107"
+                              />
+                              Unbilled Work
+                            </h4>
+                            <div className="view-all-link">
+                              <Link
+                                to="#"
+                                className="view-all d-flex align-items-center"
+                              >
+                                View All
+                                <span className="ps-2 d-flex align-items-center">
+                                  <ArrowRight className="feather-16" />
                                 </span>
-                              </td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
+                              </Link>
+                            </div>
+                          </div>
+                          <div className="card-body">
+                            <div className="unbilled-work-content">
+                              <div className="d-flex align-items-center justify-content-between mb-3">
+                                <div>
+                                  <div
+                                    className="unbilled-hours fw-bold"
+                                    style={{
+                                      fontSize: "32px",
+                                      color: "#1b2850",
+                                    }}
+                                  >
+                                    4.50 Hours
+                                  </div>
+                                  <div
+                                    className="unbilled-amount fw-bold mt-2"
+                                    style={{
+                                      fontSize: "24px",
+                                      color: "#28c76f",
+                                    }}
+                                  >
+                                    $1,125.00
+                                  </div>
+                                </div>
+                                <div className="d-flex align-items-center">
+                                  <DollarSign
+                                    size={32}
+                                    color="#28c76f"
+                                    className="me-2"
+                                  />
+                                  <span
+                                    className="fw-bold"
+                                    style={{
+                                      fontSize: "28px",
+                                      color: "#1b2850",
+                                    }}
+                                  >
+                                    $6,200.00
+                                  </span>
+                                </div>
+                              </div>
+                              <div className="unbilled-status-badge">
+                                <span
+                                  className="badge bg-warning text-dark px-3 py-2"
+                                  style={{ fontSize: "12px", fontWeight: 600 }}
+                                >
+                                  a.30 lits, not billed
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Recent Cases Table */}
+                      {hasCasesPermission && (
+                        <div className="card flex-fill">
+                          <div className="card-header d-flex justify-content-between align-items-center">
+                            <h4 className="card-title mb-0 d-flex align-items-center">
+                              <Briefcase
+                                className="me-2"
+                                size={20}
+                                color="#1e293b"
+                              />
+                              Recent Cases
+                            </h4>
+                            <div className="view-all-link">
+                              <Link
+                                to="#"
+                                className="view-all d-flex align-items-center"
+                              >
+                                View All
+                                <span className="ps-2 d-flex align-items-center">
+                                  <ArrowRight className="feather-16" />
+                                </span>
+                              </Link>
+                            </div>
+                          </div>
+                          <div className="card-body">
+                            <div className="table-responsive">
+                              <table className="table table-hover mb-0">
+                                <thead>
+                                  <tr>
+                                    <th>Client</th>
+                                    <th>Case Type</th>
+                                    <th>Date</th>
+                                    <th>Amount</th>
+                                    <th>Status</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  {recentCases.map((caseItem) => (
+                                    <tr key={caseItem.id}>
+                                      <td className="fw-medium">
+                                        {caseItem.client}
+                                      </td>
+                                      <td className="text-muted">
+                                        {caseItem.caseType}
+                                      </td>
+                                      <td className="text-muted">
+                                        {caseItem.date}
+                                      </td>
+                                      <td className="fw-bold text-success">
+                                        {caseItem.amount}
+                                      </td>
+                                      <td>
+                                        <span
+                                          className={`badge ${
+                                            caseItem.status === "Active"
+                                              ? "bg-success"
+                                              : "bg-warning"
+                                          }`}
+                                        >
+                                          {caseItem.status}
+                                        </span>
+                                      </td>
+                                    </tr>
+                                  ))}
+                                </tbody>
+                              </table>
+                            </div>
+                          </div>
+                        </div>
+                      )}
                     </div>
                   </div>
-                </div>
+                )}
+
+                {/* Right Column: Unpaid Card, Recent Cases with Search, Settings, Company Portal */}
+                {hasRightColumn && (
+                  <div
+                    className={`${
+                      hasLeftColumn ? "col-xl-4" : "col-xl-12"
+                    } col-lg-4 col-md-12 col-12`}
+                  >
+                    <div className="d-flex flex-column" style={{ gap: "8px" }}>
+                      {/* Unpaid Card */}
+                      {hasFinancialSummaryPermission && (
+                        <div className="card flex-fill unpaid-card">
+                          <div className="card-header unpaid-header d-flex justify-content-between align-items-center">
+                            <h4 className="card-title mb-0 text-black fw-bold">
+                              $1,450.00 Unpaid
+                            </h4>
+                          </div>
+                          <div className="card-body">
+                            <div className="unpaid-metrics">
+                              <div className="d-flex justify-content-between align-items-center mb-3">
+                                <span className="text-muted">Flat Fees</span>
+                                <span
+                                  className="fw-bold"
+                                  style={{ fontSize: "18px", color: "#1b2850" }}
+                                >
+                                  $6,200.00
+                                </span>
+                              </div>
+                              <div className="d-flex justify-content-between align-items-center">
+                                <span className="text-muted">
+                                  Recent Cases 8a
+                                </span>
+                                <span
+                                  className="fw-bold"
+                                  style={{ fontSize: "18px", color: "#1b2850" }}
+                                >
+                                  $5,400.00
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Recent Cases with Search */}
+                      {hasCasesPermission && (
+                        <div className="card flex-fill">
+                          <div className="card-header d-flex justify-content-between align-items-center">
+                            <h4 className="card-title mb-0">Recent Cases</h4>
+                            <div className="view-all-link">
+                              <Link
+                                to="#"
+                                className="view-all d-flex align-items-center"
+                              >
+                                View All
+                                <span className="ps-2 d-flex align-items-center">
+                                  <ArrowRight className="feather-16" />
+                                </span>
+                              </Link>
+                            </div>
+                          </div>
+                          <div className="card-body">
+                            <div className="search-box mb-3">
+                              <div className="input-group">
+                                <span className="input-group-text bg-light border-end-0">
+                                  <Search size={16} />
+                                </span>
+                                <input
+                                  type="text"
+                                  className="form-control border-start-0"
+                                  placeholder="Search cases..."
+                                  style={{ fontSize: "14px" }}
+                                />
+                              </div>
+                            </div>
+                            <div className="recent-cases-list">
+                              <div
+                                className="d-flex justify-content-between align-items-center mb-3 p-2 rounded"
+                                style={{ background: "#f8fafc" }}
+                              >
+                                <div className="d-flex align-items-center">
+                                  <div
+                                    className="me-3"
+                                    style={{
+                                      width: "32px",
+                                      height: "32px",
+                                      borderRadius: "8px",
+                                      background: "#e0f7fa",
+                                      display: "flex",
+                                      alignItems: "center",
+                                      justifyContent: "center",
+                                    }}
+                                  >
+                                    <Users size={18} color="#00cfe8" />
+                                  </div>
+                                  <span className="fw-medium">
+                                    Recent Cases
+                                  </span>
+                                </div>
+                                <span className="fw-bold text-primary">
+                                  $1,250.00
+                                </span>
+                              </div>
+                              <div
+                                className="d-flex justify-content-between align-items-center p-2 rounded"
+                                style={{ background: "#f8fafc" }}
+                              >
+                                <div className="d-flex align-items-center">
+                                  <div
+                                    className="me-3"
+                                    style={{
+                                      width: "32px",
+                                      height: "32px",
+                                      borderRadius: "8px",
+                                      background: "#e8f5e9",
+                                      display: "flex",
+                                      alignItems: "center",
+                                      justifyContent: "center",
+                                    }}
+                                  >
+                                    <Calendar size={18} color="#28c76f" />
+                                  </div>
+                                  <span className="fw-medium">
+                                    Tasks & Calendar
+                                  </span>
+                                </div>
+                                <span className="fw-bold text-success">
+                                  $620.00
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Settings Section */}
+                      {hasSettingsPermission && (
+                        <div className="card flex-fill">
+                          <div className="card-header d-flex justify-content-between align-items-center">
+                            <h4 className="card-title mb-0 d-flex align-items-center">
+                              <Settings
+                                className="me-2"
+                                size={20}
+                                color="#1e293b"
+                              />
+                              Settings
+                            </h4>
+                            <div className="view-all-link">
+                              <Link
+                                to="#"
+                                className="view-all d-flex align-items-center"
+                              >
+                                View All
+                                <span className="ps-2 d-flex align-items-center">
+                                  <ArrowRight className="feather-16" />
+                                </span>
+                              </Link>
+                            </div>
+                          </div>
+                          <div className="card-body">
+                            <div className="settings-list">
+                              <Link
+                                to="#"
+                                className="d-flex justify-content-between align-items-center mb-3 p-2 rounded text-decoration-none"
+                                style={{
+                                  background: "#f8fafc",
+                                  color: "#1b2850",
+                                }}
+                              >
+                                <div className="d-flex align-items-center">
+                                  <div
+                                    className="me-3"
+                                    style={{
+                                      width: "32px",
+                                      height: "32px",
+                                      borderRadius: "8px",
+                                      background: "#e8f5e9",
+                                      display: "flex",
+                                      alignItems: "center",
+                                      justifyContent: "center",
+                                    }}
+                                  >
+                                    <UserPlus size={18} color="#28c76f" />
+                                  </div>
+                                  <span className="fw-medium">
+                                    User Management
+                                  </span>
+                                </div>
+                                <ChevronDown
+                                  size={16}
+                                  className="text-muted"
+                                  style={{ transform: "rotate(-90deg)" }}
+                                />
+                              </Link>
+                              <Link
+                                to="#"
+                                className="d-flex justify-content-between align-items-center mb-3 p-2 rounded text-decoration-none"
+                                style={{
+                                  background: "#f8fafc",
+                                  color: "#1b2850",
+                                }}
+                              >
+                                <div className="d-flex align-items-center">
+                                  <div
+                                    className="me-3"
+                                    style={{
+                                      width: "32px",
+                                      height: "32px",
+                                      borderRadius: "8px",
+                                      background: "#fff5e6",
+                                      display: "flex",
+                                      alignItems: "center",
+                                      justifyContent: "center",
+                                    }}
+                                  >
+                                    <Briefcase size={18} color="#ff9800" />
+                                  </div>
+                                  <span className="fw-medium">
+                                    Case Settings
+                                  </span>
+                                </div>
+                                <ChevronDown
+                                  size={16}
+                                  className="text-muted"
+                                  style={{ transform: "rotate(-90deg)" }}
+                                />
+                              </Link>
+                              <Link
+                                to="#"
+                                className="d-flex justify-content-between align-items-center p-2 rounded text-decoration-none"
+                                style={{
+                                  background: "#f8fafc",
+                                  color: "#1b2850",
+                                }}
+                              >
+                                <div className="d-flex align-items-center">
+                                  <div
+                                    className="me-3"
+                                    style={{
+                                      width: "32px",
+                                      height: "32px",
+                                      borderRadius: "8px",
+                                      background: "#e0f7fa",
+                                      display: "flex",
+                                      alignItems: "center",
+                                      justifyContent: "center",
+                                    }}
+                                  >
+                                    <DollarSign size={18} color="#00cfe8" />
+                                  </div>
+                                  <span className="fw-medium">
+                                    Billing & Payments
+                                  </span>
+                                </div>
+                                <ChevronDown
+                                  size={16}
+                                  className="text-muted"
+                                  style={{ transform: "rotate(-90deg)" }}
+                                />
+                              </Link>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Company Portal Section */}
+                      {hasCasesPermission && (
+                        <div className="card flex-fill">
+                          <div className="card-header d-flex justify-content-between align-items-center">
+                            <h4 className="card-title mb-0">Company Portal</h4>
+                            <div className="view-all-link">
+                              <Link
+                                to="#"
+                                className="view-all d-flex align-items-center"
+                              >
+                                View All
+                                <span className="ps-2 d-flex align-items-center">
+                                  <ArrowRight className="feather-16" />
+                                </span>
+                              </Link>
+                            </div>
+                          </div>
+                          <div className="card-body">
+                            <div className="company-portal-list">
+                              <Link
+                                to="#"
+                                className="d-flex justify-content-between align-items-center mb-3 p-2 rounded text-decoration-none"
+                                style={{
+                                  background: "#f8fafc",
+                                  color: "#1b2850",
+                                }}
+                              >
+                                <div className="d-flex align-items-center">
+                                  <div
+                                    className="me-3"
+                                    style={{
+                                      width: "32px",
+                                      height: "32px",
+                                      borderRadius: "8px",
+                                      background: "#fff5e6",
+                                      display: "flex",
+                                      alignItems: "center",
+                                      justifyContent: "center",
+                                    }}
+                                  >
+                                    <FileText size={18} color="#ff9800" />
+                                  </div>
+                                  <span className="fw-medium">CoPapers</span>
+                                </div>
+                                <ChevronDown
+                                  size={16}
+                                  className="text-muted"
+                                  style={{ transform: "rotate(-90deg)" }}
+                                />
+                              </Link>
+                              <Link
+                                to="#"
+                                className="d-flex justify-content-between align-items-center p-2 rounded text-decoration-none"
+                                style={{
+                                  background: "#f8fafc",
+                                  color: "#1b2850",
+                                }}
+                              >
+                                <div className="d-flex align-items-center">
+                                  <div
+                                    className="me-3"
+                                    style={{
+                                      width: "32px",
+                                      height: "32px",
+                                      borderRadius: "8px",
+                                      background: "#e0f7fa",
+                                      display: "flex",
+                                      alignItems: "center",
+                                      justifyContent: "center",
+                                    }}
+                                  >
+                                    <Users size={18} color="#00cfe8" />
+                                  </div>
+                                  <span className="fw-medium">LaPortos</span>
+                                </div>
+                                <ChevronDown
+                                  size={16}
+                                  className="text-muted"
+                                  style={{ transform: "rotate(-90deg)" }}
+                                />
+                              </Link>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
                 )}
               </div>
-            </div>
-
-            {/* Right Column: Unpaid Card, Recent Cases with Search, Settings, Company Portal */}
-            <div className="col-xl-4 col-lg-4 col-md-12 col-12">
-              <div className="d-flex flex-column" style={{ gap: "8px" }}>
-                {/* Unpaid Card */}
-                {hasFinancialSummaryPermission && (
-                <div className="card flex-fill unpaid-card">
-                  <div className="card-header unpaid-header d-flex justify-content-between align-items-center">
-                    <h4 className="card-title mb-0 text-black fw-bold">
-                      $1,450.00 Unpaid
-                    </h4>
-                  </div>
-                  <div className="card-body">
-                    <div className="unpaid-metrics">
-                      <div className="d-flex justify-content-between align-items-center mb-3">
-                        <span className="text-muted">Flat Fees</span>
-                        <span className="fw-bold" style={{ fontSize: "18px", color: "#1b2850" }}>
-                          $6,200.00
-                        </span>
-                      </div>
-                      <div className="d-flex justify-content-between align-items-center">
-                        <span className="text-muted">Recent Cases 8a</span>
-                        <span className="fw-bold" style={{ fontSize: "18px", color: "#1b2850" }}>
-                          $5,400.00
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                )}
-
-                {/* Recent Cases with Search */}
-                {hasCasesPermission && (
-                <div className="card flex-fill">
-                  <div className="card-header d-flex justify-content-between align-items-center">
-                    <h4 className="card-title mb-0">Recent Cases</h4>
-                    <div className="view-all-link">
-                      <Link to="#" className="view-all d-flex align-items-center">
-                        View All
-                        <span className="ps-2 d-flex align-items-center">
-                          <ArrowRight className="feather-16" />
-                        </span>
-                      </Link>
-                    </div>
-                  </div>
-                  <div className="card-body">
-                    <div className="search-box mb-3">
-                      <div className="input-group">
-                        <span className="input-group-text bg-light border-end-0">
-                          <Search size={16} />
-                        </span>
-                        <input
-                          type="text"
-                          className="form-control border-start-0"
-                          placeholder="Search cases..."
-                          style={{ fontSize: "14px" }}
-                        />
-                      </div>
-                    </div>
-                    <div className="recent-cases-list">
-                      <div className="d-flex justify-content-between align-items-center mb-3 p-2 rounded" style={{ background: "#f8fafc" }}>
-                        <div className="d-flex align-items-center">
-                          <div className="me-3" style={{ width: "32px", height: "32px", borderRadius: "8px", background: "#e0f7fa", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                            <Users size={18} color="#00cfe8" />
-                          </div>
-                          <span className="fw-medium">Recent Cases</span>
-                        </div>
-                        <span className="fw-bold text-primary">$1,250.00</span>
-                      </div>
-                      <div className="d-flex justify-content-between align-items-center p-2 rounded" style={{ background: "#f8fafc" }}>
-                        <div className="d-flex align-items-center">
-                          <div className="me-3" style={{ width: "32px", height: "32px", borderRadius: "8px", background: "#e8f5e9", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                            <Calendar size={18} color="#28c76f" />
-                          </div>
-                          <span className="fw-medium">Tasks & Calendar</span>
-                        </div>
-                        <span className="fw-bold text-success">$620.00</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                )}
-
-                {/* Settings Section */}
-                {hasSettingsPermission && (
-                <div className="card flex-fill">
-                  <div className="card-header d-flex justify-content-between align-items-center">
-                    <h4 className="card-title mb-0 d-flex align-items-center">
-                      <Settings className="me-2" size={20} color="#1e293b" />
-                      Settings
-                    </h4>
-                    <div className="view-all-link">
-                      <Link to="#" className="view-all d-flex align-items-center">
-                        View All
-                        <span className="ps-2 d-flex align-items-center">
-                          <ArrowRight className="feather-16" />
-                        </span>
-                      </Link>
-                    </div>
-                  </div>
-                  <div className="card-body">
-                    <div className="settings-list">
-                      <Link to="#" className="d-flex justify-content-between align-items-center mb-3 p-2 rounded text-decoration-none" style={{ background: "#f8fafc", color: "#1b2850" }}>
-                        <div className="d-flex align-items-center">
-                          <div className="me-3" style={{ width: "32px", height: "32px", borderRadius: "8px", background: "#e8f5e9", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                            <UserPlus size={18} color="#28c76f" />
-                          </div>
-                          <span className="fw-medium">User Management</span>
-                        </div>
-                        <ChevronDown size={16} className="text-muted" style={{ transform: "rotate(-90deg)" }} />
-                      </Link>
-                      <Link to="#" className="d-flex justify-content-between align-items-center mb-3 p-2 rounded text-decoration-none" style={{ background: "#f8fafc", color: "#1b2850" }}>
-                        <div className="d-flex align-items-center">
-                          <div className="me-3" style={{ width: "32px", height: "32px", borderRadius: "8px", background: "#fff5e6", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                            <Briefcase size={18} color="#ff9800" />
-                          </div>
-                          <span className="fw-medium">Case Settings</span>
-                        </div>
-                        <ChevronDown size={16} className="text-muted" style={{ transform: "rotate(-90deg)" }} />
-                      </Link>
-                      <Link to="#" className="d-flex justify-content-between align-items-center p-2 rounded text-decoration-none" style={{ background: "#f8fafc", color: "#1b2850" }}>
-                        <div className="d-flex align-items-center">
-                          <div className="me-3" style={{ width: "32px", height: "32px", borderRadius: "8px", background: "#e0f7fa", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                            <DollarSign size={18} color="#00cfe8" />
-                          </div>
-                          <span className="fw-medium">Billing & Payments</span>
-                        </div>
-                        <ChevronDown size={16} className="text-muted" style={{ transform: "rotate(-90deg)" }} />
-                      </Link>
-                    </div>
-                  </div>
-                </div>
-                )}
-
-                {/* Company Portal Section */}
-                {hasCasesPermission && (
-                <div className="card flex-fill">
-                  <div className="card-header d-flex justify-content-between align-items-center">
-                    <h4 className="card-title mb-0">Company Portal</h4>
-                    <div className="view-all-link">
-                      <Link to="#" className="view-all d-flex align-items-center">
-                        View All
-                        <span className="ps-2 d-flex align-items-center">
-                          <ArrowRight className="feather-16" />
-                        </span>
-                      </Link>
-                    </div>
-                  </div>
-                  <div className="card-body">
-                    <div className="company-portal-list">
-                      <Link to="#" className="d-flex justify-content-between align-items-center mb-3 p-2 rounded text-decoration-none" style={{ background: "#f8fafc", color: "#1b2850" }}>
-                        <div className="d-flex align-items-center">
-                          <div className="me-3" style={{ width: "32px", height: "32px", borderRadius: "8px", background: "#fff5e6", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                            <FileText size={18} color="#ff9800" />
-                          </div>
-                          <span className="fw-medium">CoPapers</span>
-                        </div>
-                        <ChevronDown size={16} className="text-muted" style={{ transform: "rotate(-90deg)" }} />
-                      </Link>
-                      <Link to="#" className="d-flex justify-content-between align-items-center p-2 rounded text-decoration-none" style={{ background: "#f8fafc", color: "#1b2850" }}>
-                        <div className="d-flex align-items-center">
-                          <div className="me-3" style={{ width: "32px", height: "32px", borderRadius: "8px", background: "#e0f7fa", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                            <Users size={18} color="#00cfe8" />
-                          </div>
-                          <span className="fw-medium">LaPortos</span>
-                        </div>
-                        <ChevronDown size={16} className="text-muted" style={{ transform: "rotate(-90deg)" }} />
-                      </Link>
-                    </div>
-                  </div>
-                </div>
-                )}
-              </div>
-            </div>
-          </div>
+            );
+          })()}
         </div>
       </div>
     </div>

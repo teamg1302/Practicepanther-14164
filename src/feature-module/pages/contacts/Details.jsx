@@ -307,7 +307,7 @@ const ContactDetails = () => {
     },
     {
       id: "contact-matters",
-      label: "Matters",
+      label: "Cases",
       icon: "feather-briefcase me-1 align-middle d-inline-block",
       content: <ContactMatters contactId={contactId} />,
     },

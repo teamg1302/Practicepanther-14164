@@ -227,7 +227,12 @@ const ListPageLayout = ({
                 className="btn btn-added btn-md"
                 onClick={actions?.addButton.onClick}
               >
-                <PlusCircle className="me-2 iconsize" />
+                {actions?.addButton.icon ? (
+                  actions?.addButton.icon
+                ) : (
+                  <PlusCircle className="me-2 iconsize" />
+                )}
+
                 {actions?.addButton.text}
               </Button>
             </div>

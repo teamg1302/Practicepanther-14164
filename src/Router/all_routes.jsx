@@ -328,7 +328,7 @@ export const all_routes = {
         // },
         {
           id: 10,
-          module: "manage_profile",
+          module: "manage_recyclebin",
           name: "recycle-bin-settings",
           path: "/settings/recycle-bin",
           icon: Trash2,
@@ -427,6 +427,15 @@ export const all_routes = {
     icon: User,
     text: "Edit Team Member",
     permission: "update",
+  },
+
+  userDetails: {
+    module: "manage_users",
+    name: "userDetails",
+    path: "/settings/users/:userId/details",
+    icon: User,
+    text: "Team Member Details",
+    permission: "read",
   },
 
   error404: "/error-404",

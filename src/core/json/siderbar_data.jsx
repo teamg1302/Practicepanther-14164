@@ -32,7 +32,7 @@ export const SidebarData = [
         icon: <Icon.Settings />,
         showSubRoute: false,
         submenu: false,
-        module: "manage_settings",
+        module: "access_all",
         permission: "read",
       },
       {
@@ -41,7 +41,7 @@ export const SidebarData = [
         icon: <Icon.Lock />,
         showSubRoute: false,
         submenu: false,
-        module: "manage_settings",
+        module: "access_all",
         permission: "read",
       },
       {
@@ -50,7 +50,7 @@ export const SidebarData = [
         icon: <Icon.Info />,
         showSubRoute: false,
         submenu: false,
-        module: "manage_settings",
+        module: "manage_profile",
         permission: "read",
       },
       {
@@ -59,7 +59,7 @@ export const SidebarData = [
         icon: <Icon.Trash2 />,
         showSubRoute: false,
         submenu: false,
-        module: "manage_recycle_bin",
+        module: "manage_recyclebin",
         permission: "read",
       },
       {

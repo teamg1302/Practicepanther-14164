@@ -65,3 +65,8 @@
   text-align: center;
   display: inline-block;
 }
+
+.page-wrapper .content {
+  background: linear-gradient(135deg, #fafbfe 0%, #f1f5f9 50%, #fafbfe 100%);
+  min-height: 100vh;
+}

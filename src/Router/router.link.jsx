@@ -13,6 +13,7 @@ import Undermaintainence from "@/feature-module/pages/undermaintainence";
 import PersonalSettings from "@/feature-module/pages/settings/personal-settings";
 import FirmLogoInfoSettings from "@/feature-module/pages/settings/firm-logo-info";
 import UsersSettings from "@/feature-module/pages/settings/users";
+import UserDetails from "@/feature-module/pages/settings/users/UserDetails";
 import RolePermissionList from "@/feature-module/pages/settings/roles-permissions";
 import RolePermissionAddEdit from "@/feature-module/pages/settings/roles-permissions/AddEdit";
 import RecycleBin from "@/feature-module/pages/settings/recyclebin";
@@ -269,6 +270,13 @@ export const settingsRoutes = [
     path: routes.settings[1].children[0].path,
     name: routes.settings[1].children[0].name,
     element: <UsersSettings />,
+    route: Route,
+  },
+  {
+    id: 5.1,
+    path: routes.userDetails.path,
+    name: routes.userDetails.name,
+    element: <UserDetails />,
     route: Route,
   },
   {

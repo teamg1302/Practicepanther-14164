@@ -10,7 +10,6 @@ import EntityListView from "@/feature-module/components/entity-list-view";
 import withEntityHandlers from "@/feature-module/hoc/withEntityHandlers";
 import { getTableColumns } from "@/feature-module/components/table-columns";
 import ListPageLayout from "@/feature-module/components/list-page-layout";
-import { useIsOwner } from "@/core/utilities/utility";
 import { checkPermission } from "@/Router/PermissionRoute";
 
 /**
@@ -24,27 +23,6 @@ import { checkPermission } from "@/Router/PermissionRoute";
  * - Owner-specific permissions
  */
 
-// Columns definition - Pure JSON configuration (srNo and actions are added by withEntityHandlers)
-const COLUMNS_CONFIG = [
-  { header: "Name", accessorKey: "name" },
-  { header: "Email", accessorKey: "email" },
-  { header: "Phone", accessorKey: "phone" },
-  { header: "Role", accessorKey: "roleId", type: "nested" },
-  { header: "Timezone", accessorKey: "timezoneId", type: "nested" },
-  {
-    header: "Status",
-    accessorKey: "isActive",
-    type: "chip",
-    chipMap: {
-      true: { label: "Active", color: "success" },
-      false: { label: "Inactive", color: "error" },
-    },
-  },
-  { header: "Created At", accessorKey: "createdAt", type: "date" },
-  { header: "Updated At", accessorKey: "updatedAt", type: "date" },
-  { header: "Last Login", accessorKey: "lastLogin", type: "date" },
-];
-
 /**
  * Users component for managing users list.
  * @component
@@ -55,7 +33,6 @@ const COLUMNS_CONFIG = [
  */
 const Users = () => {
   const permissions = useSelector((state) => state.auth?.permissions || []);
-  const isOwner = useIsOwner();
   const navigate = useNavigate();
   const userId = useSelector((state) => state.auth?.user?.id);
   const ownerId = useSelector((state) => state.auth?.user?.firmId?.ownerId);
@@ -63,8 +40,33 @@ const Users = () => {
   const route = all_routes;
   const [customFilters, setCustomFilters] = useState({});
 
-  // Generate columns from JSON config
-  const columns = useMemo(() => getTableColumns(COLUMNS_CONFIG), []);
+  // Columns definition - Pure JSON configuration (srNo and actions are added by withEntityHandlers)
+  const columns = useMemo(() => {
+    const COLUMNS_CONFIG = [
+      {
+        header: "Name",
+        accessorKey: "name",
+        detailRoute: route.userDetails.path,
+      },
+      { header: "Email", accessorKey: "email" },
+      { header: "Phone", accessorKey: "phone" },
+      { header: "Role", accessorKey: "roleId", type: "nested" },
+      { header: "Timezone", accessorKey: "timezoneId", type: "nested" },
+      {
+        header: "Status",
+        accessorKey: "isActive",
+        type: "chip",
+        chipMap: {
+          true: { label: "Active", color: "success" },
+          false: { label: "Inactive", color: "error" },
+        },
+      },
+      { header: "Created At", accessorKey: "createdAt", type: "date" },
+      { header: "Updated At", accessorKey: "updatedAt", type: "date" },
+      { header: "Last Login", accessorKey: "lastLogin", type: "date" },
+    ];
+    return getTableColumns(COLUMNS_CONFIG, { navigate });
+  }, [navigate, route.userDetails.path]);
 
   const handleDelete = async (row) => {
     try {
